@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Details | Modes Power Services</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Project Details Specific Styles */
+        .project-details {
+            padding: 6rem 0;
+            background: var(--bg-color);
+        }
+
+        .project-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .project-header {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .project-category {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-title {
+            font-size: 2.5rem;
+            color: var(--light-text);
+            margin-bottom: 1.5rem;
+            line-height: 1.3;
+        }
+
+        .project-meta {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            color: var(--light-gray);
+            font-size: 0.95rem;
+        }
+
+        .meta-item i {
+            margin-right: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .project-gallery {
+            margin-bottom: 3rem;
+        }
+
+        .main-image {
+            width: 100%;
+            height: 500px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .main-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .main-image:hover img {
+            transform: scale(1.03);
+        }
+
+        .thumbnail-gallery {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        .thumbnail {
+            height: 100px;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .thumbnail:hover,
+        .thumbnail.active {
+            opacity: 1;
+            border-color: var(--primary-color);
+        }
+
+        .thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .project-content {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 3rem;
+            margin-bottom: 4rem;
+        }
+
+        .project-description h3 {
+            font-size: 1.5rem;
+            color: var(--light-text);
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.75rem;
+        }
+
+        .project-description h3:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--primary-color);
+        }
+
+        .project-description p {
+            color: var(--light-gray);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-details-sidebar {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            height: fit-content;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .details-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .details-list li {
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .details-list li:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--light-text);
+        }
+
+        .detail-value {
+            color: var(--light-gray);
+            text-align: right;
+        }
+
+        .project-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            color: var(--light-text);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            max-width: 45%;
+            flex: 1;
+        }
+
+        .nav-btn:hover {
+            color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border-color: var(--primary-color);
+        }
+
+        .nav-btn i {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        #prev-project:hover i {
+            transform: translateX(-5px);
+        }
+
+        #next-project:hover i {
+            transform: translateX(5px);
+        }
+
+        .nav-project-info {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .nav-label {
+            font-size: 0.8rem;
+            color: var(--light-gray);
+            white-space: nowrap;
+        }
+
+        .nav-btn .project-title {
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-top: 0.25rem;
+        }
+
+        @media (max-width: 768px) {
+            .project-navigation {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-btn {
+                max-width: 100%;
+                padding: 0.8rem 1.2rem;
+            }
+            
+            .project-title {
+                font-size: 0.9rem;
+            }
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            color: var(--primary-color);
+            text-decoration: none;
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+
+        .btn-back i {
+            margin-right: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-back:hover i {
+            transform: translateX(-5px);
+        }
+
+        @media (max-width: 992px) {
+            .project-content {
+                grid-template-columns: 1fr;
+            }
+
+            .project-details-sidebar {
+                margin-top: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-image {
+                height: 350px;
+            }
+
+            .thumbnail-gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .project-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header & Navigation (Same as other pages) -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html">
+                    <h1>Modes <span>Power Services</span></h1>
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li class="dropdown">
+                        <a href="services.html">Services <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-content">
+                            <a href="services.html#installations">Electrical Installations</a>
+                            <a href="services.html#maintenance">Maintenance</a>
+                            <a href="services.html#audits">Power Audits</a>
+                            <a href="services.html#solutions">Custom Solutions</a>
+                        </div>
+                    </li>
+                    <li><a href="gallery.html">Gallery</a></li>
+                    <li><a href="projects.html" class="active">Projects</a></li>
+                    <li><a href="contact.html" class="btn btn-contact">Contact Us</a></li>
+                </ul>
+            </nav>
+            <div class="mobile-menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Project Details Section -->
+    <section class="project-details">
+        <div class="container">
+            <a href="projects.html" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Back to Projects
+            </a>
+            
+            <div class="project-header">
+                <span class="project-category">Commercial</span>
+                <h1 class="project-title">Project Title Goes Here</h1>
+                <div class="project-meta">
+                    <div class="meta-item">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>Completed: <span id="project-date">June 2023</span></span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span id="project-location">Location, Country</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-tag"></i>
+                        <span id="project-category">Commercial</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-gallery">
+                <div class="main-image">
+                    <img src="images/projects/placeholder.jpg" alt="Main Project Image" id="main-image">
+                </div>
+                <div class="thumbnail-gallery" id="thumbnail-gallery">
+                    <!-- Thumbnails will be added by JavaScript -->
+                </div>
+            </div>
+
+            <div class="project-content">
+                <div class="project-description">
+                    <h3>Project Overview</h3>
+                    <p id="project-overview">
+                        This is a detailed overview of the project. It should provide comprehensive information about the scope of work, 
+                        challenges faced, and the solutions implemented. You can edit this section to include specific details about the project.
+                    </p>
+                    
+                    <h3>Challenge</h3>
+                    <p id="project-challenge">
+                        Describe the main challenges or problems that needed to be addressed in this project. This could include technical 
+                        difficulties, time constraints, or specific client requirements.
+                    </p>
+                    
+                    <h3>Solution</h3>
+                    <p id="project-solution">
+                        Explain how your team approached and solved the challenges. Include any innovative solutions or technologies used. 
+                        This section should highlight your expertise and the value you brought to the project.
+                    </p>
+                    
+                    <h3>Results</h3>
+                    <p id="project-results">
+                        Share the outcomes and benefits of the project. Include any metrics or feedback from the client that demonstrates 
+                        the success of the project.
+                    </p>
+                </div>
+
+                <div class="project-details-sidebar">
+                    <h3>Project Details</h3>
+                    <ul class="details-list">
+                        <li>
+                            <span class="detail-label">Client:</span>
+                            <span class="detail-value" id="client-name">Client Name</span>
+                        </li>
+                        <li>
+                            <span class="detail-label">Category:</span>
+                            <span class="detail-value" id="detail-category">Commercial</span>
+                        </li>
+                        <li>
+                            <span class="detail-label">Location:</span>
+                            <span class="detail-value" id="detail-location">Location, Country</span>
+                        </li>
+                        <li>
+                            <span class="detail-label">Size:</span>
+                            <span class="detail-value" id="project-size">10,000 sq ft</span>
+                        </li>
+                        <li>
+                            <span class="detail-label">Duration:</span>
+                            <span class="detail-value" id="project-duration">6 Months</span>
+                        </li>
+                        <li>
+                            <span class="detail-label">Completed:</span>
+                            <span class="detail-value" id="detail-date">June 2023</span>
+                        </li>
+                        <li>
+                            <span class="detail-label">Status:</span>
+                            <span class="detail-value" id="project-status">Completed</span>
+                        </li>
+                    </ul>
+                    
+                    <a href="contact.html" class="btn btn-primary" style="margin-top: 2rem; display: block; text-align: center;">
+                        Start Your Project
+                    </a>
+                </div>
+            </div>
+
+            <div class="project-navigation">
+                <a href="#" class="nav-btn" id="prev-project">
+                    <i class="fas fa-arrow-left"></i>
+                    <div class="nav-project-info">
+                        <span class="nav-label">Previous Project</span>
+                        <span class="project-title prev-project-title"></span>
+                    </div>
+                </a>
+                <a href="#" class="nav-btn" id="next-project">
+                    <div class="nav-project-info">
+                        <span class="nav-label">Next Project</span>
+                        <span class="project-title next-project-title"></span>
+                    </div>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer (Same as other pages) -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <h3>Modes Power Services</h3>
+                    <p>Delivering exceptional electrical engineering solutions with expertise, integrity, and innovation.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="services.html">Services</a></li>
+                        <li><a href="gallery.html">Gallery</a></li>
+                        <li><a href="projects.html">Projects</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-services">
+                    <h4>Our Services</h4>
+                    <ul>
+                        <li><a href="services.html#installations">Electrical Installations</a></li>
+                        <li><a href="services.html#maintenance">Maintenance & Repairs</a></li>
+                        <li><a href="services.html#audits">Power Audits</a></li>
+                        <li><a href="services.html#solutions">Custom Solutions</a></li>
+                        <li><a href="services.html#emergency">24/7 Emergency Service</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contact Us</h4>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Power Street, Electra City, EC 12345</li>
+                        <li><i class="fas fa-phone"></i> <a href="tel:+233244380176">(024) 438-0176</a></li>
+                        <li><i class="fas fa-envelope"></i> <a href="mailto:modes775@gmail.com">modes775@gmail.com</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Modes Power Services. All Rights Reserved.</p>
+                <div class="footer-legal">
+                    <a href="#">Privacy Policy</a>
+                    <span>|</span>
+                    <a href="#">Terms of Service</a>
+                    <span>|</span>
+                    <a href="#">Sitemap</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="back-to-top" aria-label="Back to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="js/main.js"></script>
+    <script>
+        // Project Details Script
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get project data from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const projectId = urlParams.get('id');
+            
+            // Project data array with detailed information for each project
+            const projects = [
+                {
+                    id: 'downtown-office',
+                    title: 'Downtown Office Complex Electrical Upgrade',
+                    category: 'Commercial',
+                    date: 'June 2023',
+                    location: 'Accra, Ghana',
+                    client: 'Prime Business Solutions',
+                    size: '50,000 sq ft',
+                    duration: '4 Months',
+                    status: 'Completed',
+                    overview: 'Complete electrical system upgrade for a 20-story office building in downtown Accra, including new distribution panels, lighting systems, and energy management solutions. The project aimed to modernize the building\'s infrastructure while improving energy efficiency and reliability.',
+                    challenge: 'The building had outdated electrical systems causing frequent power fluctuations and safety concerns. The main challenges included working within tight business hours, coordinating with multiple tenants, and ensuring zero disruption to daily operations during the upgrade process.',
+                    solution: 'We implemented a phased approach, working during off-hours and weekends to minimize business disruption. Our team installed energy-efficient LED lighting with smart controls, upgraded the main distribution panels with modern circuit protection, and implemented a cloud-based energy management system. We also provided temporary power solutions during critical upgrade phases to ensure continuous operations.',
+                    results: 'The upgraded electrical system has provided 99.9% uptime since completion. The smart energy management system reduced power consumption by 35%, resulting in annual savings of approximately $85,000. The modern lighting improved the working environment, leading to positive feedback from tenants. The building now meets all current electrical codes and safety standards.',
+                    images: [
+                        'images/projects/office-building-wiring.jpg',
+                        'images/projects/office-lighting.jpg',
+                        'images/projects/electrical-panels.jpg',
+                        'images/projects/office-lobby-lighting.jpg'
+                    ]
+                },
+                {
+                    id: 'manufacturing-facility',
+                    title: 'Industrial Manufacturing Plant Electrical Modernization',
+                    category: 'Industrial',
+                    date: 'April 2023',
+                    location: 'Tema, Ghana',
+                    client: 'Ghana Agro Processing Ltd',
+                    size: '500,000 sq ft',
+                    duration: '6 Months',
+                    status: 'Completed',
+                    overview: 'Comprehensive electrical system modernization for a large-scale food processing facility, including power distribution upgrades, motor control center replacement, and installation of power quality monitoring systems.',
+                    challenge: 'The facility was experiencing frequent power quality issues, voltage fluctuations, and unplanned downtime due to aging electrical infrastructure. The existing system couldn\'t support planned production expansion and was causing significant revenue losses from production interruptions.',
+                    solution: 'We conducted a detailed power quality audit and designed a complete electrical system overhaul. The solution included installing new switchgear with advanced protection relays, replacing the motor control center with a modern PLC-based system, and implementing power factor correction. We also installed a real-time power monitoring system to identify and address issues proactively.',
+                    results: 'The modernization resulted in a 40% reduction in unplanned downtime and 25% improvement in energy efficiency. Power quality issues were eliminated, and the facility now has the capacity to expand production by 30%. The client reported a full return on investment within 18 months through energy savings and increased production capacity.',
+                    images: [
+                        'images/projects/manufacturing-plant-1.jpg',
+                        'images/projects/industrial-panels.jpg',
+                        'images/projects/manufacturing-floor.jpg',
+                        'images/projects/control-room.jpg'
+                    ]
+                },
+                {
+                    id: 'luxury-condo',
+                    title: 'Luxury Beachfront Condominium Electrical Installation',
+                    category: 'Residential',
+                    date: 'February 2023',
+                    location: 'Teshie, Ghana',
+                    client: 'Coastal Living Developments',
+                    size: '300,000 sq ft',
+                    duration: '9 Months',
+                    status: 'Completed',
+                    overview: 'Complete electrical installation for a 15-story luxury condominium complex featuring smart home automation, backup power systems, and sustainable energy solutions.',
+                    challenge: 'The project required a sophisticated electrical system that could support high-end amenities while ensuring energy efficiency and reliability. Special considerations were needed for the coastal location, including protection against saltwater corrosion and humidity.',
+                    solution: 'We designed a comprehensive electrical system featuring KNX-based home automation, a 500kVA solar PV system with battery storage, and a 1MVA backup generator. All electrical components were specified with marine-grade materials for corrosion resistance. The system includes smart metering for individual units and common areas.',
+                    results: 'The condominium achieved LEED Gold certification for energy efficiency. The solar PV system provides 60% of the building\'s energy needs, significantly reducing operating costs. The smart home features have become a major selling point, with units commanding premium prices. The building has had zero electrical system failures since completion.',
+                    images: [
+                        'images/projects/luxury-condo-1.jpg',
+                        'images/projects/condo-lighting.jpg',
+                        'images/projects/solar-installation.jpg',
+                        'images/projects/condo-interior.jpg'
+                    ]
+                },
+                {
+                    id: 'solar-farm',
+                    title: '10MW Solar Power Plant Installation',
+                    category: 'Renewable Energy',
+                    date: 'December 2022',
+                    location: 'Tamale, Ghana',
+                    client: 'Northern Power Solutions',
+                    size: '50 acres',
+                    duration: '8 Months',
+                    status: 'Completed',
+                    overview: 'Design and installation of a 10MW ground-mounted solar PV power plant with battery energy storage system, including grid connection and substation upgrades.',
+                    challenge: 'The remote location presented logistical challenges for equipment transportation and required a system resilient to harsh weather conditions. The project needed to meet strict grid code requirements for power quality and reliability.',
+                    solution: 'We implemented a turnkey solution using bifacial solar panels on single-axis trackers to maximize energy production. The system includes a 2MWh battery storage system for grid stabilization and a state-of-the-art SCADA system for remote monitoring. We also upgraded the local substation to handle the additional power injection.',
+                    results: 'The solar farm now generates approximately 16,000 MWh annually, powering over 10,000 homes and offsetting 12,000 tons of CO2 emissions each year. The project was completed on time and within budget, becoming a model for utility-scale solar in the region. The battery storage system has proven particularly valuable in stabilizing the local grid.',
+                    images: [
+                        'images/projects/solar-farm-1.jpg',
+                        'images/projects/solar-panels-closeup.jpg',
+                        'images/projects/substation-upgrade.jpg',
+                        'images/projects/solar-monitoring.jpg'
+                    ]
+                },
+                {
+                    id: 'shopping-mall',
+                    title: 'East Legon Shopping Mall Electrical Infrastructure',
+                    category: 'Commercial',
+                    date: 'October 2022',
+                    location: 'East Legon, Accra',
+                    client: 'Retail Holdings Ghana',
+                    size: '1.2 million sq ft',
+                    duration: '11 Months',
+                    status: 'Completed',
+                    overview: 'Complete electrical infrastructure for a large regional shopping mall, including power distribution, lighting, fire alarm, and security systems.',
+                    challenge: 'The project required a highly reliable electrical system to support 24/7 operations of a major retail destination. The design needed to accommodate future expansion while ensuring energy efficiency and minimal environmental impact.',
+                    solution: 'We implemented a redundant power distribution system with automatic transfer switches and backup generators. The lighting design features LED fixtures with daylight harvesting and occupancy sensors. We also installed an integrated building management system for centralized control and monitoring of all electrical systems.',
+                    results: 'The mall opened on schedule and has maintained 99.99% power availability. Energy consumption is 30% below comparable facilities due to the efficient lighting and HVAC systems. The project received the Ghana Green Building Council\'s Excellence in Sustainable Design award.',
+                    images: [
+                        'images/projects/retail-mall-1.jpg',
+                        'images/projects/mall-lighting.jpg',
+                        'images/projects/electrical-room.jpg',
+                        'images/projects/mall-interior.jpg'
+                    ]
+                },
+                {
+                    id: 'distribution-center',
+                    title: 'E-commerce Fulfillment Center Electrical Systems',
+                    category: 'Industrial',
+                    date: 'August 2022',
+                    location: 'Tema Free Zone',
+                    client: 'Jumia Ghana',
+                    size: '750,000 sq ft',
+                    duration: '7 Months',
+                    status: 'Completed',
+                    overview: 'Complete electrical systems for a fully automated e-commerce distribution center, including material handling systems, data center infrastructure, and office spaces.',
+                    challenge: 'The facility required an extremely reliable power supply for 24/7 operations, with special considerations for the sensitive automation equipment. The electrical design needed to support high-density server rooms and extensive material handling systems.',
+                    solution: 'We designed a robust electrical infrastructure featuring dual utility feeds, multiple backup generators, and a large UPS system for critical loads. The solution included power distribution units with remote monitoring, energy-efficient lighting with motion sensors, and specialized power conditioning for sensitive equipment.',
+                    results: 'The distribution center has maintained 99.999% uptime since opening. The energy-efficient design has reduced operating costs by 25% compared to conventional facilities. The project was completed two weeks ahead of schedule, allowing the client to begin operations earlier than planned.',
+                    images: [
+                        'images/projects/warehouse-1.jpg',
+                        'images/projects/automated-warehouse.jpg',
+                        'images/projects/data-center.jpg',
+                        'images/projects/warehouse-lighting.jpg'
+                    ]
+                }
+            ];
+
+            // Find the current project
+            let currentProject = projects.find(p => p.id === projectId) || projects[0];
+            
+            // Update the page with project data
+            document.title = currentProject.title + ' | Modes Power Services';
+            document.querySelector('.project-title').textContent = currentProject.title;
+            document.querySelector('.project-category').textContent = currentProject.category;
+            document.getElementById('project-date').textContent = currentProject.date;
+            document.getElementById('project-location').textContent = currentProject.location;
+            document.getElementById('project-category').textContent = currentProject.category;
+            document.getElementById('project-overview').textContent = currentProject.overview;
+            document.getElementById('project-challenge').textContent = currentProject.challenge;
+            document.getElementById('project-solution').textContent = currentProject.solution;
+            document.getElementById('project-results').textContent = currentProject.results;
+            document.getElementById('client-name').textContent = currentProject.client;
+            document.getElementById('detail-category').textContent = currentProject.category;
+            document.getElementById('detail-location').textContent = currentProject.location;
+            document.getElementById('project-size').textContent = currentProject.size;
+            document.getElementById('project-duration').textContent = currentProject.duration;
+            document.getElementById('detail-date').textContent = currentProject.date;
+            document.getElementById('project-status').textContent = currentProject.status;
+
+            // Set main image
+            const mainImage = document.getElementById('main-image');
+            if (currentProject.images && currentProject.images.length > 0) {
+                mainImage.src = currentProject.images[0];
+                mainImage.alt = currentProject.title;
+
+                // Create thumbnails
+                const thumbnailGallery = document.getElementById('thumbnail-gallery');
+                thumbnailGallery.innerHTML = '';
+                
+                currentProject.images.forEach((img, index) => {
+                    const thumbnail = document.createElement('div');
+                    thumbnail.className = 'thumbnail' + (index === 0 ? ' active' : '');
+                    thumbnail.innerHTML = `<img src="${img}" alt="Thumbnail ${index + 1}">`;
+                    thumbnail.addEventListener('click', () => {
+                        mainImage.src = img;
+                        document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+                        thumbnail.classList.add('active');
+                    });
+                    thumbnailGallery.appendChild(thumbnail);
+                });
+            }
+
+            // Navigation between projects
+            const currentIndex = projects.findIndex(p => p.id === currentProject.id);
+            const prevBtn = document.getElementById('prev-project');
+            const nextBtn = document.getElementById('next-project');
+
+            // Function to update the URL and reload the page with new project
+            const navigateToProject = (index) => {
+                if (index >= 0 && index < projects.length) {
+                    window.location.href = `project-details.html?id=${projects[index].id}`;
+                }
+            };
+
+            // Previous button click handler
+            if (currentIndex > 0) {
+                prevBtn.style.display = 'flex';
+                prevBtn.onclick = (e) => {
+                    e.preventDefault();
+                    navigateToProject(currentIndex - 1);
+                };
+                // Update previous project title
+                document.querySelector('.prev-project-title').textContent = projects[currentIndex - 1].title;
+            } else {
+                prevBtn.style.display = 'none';
+            }
+
+            // Next button click handler
+            if (currentIndex < projects.length - 1) {
+                nextBtn.style.display = 'flex';
+                nextBtn.onclick = (e) => {
+                    e.preventDefault();
+                    navigateToProject(currentIndex + 1);
+                };
+                // Update next project title
+                document.querySelector('.next-project-title').textContent = projects[currentIndex + 1].title;
+            } else {
+                nextBtn.style.display = 'none';
+            }
+
+            // Add keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft' && currentIndex > 0) {
+                    navigateToProject(currentIndex - 1);
+                } else if (e.key === 'ArrowRight' && currentIndex < projects.length - 1) {
+                    navigateToProject(currentIndex + 1);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
