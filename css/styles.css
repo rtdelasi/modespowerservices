@@ -1,3 +1,71 @@
+/* ===== Clients Slider ===== */
+.clients {
+    padding: 5rem 0;
+    background-color: var(--darker-bg);
+    overflow: hidden;
+}
+
+.clients-slider {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    margin-top: 2rem;
+}
+
+.clients-track {
+    display: flex;
+    width: 200%;
+    animation: scroll 30s linear infinite;
+    padding: 1rem 0;
+}
+
+.clients-slider:hover .clients-track {
+    animation-play-state: paused;
+}
+
+.client-logo {
+    flex: 0 0 auto;
+    width: 200px;
+    height: 100px;
+    margin: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--card-bg);
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.client-logo:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.client-logo img {
+    max-width: 100%;
+    max-height: 70px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    filter: grayscale(100%) brightness(0.8);
+    transition: filter 0.3s ease;
+}
+
+.client-logo:hover img {
+    filter: grayscale(0%) brightness(1);
+}
+
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(calc(-200px * 5)); /* Move by width of one set of logos */
+    }
+}
+
 /* ===== Base Styles ===== */
 :root {
     /* Color Palette */
