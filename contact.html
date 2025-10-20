@@ -523,13 +523,17 @@
                 </div>
                 
                 <div class="contact-form-container">
-                    <form id="contactForm" class="contact-form">
-                        <div class="form-header">
-                            <h2>Send Us a Message</h2>
-                            <p>We'll get back to you as soon as possible</p>
-                        </div>
-                        
-                        <div id="formMessage" class="form-message" style="display: none;"></div>
+                    <form action="https://formspree.io/f/manpzeak" method="post" id="contactForm" class="contact-form">
+                            <div class="form-header">
+                                <h2>Send Us a Message</h2>
+                                <p>We'll get back to you as soon as possible</p>
+                            </div>
+
+                            <!-- Formspree hidden inputs -->
+                            <input type="hidden" name="_subject" value="New message from Modes Power Services website">
+                            <input type="hidden" name="_captcha" value="false">
+
+                            <div id="formMessage" class="form-message" style="display: none;"></div>
                         
                         <div class="form-row">
                             <div class="form-group">
@@ -660,53 +664,77 @@
     <script src="js/main.js"></script>
     
     <script>
-        // Contact Form Submission
+        // Contact Form Submission using Formspree
         document.addEventListener('DOMContentLoaded', function() {
             const contactForm = document.getElementById('contactForm');
             const formMessage = document.getElementById('formMessage');
             const submitBtn = document.getElementById('submitBtn');
-            
+
+            const FORMSPREE_ENDPOINT = 'https://formspree.io/f/manpzeak';
+
+            function showMessage(type, text) {
+                formMessage.style.display = 'block';
+                formMessage.className = 'form-message ' + (type === 'error' ? 'error' : 'success');
+                formMessage.textContent = text;
+            }
+
+            function hideMessage() {
+                formMessage.style.display = 'none';
+                formMessage.className = 'form-message';
+                formMessage.textContent = '';
+            }
+
             if (contactForm) {
                 contactForm.addEventListener('submit', function(e) {
                     e.preventDefault();
-                    
+
                     // Disable submit button
                     submitBtn.disabled = true;
+                    const originalBtnText = submitBtn.innerHTML;
                     submitBtn.innerHTML = 'Sending...';
-                    
-                    // Get form data
+
+                    // Collect form data
                     const formData = new FormData(contactForm);
-                    const formObject = {};
-                    formData.forEach((value, key) => {
-                        formObject[key] = value;
-                    });
-                    
-                    // Here you would typically send the form data to a server
-                    // For this example, we'll simulate a successful submission
-                    
-                    // Simulate API call delay
-                    setTimeout(() => {
-                        // Show success message
-                        formMessage.style.display = 'block';
-                        formMessage.className = 'form-message success';
-                        formMessage.textContent = 'Thank you for your message! We will get back to you soon.';
-                        
-                        // Reset form
-                        contactForm.reset();
-                        
+
+                    // Submit to Formspree via fetch
+                    fetch(FORMSPREE_ENDPOINT, {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json'
+                        },
+                        body: formData
+                    }).then(function(response) {
+                        if (response.ok) {
+                            showMessage('success', 'Thank you for your message! We will get back to you soon.');
+                            contactForm.reset();
+                        } else {
+                            return response.json().then(function(data) {
+                                if (data && data.error) {
+                                    throw new Error(data.error);
+                                } else {
+                                    throw new Error('There was a problem submitting the form.');
+                                }
+                            }).catch(function(err) {
+                                throw err;
+                            });
+                        }
+                    }).catch(function(error) {
+                        console.error('Form submission error:', error);
+                        showMessage('error', 'Oops — something went wrong. Please try again or email us directly at modes775@gmail.com');
+                    }).finally(function() {
                         // Re-enable submit button
                         submitBtn.disabled = false;
-                        submitBtn.innerHTML = 'Send Message';
-                        
-                        // Hide message after 5 seconds
-                        setTimeout(() => {
-                            formMessage.style.display = 'none';
-                        }, 5000);
-                    }, 1500);
+                        submitBtn.innerHTML = originalBtnText;
+
+                        // Auto-hide success message after 6 seconds
+                        if (formMessage.classList.contains('success')) {
+                            setTimeout(hideMessage, 6000);
+                        }
+                    });
                 });
             }
-            
-            // Phone number formatting
+
+            // Phone number formatting (keep existing behavior)
             const phoneInput = document.getElementById('phone');
             if (phoneInput) {
                 phoneInput.addEventListener('input', function(e) {
