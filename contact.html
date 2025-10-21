@@ -530,8 +530,9 @@
                             </div>
 
                             <!-- Formspree hidden inputs -->
-                            <input type="hidden" name="_subject" value="New message from Modes Power Services website">
+                            <input type="hidden" name="_subject" id="emailSubject" value="New message from Modes Power Services website">
                             <input type="hidden" name="_captcha" value="false">
+                            <input type="hidden" name="_template" value="table">
 
                             <div id="formMessage" class="form-message" style="display: none;"></div>
                         
@@ -685,6 +686,27 @@
             }
 
             if (contactForm) {
+                // Update email subject when subject dropdown changes
+                const subjectSelect = document.getElementById('subject');
+                const emailSubject = document.getElementById('emailSubject');
+                
+                if (subjectSelect && emailSubject) {
+                    subjectSelect.addEventListener('change', function() {
+                        const selectedSubject = this.options[this.selectedIndex].text;
+                        if (selectedSubject && selectedSubject !== 'Select a subject') {
+                            emailSubject.value = `New ${selectedSubject} from Modes Power Services website`;
+                        } else {
+                            emailSubject.value = 'New message from Modes Power Services website';
+                        }
+                    });
+                }
+
+                // Function to get the selected subject text
+                function getSelectedSubject() {
+                    const subjectSelect = document.getElementById('subject');
+                    return subjectSelect ? subjectSelect.options[subjectSelect.selectedIndex].text : '';
+                }
+
                 contactForm.addEventListener('submit', function(e) {
                     e.preventDefault();
 
@@ -692,6 +714,15 @@
                     submitBtn.disabled = true;
                     const originalBtnText = submitBtn.innerHTML;
                     submitBtn.innerHTML = 'Sending...';
+
+                    // Get the message text and prepend the subject
+                    const messageField = document.getElementById('message');
+                    const originalMessage = messageField.value;
+                    const subject = getSelectedSubject();
+                    
+                    if (subject && subject !== 'Select a subject') {
+                        messageField.value = `Subject: ${subject}\n\n${originalMessage}`;
+                    }
 
                     // Collect form data
                     const formData = new FormData(contactForm);
