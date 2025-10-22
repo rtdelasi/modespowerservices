@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sitemap - Modes Power Services. Find all pages and sections of our website in one place.">
+    <title>Sitemap | Modes Power Services</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/abstract-bg.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .sitemap-section {
+            padding: 5rem 0;
+            background-color: var(--dark-bg);
+        }
+        
+        .sitemap-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .sitemap-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .sitemap-column h3 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-color);
+            display: inline-block;
+        }
+        
+        .sitemap-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .sitemap-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .sitemap-links a {
+            color: var(--gray-text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: block;
+            padding: 0.5rem 0;
+        }
+        
+        .sitemap-links a:hover {
+            color: var(--primary-color);
+            padding-left: 8px;
+        }
+        
+        .sitemap-links a i {
+            margin-right: 8px;
+            color: var(--primary-color);
+        }
+        
+        @media (max-width: 768px) {
+            .sitemap-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html">
+                    <h1>Modes <span>Power Services</span></h1>
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li class="dropdown">
+                        <a href="services.html">Services <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-content">
+                            <a href="services.html#installations">Electrical Installations</a>
+                            <a href="services.html#maintenance">Maintenance</a>
+                            <a href="services.html#audits">Power Audits</a>
+                            <a href="services.html#solutions">Custom Solutions</a>
+                        </div>
+                    </li>
+                    <li><a href="gallery.html">Gallery</a></li>
+                    <li><a href="projects.html">Projects</a></li>
+                    <li><a href="contact.html" class="btn btn-contact">Contact Us</a></li>
+                </ul>
+            </nav>
+            <div class="mobile-menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Sitemap</h1>
+            <p>Navigate through our website with ease</p>
+        </div>
+    </section>
+
+    <!-- Sitemap Content -->
+    <section class="sitemap-section">
+        <div class="container">
+            <div class="sitemap-grid">
+                <div class="sitemap-column">
+                    <h3>Main Pages</h3>
+                    <ul class="sitemap-links">
+                        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
+                        <li><a href="services.html"><i class="fas fa-cogs"></i> Our Services</a></li>
+                        <li><a href="projects.html"><i class="fas fa-project-diagram"></i> Projects</a></li>
+                        <li><a href="gallery.html"><i class="fas fa-images"></i> Gallery</a></li>
+                        <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="sitemap-column">
+                    <h3>Our Services</h3>
+                    <ul class="sitemap-links">
+                        <li><a href="services.html#installations"><i class="fas fa-bolt"></i> Electrical Installations</a></li>
+                        <li><a href="services.html#maintenance"><i class="fas fa-tools"></i> Maintenance Services</a></li>
+                        <li><a href="services.html#audits"><i class="fas fa-clipboard-check"></i> Power Audits</a></li>
+                        <li><a href="services.html#solutions"><i class="fas fa-lightbulb"></i> Custom Solutions</a></li>
+                        <li><a href="services.html#emergency"><i class="fas fa-exclamation-triangle"></i> Emergency Services</a></li>
+                        <li><a href="services.html#consulting"><i class="fas fa-user-tie"></i> Consulting</a></li>
+                    </ul>
+                </div>
+                
+                <div class="sitemap-column">
+                    <h3>Legal & Information</h3>
+                    <ul class="sitemap-links">
+                        <li><a href="privacy-policy.html"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+                        <li><a href="terms-of-service.html"><i class="fas fa-file-contract"></i> Terms of Service</a></li>
+                        <li><a href="sitemap.html"><i class="fas fa-sitemap"></i> Sitemap</a></li>
+                    </ul>
+                    
+                    <h3>Contact Information</h3>
+                    <ul class="sitemap-links">
+                        <li><a href="tel:0244380176"><i class="fas fa-phone"></i> (024) 438-0176</a></li>
+                        <li><a href="mailto:info@modespowerservices.com"><i class="fas fa-envelope"></i> info@modespowerservices.com</a></li>
+                        <li><i class="fas fa-map-marker-alt"></i> [Your Business Address]</li>
+                        <li><i class="fas fa-clock"></i> Mon - Fri: 8:00 AM - 5:00 PM</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <h3>Modes Power Services</h3>
+                    <p>Delivering exceptional electrical engineering solutions with expertise, integrity, and innovation.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="services.html">Services</a></li>
+                        <li><a href="projects.html">Projects</a></li>
+                        <li><a href="gallery.html">Gallery</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-services">
+                    <h3>Our Services</h3>
+                    <ul>
+                        <li><a href="services.html#installations">Electrical Installations</a></li>
+                        <li><a href="services.html#maintenance">Maintenance</a></li>
+                        <li><a href="services.html#audits">Power Audits</a></li>
+                        <li><a href="services.html#solutions">Custom Solutions</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h3>Contact Info</h3>
+                    <address>
+                        <p><i class="fas fa-map-marker-alt"></i> [Your Business Address]</p>
+                        <p><i class="fas fa-phone"></i> (024) 438-0176</p>
+                        <p><i class="fas fa-envelope"></i> info@modespowerservices.com</p>
+                        <p><i class="fas fa-clock"></i> Mon - Fri: 8:00 AM - 5:00 PM</p>
+                    </address>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Modes Power Services. All Rights Reserved.</p>
+                <div class="footer-legal">
+                    <a href="privacy-policy.html">Privacy Policy</a>
+                    <a href="terms-of-service.html">Terms of Service</a>
+                    <a href="sitemap.html">Sitemap</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
