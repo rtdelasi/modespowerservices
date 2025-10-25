@@ -91,34 +91,6 @@
             transform: scale(1.03);
         }
 
-        .thumbnail-gallery {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1rem;
-        }
-
-        .thumbnail {
-            height: 100px;
-            border-radius: 8px;
-            overflow: hidden;
-            cursor: pointer;
-            opacity: 0.7;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-
-        .thumbnail:hover,
-        .thumbnail.active {
-            opacity: 1;
-            border-color: var(--primary-color);
-        }
-
-        .thumbnail img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
         .project-content {
             display: grid;
             grid-template-columns: 1fr 300px;
@@ -371,10 +343,7 @@
 
             <div class="project-gallery">
                 <div class="main-image">
-                    <img src="images/projects/placeholder.jpg" alt="Main Project Image" id="main-image">
-                </div>
-                <div class="thumbnail-gallery" id="thumbnail-gallery">
-                    <!-- Thumbnails will be added by JavaScript -->
+                    <img src="images/projects/placeholder.jpg" alt="Project Image" id="main-image">
                 </div>
             </div>
 
@@ -686,26 +655,8 @@
             document.getElementById('project-status').textContent = currentProject.status;
 
             // Set main image
-            const mainImage = document.getElementById('main-image');
             if (currentProject.images && currentProject.images.length > 0) {
-                mainImage.src = currentProject.images[0];
-                mainImage.alt = currentProject.title;
-
-                // Create thumbnails
-                const thumbnailGallery = document.getElementById('thumbnail-gallery');
-                thumbnailGallery.innerHTML = '';
-                
-                currentProject.images.forEach((img, index) => {
-                    const thumbnail = document.createElement('div');
-                    thumbnail.className = 'thumbnail' + (index === 0 ? ' active' : '');
-                    thumbnail.innerHTML = `<img src="${img}" alt="Thumbnail ${index + 1}">`;
-                    thumbnail.addEventListener('click', () => {
-                        mainImage.src = img;
-                        document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
-                        thumbnail.classList.add('active');
-                    });
-                    thumbnailGallery.appendChild(thumbnail);
-                });
+                document.getElementById('main-image').src = currentProject.images[0];
             }
 
             // Navigation between projects
