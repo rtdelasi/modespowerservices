@@ -166,6 +166,7 @@
         .project-load-more {
             text-align: center;
             margin-top: 50px;
+            margin-bottom: 60px;
         }
         
         /* Project Single Page */
@@ -484,7 +485,7 @@
     </header>
 
     <!-- Projects Section -->
-    <section class="projects-section" style="padding: 6rem 0 0 0;">
+    <section class="projects-section" style="padding-top: 120px; padding-bottom: 0;">
         <div class="container">
             <div class="section-header">
                 <span class="section-subtitle">Our Work</span>
@@ -602,6 +603,57 @@
                             <span class="project-location"><i class="fas fa-map-marker-alt"></i> Dallas, TX</span>
                         </div>
                         <a href="project-details.html?id=distribution-center" class="project-link">View Project <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+                
+                <!-- Project 7 -->
+                <article class="project-card" data-category="residential">
+                    <div class="project-image">
+                        <img src="images/projects/smart-home-1.jpg" alt="Smart Home Integration" loading="lazy">
+                        <span class="project-category">Residential</span>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">Smart Home Integration</h3>
+                        <p class="project-excerpt">Full home automation system with integrated lighting, security, and energy management for a luxury residence.</p>
+                        <div class="project-meta">
+                            <span class="project-date"><i class="far fa-calendar-alt"></i> June 2022</span>
+                            <span class="project-location"><i class="fas fa-map-marker-alt"></i> Miami, FL</span>
+                        </div>
+                        <a href="project-details.html?id=smart-home" class="project-link">View Project <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+                
+                <!-- Project 8 -->
+                <article class="project-card" data-category="solar">
+                    <div class="project-image">
+                        <img src="images/projects/solar-commercial-1.jpg" alt="Commercial Solar Installation" loading="lazy">
+                        <span class="project-category">Solar</span>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">Commercial Solar Installation</h3>
+                        <p class="project-excerpt">500kW rooftop solar system for a commercial building complex with battery storage integration.</p>
+                        <div class="project-meta">
+                            <span class="project-date"><i class="far fa-calendar-alt"></i> April 2022</span>
+                            <span class="project-location"><i class="fas fa-map-marker-alt"></i> Phoenix, AZ</span>
+                        </div>
+                        <a href="project-details.html?id=commercial-solar" class="project-link">View Project <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+                
+                <!-- Project 9 -->
+                <article class="project-card" data-category="commercial">
+                    <div class="project-image">
+                        <img src="images/projects/hotel-1.jpg" alt="Hotel Renovation" loading="lazy">
+                        <span class="project-category">Commercial</span>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">Hotel Renovation</h3>
+                        <p class="project-excerpt">Complete electrical renovation of a 200-room hotel including guest rooms, common areas, and back-of-house facilities.</p>
+                        <div class="project-meta">
+                            <span class="project-date"><i class="far fa-calendar-alt"></i> February 2022</span>
+                            <span class="project-location"><i class="fas fa-map-marker-alt"></i> Las Vegas, NV</span>
+                        </div>
+                        <a href="project-details.html?id=hotel-renovation" class="project-link">View Project <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </article>
             </div>
@@ -727,7 +779,8 @@
             if (loadMoreBtn) {
                 loadMoreBtn.addEventListener('click', function() {
                     const hiddenProjects = Array.from(projectCards).filter(card => {
-                        return card.style.display === 'none' || card.style.display === '';
+                        const display = window.getComputedStyle(card).display;
+                        return display === 'none';
                     });
                     
                     // Show next 3 projects
@@ -759,7 +812,8 @@
                 if (!loadMoreBtn) return;
                 
                 const hiddenProjects = Array.from(projectCards).filter(card => {
-                    return card.style.display === 'none' || card.style.display === '';
+                    const display = window.getComputedStyle(card).display;
+                    return display === 'none';
                 }).length;
                 
                 if (hiddenProjects === 0) {
