@@ -91,6 +91,78 @@
             transform: scale(1.03);
         }
 
+        .project-gallery {
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .thumbnail-gallery {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding: 20px 5%;
+            margin: 0;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) rgba(255, 255, 255, 0.1);
+            -webkit-overflow-scrolling: touch;
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        .thumbnail-gallery::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .thumbnail-gallery::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            margin: 0 5%;
+        }
+
+        .thumbnail-gallery::-webkit-scrollbar-thumb {
+            background-color: var(--primary-color);
+            border-radius: 4px;
+            border: 2px solid var(--bg-color);
+        }
+
+        .thumbnail {
+            flex: 0 0 160px;
+            height: 110px;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            opacity: 0.9;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
+        }
+
+        .thumbnail:hover {
+            opacity: 1;
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            z-index: 2;
+        }
+
+        .thumbnail.active {
+            border-color: var(--primary-color);
+            opacity: 1;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .thumbnail:hover img {
+            transform: scale(1.1);
+        }
+
         .project-content {
             display: grid;
             grid-template-columns: 1fr 300px;
@@ -343,7 +415,10 @@
 
             <div class="project-gallery">
                 <div class="main-image">
-                    <img src="images/projects/placeholder.jpg" alt="Project Image" id="main-image">
+                    <img id="main-project-image" src="" alt="Project Image">
+                </div>
+                <div class="thumbnail-gallery" id="thumbnail-gallery">
+                    <!-- Thumbnails will be added by JavaScript -->
                 </div>
             </div>
 
@@ -519,10 +594,10 @@
                     solution: 'We designed and installed a state-of-the-art distribution board system with the following features:\n- Modular design with 20% additional capacity for future expansion\n- Advanced circuit protection with RCDs and MCBs for enhanced safety\n- Real-time power monitoring and energy consumption tracking\n- Surge protection devices to safeguard sensitive equipment\n- Clear labeling and documentation for easy maintenance',
                     results: 'The new distribution system has delivered exceptional results:\n- 100% elimination of power-related downtime since installation\n- 22% reduction in energy consumption through optimized power distribution\n- Proactive maintenance capabilities through real-time monitoring\n- Enhanced safety with advanced circuit protection features\n- Scalable infrastructure to support future business growth',
                     images: [
-                        'images/projects/distribution-board.jpg',
-                        'images/projects/distribution-board-2.jpg',
-                        'images/projects/distribution-board-3.jpg',
-                        'images/projects/distribution-board-4.jpg'
+                        { src: 'images/projects/distribution-board.jpg' },
+                        { src: 'images/projects/distribution-board-2.jpg' },
+                        { src: 'images/projects/distribution-board-3.jpg' },
+                        { src: 'images/projects/distribution-board-4.jpg' }
                     ]
                 },
                 {
@@ -540,10 +615,10 @@
                     solution: 'We implemented a comprehensive solution featuring:\n- Custom-designed control panels with NEMA 4X enclosures for dust and moisture protection\n- Redundant PLC systems for maximum uptime\n- Advanced motor control centers with soft starters and VFDs\n- Comprehensive safety systems including emergency stop circuits and lockout/tagout provisions\n- SCADA integration for centralized monitoring and control',
                     results: 'The new control system delivered outstanding performance:\n- 99.9% uptime since installation\n- 30% improvement in production efficiency\n- 40% reduction in energy consumption through optimized motor control\n- Enhanced worker safety with integrated safety systems\n- Seamless integration with existing production equipment',
                     images: [
-                        'images/projects/industrial-controls.jpg',
-                        'images/projects/control-panel-1.jpg',
-                        'images/projects/control-panel-2.jpg',
-                        'images/projects/control-room.jpg'
+                        { src: 'images/projects/control-panel.jpg' },
+                        { src: 'images/projects/control-panel-2.jpg' },
+                        { src: 'images/projects/control-panel-3.jpg' },
+                        { src: 'images/projects/control-room.jpg' }
                     ]
                 },
                 {
@@ -561,10 +636,10 @@
                     solution: 'Our solution included:\n- Structured cabling for power, data, and automation systems\n- Smart home automation with centralized control via mobile app\n- Energy-efficient LED lighting with motion and daylight sensors\n- Dedicated circuits for high-power appliances\n- Whole-house surge protection\n- Backup power system with automatic transfer switch',
                     results: 'The installation has delivered exceptional results:\n- 35% reduction in energy consumption compared to conventional systems\n- Seamless integration of lighting, security, and climate control\n- Enhanced safety with AFCI/GFCI protection throughout\n- Increased property value with premium electrical features\n- Positive resident feedback on system reliability and ease of use',
                     images: [
-                        'images/projects/residential-wiring.jpg',
-                        'images/projects/smart-home-1.jpg',
-                        'images/projects/luxury-lighting.jpg',
-                        'images/projects/residential-panel.jpg'
+                        { src: 'images/projects/residential-wiring.jpg' },
+                        { src: 'images/projects/residential-wiring-2.jpg' },
+                        { src: 'images/projects/residential-wiring-3.jpg' },
+                        { src: 'images/projects/residential-panel.jpg' }
                     ]
                 },
                 {
@@ -651,27 +726,38 @@
                 }
                 
                 // Update main project image
-                const mainImage = document.querySelector('.main-image img');
+                const mainImage = document.getElementById('main-project-image');
                 if (mainImage && currentProject.images && currentProject.images.length > 0) {
-                    mainImage.src = currentProject.images[0];
+                    mainImage.src = currentProject.images[0].src;
                     mainImage.alt = currentProject.title;
                 }
                 
-                // Update thumbnail images if container exists
-                const thumbnailsContainer = document.querySelector('.thumbnail-images');
+                // Update thumbnail gallery
+                const thumbnailsContainer = document.getElementById('thumbnail-gallery');
                 if (thumbnailsContainer && currentProject.images && currentProject.images.length > 0) {
                     thumbnailsContainer.innerHTML = ''; // Clear existing thumbnails
+                    
                     currentProject.images.forEach((image, index) => {
-                        const img = document.createElement('img');
-                        img.src = image;
-                        img.alt = `${currentProject.title} - Image ${index + 1}`;
-                        img.onclick = function() {
-                            if (mainImage) {
-                                mainImage.src = image;
-                                mainImage.alt = img.alt;
-                            }
+                        const thumbnail = document.createElement('div');
+                        thumbnail.className = 'thumbnail' + (index === 0 ? ' active' : '');
+                        thumbnail.innerHTML = `<img src="${image.src}" alt="${currentProject.title} - Image ${index + 1}">`;
+                        
+                        thumbnail.onclick = () => {
+                            // Update main image
+                            mainImage.src = image.src;
+                            mainImage.alt = `${currentProject.title} - Image ${index + 1}`;
+                            
+                            // Update active thumbnail
+                            document.querySelectorAll('.thumbnail').forEach(thumb => {
+                                thumb.classList.remove('active');
+                            });
+                            thumbnail.classList.add('active');
+                            
+                            // Smooth scroll to main image
+                            mainImage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                         };
-                        thumbnailsContainer.appendChild(img);
+                        
+                        thumbnailsContainer.appendChild(thumbnail);
                     });
                 }
             }
