@@ -11,6 +11,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- AOS CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 </head>
 <body>
     <!-- Header & Navigation (Same as index.html) -->
@@ -51,9 +53,9 @@
     <section class="services-intro" style="padding-top: 120px; padding-bottom: 0;">
         <div class="container">
             <div class="section-header">
-                <h2>Comprehensive Electrical Engineering Solutions</h2>
-                <span class="section-subtitle">What We Offer</span>
-                <p>At Modes Power Services, we provide a full range of professional electrical engineering services tailored to meet the unique needs of our clients across various industries.</p>
+                <h2 data-aos="fade-up">Comprehensive Electrical Engineering Solutions</h2>
+                <span class="section-subtitle" data-aos="fade-up" data-aos-delay="100">What We Offer</span>
+                <p data-aos="fade-up" data-aos-delay="200">At Modes Power Services, we provide a full range of professional electrical engineering services tailored to meet the unique needs of our clients across various industries.</p>
             </div>
         </div>
     </section>
@@ -62,7 +64,7 @@
     <section class="main-services" id="installations">
         <div class="container">
             <div class="service-detail">
-                <div class="service-detail-content">
+                <div class="service-detail-content" data-aos="fade-right">
                     <span class="service-category">Electrical Installations</span>
                     <h3>Professional Electrical System Installations</h3>
                     <p>Our expert team designs and installs comprehensive electrical systems for residential, commercial, and industrial properties. We ensure all installations meet the highest safety standards and regulatory requirements.</p>
@@ -86,7 +88,7 @@
                     </div>
                     <a href="contact.html" class="btn btn-primary">Request a Quote</a>
                 </div>
-                <div class="service-detail-image">
+                <div class="service-detail-image" data-aos="fade-left" data-aos-delay="200">
                     <img src="images/services/electrical-installation.jpg" alt="Electrical Installation">
                 </div>
             </div>
@@ -121,7 +123,7 @@
                     </div>
                     <a href="contact.html" class="btn btn-primary">Schedule Maintenance</a>
                 </div>
-                <div class="service-detail-image">
+                <div class="service-detail-image" data-aos="fade-left" data-aos-delay="200">
                     <img src="images/services/maintenance.jpg" alt="Electrical Maintenance">
                 </div>
             </div>
@@ -131,7 +133,7 @@
     <section class="main-services" id="audits">
         <div class="container">
             <div class="service-detail">
-                <div class="service-detail-content">
+                <div class="service-detail-content" data-aos="fade-right">
                     <span class="service-category">Power Audits</span>
                     <h3>Comprehensive Energy Audits</h3>
                     <p>Our detailed power audits help identify energy inefficiencies and provide actionable recommendations to reduce consumption and lower operational costs.</p>
@@ -155,7 +157,7 @@
                     </div>
                     <a href="contact.html" class="btn btn-primary">Book an Audit</a>
                 </div>
-                <div class="service-detail-image">
+                <div class="service-detail-image" data-aos="fade-left" data-aos-delay="200">
                     <img src="images/services/power-audit.jpg" alt="Power Audit">
                 </div>
             </div>
@@ -190,7 +192,7 @@
                     </div>
                     <a href="contact.html" class="btn btn-primary">Discuss Your Project</a>
                 </div>
-                <div class="service-detail-image">
+                <div class="service-detail-image" data-aos="fade-left" data-aos-delay="200">
                     <img src="images/services/custom-solutions.jpg" alt="Custom Electrical Solutions">
                 </div>
             </div>
@@ -371,7 +373,17 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="js/main.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true,
+            mirror: false
+        });
+    </script>
     <script src="js/back-to-top.js"></script>
 </body>
 </html>

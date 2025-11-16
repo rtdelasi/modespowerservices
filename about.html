@@ -10,6 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- AOS CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 </head>
 <body>
     <!-- Header & Navigation (Same as index.html) -->
@@ -52,26 +54,26 @@
             <div class="about-intro-grid">
                 <div class="about-intro-content">
                     <div class="section-header left-align">
-                        <span class="section-subtitle">Who We Are</span>
-                        <h2>Powering Innovation Since 2010</h2>
-                        <p>Modes Power Services has been at the forefront of electrical engineering solutions, delivering excellence and innovation to clients across multiple industries.</p>
+                        <span class="section-subtitle" data-aos="fade-up">Who We Are</span>
+                        <h2 data-aos="fade-up" data-aos-delay="100">Powering Innovation Since 2010</h2>
+                        <p data-aos="fade-up" data-aos-delay="200">Modes Power Services has been at the forefront of electrical engineering solutions, delivering excellence and innovation to clients across multiple industries.</p>
                     </div>
                     <div class="about-stats">
-                        <div class="stat-item">
+                        <div class="stat-item" data-aos="fade-up" data-aos-delay="100">
                             <span class="stat-number" data-count="15">15</span>
                             <span class="stat-label">Years Experience</span>
                         </div>
-                        <div class="stat-item">
+                        <div class="stat-item" data-aos="fade-up" data-aos-delay="200">
                             <span class="stat-number" data-count="300">300</span><span>+</span>
                             <span class="stat-label">Projects Completed</span>
                         </div>
-                        <div class="stat-item">
+                        <div class="stat-item" data-aos="fade-up" data-aos-delay="300">
                             <span class="stat-number" data-count="98">98</span><span>%</span>
                             <span class="stat-label">Client Satisfaction</span>
                         </div>
                     </div>
                 </div>
-                <div class="about-intro-image">
+                <div class="about-intro-image" data-aos="fade-left" data-aos-delay="400">
                     <img src="images/our-team.jpg" alt="Our team at work">
                 </div>
             </div>
@@ -82,14 +84,14 @@
     <section class="mission-vision">
         <div class="container">
             <div class="mission-vision-grid">
-                <div class="mission-card">
+                <div class="mission-card" data-aos="fade-right" data-aos-delay="100">
                     <div class="mission-icon">
                         <i class="fas fa-bullseye"></i>
                     </div>
                     <h3>Our Mission</h3>
                     <p>To provide innovative, reliable, and sustainable electrical engineering solutions that power our clients' success while maintaining the highest standards of safety, quality, and environmental responsibility.</p>
                 </div>
-                <div class="vision-card">
+                <div class="vision-card" data-aos="fade-left" data-aos-delay="200">
                     <div class="vision-icon">
                         <i class="fas fa-eye"></i>
                     </div>
@@ -104,8 +106,8 @@
     <section class="our-values">
         <div class="container">
             <div class="section-header">
-                <span class="section-subtitle">What We Stand For</span>
-                <h2>Our Core Values</h2>
+                <span class="section-subtitle" data-aos="fade-up">What We Stand For</span>
+                <h2 data-aos="fade-up" data-aos-delay="100">Our Core Values</h2>
                 <p>These principles guide everything we do at Modes Power Services</p>
             </div>
             <div class="values-grid">
@@ -159,8 +161,8 @@
     <section class="registration-section" style="background-color: #f8f9fa; padding: 60px 0;">
         <div class="container">
             <div class="section-header" style="text-align: center; margin-bottom: 40px;">
-                <span class="section-subtitle" style="color: #4a90e2; font-weight: 600; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 10px;">Our Credentials</span>
-                <h2 style="color: #1a365d; font-size: 2.5rem; margin: 10px 0 15px; font-weight: 700;">Company Registration</h2>
+                <span class="section-subtitle" style="color: #4a90e2; font-weight: 600; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 10px;" data-aos="fade-up">Our Credentials</span>
+                <h2 style="color: #1a365d; font-size: 2.5rem; margin: 10px 0 15px; font-weight: 700;" data-aos="fade-up" data-aos-delay="100">Company Registration</h2>
                 <p>Modes Power Services is a fully registered and compliant electrical engineering company with the Office of the Registrar of Companies (ORC).</p>
             </div>
             
@@ -213,8 +215,8 @@
     <section class="our-team">
         <div class="container">
             <div class="section-header">
-                <span class="section-subtitle">Meet Our Experts</span>
-                <h2>Our Leadership Team</h2>
+                <span class="section-subtitle" data-aos="fade-up">Meet Our Experts</span>
+                <h2 data-aos="fade-up" data-aos-delay="100">Our Leadership Team</h2>
                 <p>Experienced professionals dedicated to excellence in electrical engineering</p>
             </div>
             <div class="team-grid">
@@ -271,8 +273,8 @@
     <section class="certifications">
         <div class="container">
             <div class="section-header">
-                <span class="section-subtitle">Our Credentials</span>
-                <h2>Certifications & Accreditations</h2>
+                <span class="section-subtitle" data-aos="fade-up">Our Credentials</span>
+                <h2 data-aos="fade-up" data-aos-delay="100">Certifications & Accreditations</h2>
                 <p>We maintain the highest industry standards and certifications</p>
             </div>
             <div class="certifications-slider">
@@ -382,7 +384,17 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="js/main.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true,
+            mirror: false
+        });
+    </script>
     <script src="js/stats-counter.js"></script>
     <script src="js/back-to-top.js"></script>
 </body>

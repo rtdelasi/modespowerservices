@@ -11,6 +11,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- AOS CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 </head>
 <body>
     <!-- Header & Navigation -->
@@ -51,9 +53,9 @@
     <section class="hero" style="background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('images/hero/home-hero-bg.jpg');">
         <div class="container">
             <div class="hero-content">
-                <h2>Energizing Progress, Empowering Communities</h2>
-                <p>Professional electrical engineering solutions for industrial, commercial, and residential needs.</p>
-                <div class="hero-buttons">
+                <h2 data-aos="fade-up" data-aos-delay="100">Energizing Progress, Empowering Communities</h2>
+                <p data-aos="fade-up" data-aos-delay="200">Professional electrical engineering solutions for industrial, commercial, and residential needs.</p>
+                <div class="hero-buttons" data-aos="fade-up" data-aos-delay="300">
                     <a href="contact.html" class="btn btn-primary">Get a Free Quote</a>
                     <a href="services.html" class="btn btn-secondary">Our Services</a>
                 </div>
@@ -71,21 +73,21 @@
                 <p>Delivering exceptional electrical solutions with expertise and precision</p>
             </div>
             <div class="features-grid">
-                <div class="feature-card">
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
                     <div class="feature-icon">
                         <i class="fas fa-bolt"></i>
                     </div>
                     <h3>24/7 Emergency Service</h3>
                     <p>Round-the-clock support for all your urgent electrical needs.</p>
                 </div>
-                <div class="feature-card">
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
                     <div class="feature-icon">
                         <i class="fas fa-certificate"></i>
                     </div>
                     <h3>Certified Electricians</h3>
                     <p>Fully licensed and insured professionals with years of experience.</p>
                 </div>
-                <div class="feature-card">
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
                     <div class="feature-icon">
                         <i class="fas fa-hand-holding-usd"></i>
                     </div>
@@ -254,7 +256,17 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="js/main.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true,
+            mirror: false
+        });
+    </script>
     <script src="js/back-to-top.js"></script>
 </body>
 </html>
