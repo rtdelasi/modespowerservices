@@ -183,10 +183,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Lazy Loading for Images
     if ('loading' in HTMLImageElement.prototype) {
-        // Native lazy loading is supported
+        // Native lazy loading is supported — only assign `src` from `data-src` when present
         const images = document.querySelectorAll('img[loading="lazy"]');
         images.forEach(img => {
-            img.src = img.dataset.src;
+            if (img.dataset && img.dataset.src) {
+                img.src = img.dataset.src;
+            }
         });
     } else {
         // Fallback for browsers that don't support native lazy loading

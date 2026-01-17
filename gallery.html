@@ -273,7 +273,7 @@
             <div class="gallery-grid" id="lightgallery">
                 <!-- Commercial -->
                 <a href="images/gallery/office-building-wiring.jpg" class="gallery-item" data-sub-html="<h4>Office Building Wiring</h4><p>Complete electrical installation for a modern office complex.</p>" data-category="commercial">
-                    <img src="images/gallery/office-building-wiring.jpg" alt="Office Building Wiring">
+                    <img src="images/gallery/office-building-wiring.jpg" alt="Office Building Wiring" loading="lazy" decoding="async">
                     <div class="gallery-item-overlay">
                         <span class="gallery-item-category">Commercial</span>
                         <h3 class="gallery-item-title">Office Building Wiring</h3>
@@ -286,7 +286,7 @@
                 
                 <!-- Industrial -->
                 <a href="images/gallery/factory-electrical-upgrade.jpg" class="gallery-item" data-sub-html="<h4>Factory Electrical Upgrade</h4><p>High-capacity electrical system upgrade for manufacturing facility.</p>" data-category="industrial">
-                    <img src="images/gallery/factory-electrical-upgrade.jpg" alt="Factory Electrical Upgrade">
+                    <img src="images/gallery/factory-electrical-upgrade.jpg" alt="Factory Electrical Upgrade" loading="lazy" decoding="async">
                     <div class="gallery-item-overlay">
                         <span class="gallery-item-category">Industrial</span>
                         <h3 class="gallery-item-title">Factory Electrical Upgrade</h3>
@@ -299,7 +299,7 @@
                 
                 <!-- Residential -->
                 <a href="images/gallery/smarthome-installation.jpg" class="gallery-item" data-sub-html="<h4>Smart Home Installation</h4><p>Complete smart home automation and electrical system for a luxury residence.</p>" data-category="residential">
-                    <img src="images/gallery/smarthome-installation.jpg" alt="Smart Home Installation">
+                    <img src="images/gallery/smarthome-installation.jpg" alt="Smart Home Installation" loading="lazy" decoding="async">
                     <div class="gallery-item-overlay">
                         <span class="gallery-item-category">Residential</span>
                         <h3 class="gallery-item-title">Smart Home Installation</h3>
@@ -312,7 +312,7 @@
                 
                 <!-- Solar -->
                 <a href="images/gallery/solar-installation.jpg" class="gallery-item" data-sub-html="<h4>Commercial Solar Array</h4><p>250kW solar panel installation for a commercial building.</p>" data-category="solar">
-                    <img src="images/gallery/solar-installation.jpg" alt="Commercial Solar Array">
+                    <img src="images/gallery/solar-installation.jpg" alt="Commercial Solar Array" loading="lazy" decoding="async">
                     <div class="gallery-item-overlay">
                         <span class="gallery-item-category">Solar Solutions</span>
                         <h3 class="gallery-item-title">Commercial Solar Array</h3>
@@ -325,7 +325,7 @@
                 
                 <!-- Maintenance -->
                 <a href="images/gallery/industrial-panel-maintenance.jpg" class="gallery-item" data-sub-html="<h4>Industrial Panel Maintenance</h4><p>Routine maintenance and safety inspection for industrial control panels.</p>" data-category="maintenance">
-                    <img src="images/gallery/industrial-panel-maintenance.jpg" alt="Industrial Panel Maintenance">
+                    <img src="images/gallery/industrial-panel-maintenance.jpg" alt="Industrial Panel Maintenance" loading="lazy" decoding="async">
                     <div class="gallery-item-overlay">
                         <span class="gallery-item-category">Maintenance</span>
                         <h3 class="gallery-item-title">Industrial Panel Maintenance</h3>
@@ -338,7 +338,7 @@
                 
                 <!-- Commercial -->
                 <a href="images/gallery/retail-store-lightning.jpg" class="gallery-item" data-sub-html="<h4>Retail Store Lighting</h4><p>Energy-efficient LED lighting installation for retail space.</p>" data-category="commercial">
-                    <img src="images/gallery/retail-store-lightning.jpg" alt="Retail Store Lighting">
+                    <img src="images/gallery/retail-store-lightning.jpg" alt="Retail Store Lighting" loading="lazy" decoding="async">
                     <div class="gallery-item-overlay">
                         <span class="gallery-item-category">Commercial</span>
                         <h3 class="gallery-item-title">Retail Store Lighting</h3>
@@ -351,7 +351,7 @@
                 
                 <!-- Industrial -->
                 <a href="images/gallery/warehouse-electrical.jpg" class="gallery-item" data-sub-html="<h4>Warehouse Electrical</h4><p>Complete electrical installation for a new distribution warehouse.</p>" data-category="industrial">
-                    <img src="images/gallery/warehouse-electrical.jpg" alt="Warehouse Electrical">
+                    <img src="images/gallery/warehouse-electrical.jpg" alt="Warehouse Electrical" loading="lazy" decoding="async">
                     <div class="gallery-item-overlay">
                         <span class="gallery-item-category">Industrial</span>
                         <h3 class="gallery-item-title">Warehouse Electrical</h3>
@@ -364,7 +364,7 @@
                 
                 <!-- Residential -->
                 <a href="images/gallery/home-renovation.jpg" class="gallery-item" data-sub-html="<h4>Home Renovation</h4><p>Complete electrical rewiring and modernization for a historic home.</p>" data-category="residential">
-                    <img src="images/gallery/home-renovation.jpg" alt="Home Renovation">
+                    <img src="images/gallery/home-renovation.jpg" alt="Home Renovation" loading="lazy" decoding="async">
                     <div class="gallery-item-overlay">
                         <span class="gallery-item-category">Residential</span>
                         <h3 class="gallery-item-title">Home Renovation</h3>
@@ -433,9 +433,9 @@
                 <div class="footer-contact">
                     <h4>Contact Us</h4>
                     <ul>
-                        <li><i class="fas fa-map-marker-alt"></i> 123 Power Street, Electra City, EC 12345</li>
-                        <li><i class="fas fa-phone"></i> <a href="tel:+1234567890">(123) 456-7890</a></li>
-                        <li><i class="fas fa-envelope"></i> <a href="mailto:info@modespowerservices.com">info@modespowerservices.com</a></li>
+                        <li><i class="fas fa-map-marker-alt"></i> Westhills Street House E119, Redtop, Selasi</li>
+                        <li><i class="fas fa-phone"></i> <a href="tel:+233244380176">(024) 438-0176</a></li>
+                        <li><i class="fas fa-envelope"></i> <a href="mailto:modespower@gmail.com">modespower@gmail.com</a></li>
                     </ul>
                 </div>
             </div>
@@ -477,23 +477,31 @@
             
             filterBtns.forEach(btn => {
                 btn.addEventListener('click', function() {
-                    // Remove active class from all buttons
-                    filterBtns.forEach(btn => btn.classList.remove('active'));
-                    // Add active class to clicked button
+                    // Update active state
+                    filterBtns.forEach(b => b.classList.remove('active'));
                     this.classList.add('active');
-                    
+
                     const filterValue = this.getAttribute('data-filter');
-                    
-                    galleryItems.forEach(item => {
-                        if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
-                            item.style.display = 'block';
+
+                    // Snapshot items so indexes are stable
+                    const items = Array.from(document.querySelectorAll('.gallery-item'));
+
+                    items.forEach((item, idx) => {
+                        const cat = item.getAttribute('data-category');
+                        const show = filterValue === 'all' || cat === filterValue;
+                        if (show) {
+                            // Let CSS/grid determine display (clear inline display)
+                            item.style.display = '';
                             item.setAttribute('data-aos', 'fade-up');
-                            item.setAttribute('data-aos-delay', (Array.from(galleryItems).indexOf(item) % 5) * 50);
+                            item.setAttribute('data-aos-delay', (idx % 5) * 50);
                         } else {
                             item.style.display = 'none';
                         }
                     });
-                    AOS.refresh();
+
+                    if (window.AOS && typeof AOS.refresh === 'function') {
+                        AOS.refresh();
+                    }
                 });
             });
             
