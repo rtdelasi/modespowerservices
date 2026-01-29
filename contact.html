@@ -632,7 +632,7 @@
                     <h4>Contact Us</h4>
                     <ul>
                         <li><i class="fas fa-map-marker-alt"></i> Westhills Street House E119, Redtop, Selasi</li>
-                        <li><i class="fas fa-phone"></i> <a href="tel:+233244380176">(024) 438-0176</a></li>
+                        <li><i class="fas fa-phone"></i> <a href="tel:+233244380176">(024) 438-0176 / (020) 843-8618</a></li>
                         <li><i class="fas fa-envelope"></i> <a href="mailto:modespower@gmail.com">modespower@gmail.com</a></li>
                     </ul>
                 </div>
@@ -652,14 +652,19 @@
 
     <script src="js/main.js"></script>
     
+    <!-- EmailJS Library -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/index.min.js"></script>
+    
     <script>
-        // Contact Form Submission using Formspree
+        // Initialize EmailJS with your Public Key
+        // Replace 'YOUR_PUBLIC_KEY' with your actual EmailJS public key
+        emailjs.init(u9q84_OSLgLf73qXZ);
+
+        // Contact Form Submission using EmailJS
         document.addEventListener('DOMContentLoaded', function() {
             const contactForm = document.getElementById('contactForm');
             const formMessage = document.getElementById('formMessage');
             const submitBtn = document.getElementById('submitBtn');
-
-            const FORMSPREE_ENDPOINT = 'https://formspree.io/f/manpzeak';
 
             function showMessage(type, text) {
                 formMessage.style.display = 'block';
@@ -676,22 +681,8 @@
             if (contactForm) {
                 // Update email subject when subject dropdown changes
                 const subjectSelect = document.getElementById('subject');
-                const emailSubject = document.getElementById('emailSubject');
                 
-                if (subjectSelect && emailSubject) {
-                    subjectSelect.addEventListener('change', function() {
-                        const selectedSubject = this.options[this.selectedIndex].text;
-                        if (selectedSubject && selectedSubject !== 'Select a subject') {
-                            emailSubject.value = `New ${selectedSubject} from Modes Power Services website`;
-                        } else {
-                            emailSubject.value = 'New message from Modes Power Services website';
-                        }
-                    });
-                }
-
-                // Function to get the selected subject text
                 function getSelectedSubject() {
-                    const subjectSelect = document.getElementById('subject');
                     return subjectSelect ? subjectSelect.options[subjectSelect.selectedIndex].text : '';
                 }
 
@@ -703,57 +694,48 @@
                     const originalBtnText = submitBtn.innerHTML;
                     submitBtn.innerHTML = 'Sending...';
 
-                    // Get the message text and prepend the subject
-                    const messageField = document.getElementById('message');
-                    const originalMessage = messageField.value;
-                    const subject = getSelectedSubject();
-                    
-                    if (subject && subject !== 'Select a subject') {
-                        messageField.value = `Subject: ${subject}\n\n${originalMessage}`;
-                    }
-
                     // Collect form data
-                    const formData = new FormData(contactForm);
+                    const firstName = document.getElementById('firstName').value;
+                    const lastName = document.getElementById('lastName').value;
+                    const email = document.getElementById('email').value;
+                    const phone = document.getElementById('phone').value;
+                    const subject = getSelectedSubject();
+                    const message = document.getElementById('message').value;
 
-                    // Submit to Formspree via fetch
-                    fetch(FORMSPREE_ENDPOINT, {
-                        method: 'POST',
-                        headers: {
-                            'Accept': 'application/json'
-                        },
-                        body: formData
-                    }).then(function(response) {
-                        if (response.ok) {
+                    // Prepare template parameters
+                    const templateParams = {
+                        from_name: firstName + ' ' + lastName,
+                        from_email: email,
+                        phone: phone,
+                        subject: subject,
+                        message: message
+                    };
+
+                    // Send email using EmailJS
+                    emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams)
+                        .then(function(response) {
                             showMessage('success', 'Thank you for your message! We will get back to you soon.');
                             contactForm.reset();
-                        } else {
-                            return response.json().then(function(data) {
-                                if (data && data.error) {
-                                    throw new Error(data.error);
-                                } else {
-                                    throw new Error('There was a problem submitting the form.');
-                                }
-                            }).catch(function(err) {
-                                throw err;
-                            });
-                        }
-                    }).catch(function(error) {
-                        console.error('Form submission error:', error);
-                        showMessage('error', 'Oops — something went wrong. Please try again or email us directly at modes775@gmail.com');
-                    }).finally(function() {
-                        // Re-enable submit button
-                        submitBtn.disabled = false;
-                        submitBtn.innerHTML = originalBtnText;
+                            console.log('Email sent successfully!', response.status, response.text);
+                        })
+                        .catch(function(error) {
+                            console.error('EmailJS error:', error);
+                            showMessage('error', 'Oops — something went wrong. Please try again or email us directly at modespower@gmail.com');
+                        })
+                        .finally(function() {
+                            // Re-enable submit button
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = originalBtnText;
 
-                        // Auto-hide success message after 6 seconds
-                        if (formMessage.classList.contains('success')) {
-                            setTimeout(hideMessage, 6000);
-                        }
-                    });
+                            // Auto-hide success message after 6 seconds
+                            if (formMessage.classList.contains('success')) {
+                                setTimeout(hideMessage, 6000);
+                            }
+                        });
                 });
             }
 
-            // Phone number formatting (keep existing behavior)
+            // Phone number formatting
             const phoneInput = document.getElementById('phone');
             if (phoneInput) {
                 phoneInput.addEventListener('input', function(e) {
