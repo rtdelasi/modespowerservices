@@ -1,0 +1,308 @@
+/* ===== Minimalist Under Maintenance / Renovation Page Styles ===== */
+
+:root {
+    --brand-primary: #0066cc;
+    --brand-dark: #0f2d4a;
+    --brand-blue: #0b3b60;
+    --brand-light-blue: #ebf5fc;
+    --brand-circle-bg: #edf6fd;
+    --brand-text: #1e293b;
+    --brand-muted: #5a6e7f;
+    --brand-border: #e2e8f0;
+    --brand-green: #25D366;
+    --font-heading: 'Montserrat', sans-serif;
+    --font-body: 'Roboto', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body.simple-maintenance {
+    background-color: #ffffff;
+    color: var(--brand-text);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    overflow-x: hidden;
+    padding: 2rem 1rem 1.5rem;
+}
+
+/* Header / Brand Logo */
+.maintenance-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.maintenance-logo h1 {
+    font-family: var(--font-heading);
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--brand-dark);
+    letter-spacing: -0.5px;
+}
+
+.maintenance-logo h1 span {
+    color: var(--brand-primary);
+}
+
+/* Main Minimalist Center Container */
+.maintenance-main {
+    width: 100%;
+    max-width: 760px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* Circular Illustration Container */
+.illustration-circle-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 580px;
+    height: 420px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.5rem;
+}
+
+.circle-backdrop {
+    position: absolute;
+    width: 440px;
+    height: 440px;
+    border-radius: 50%;
+    background-color: var(--brand-circle-bg);
+    z-index: 0;
+}
+
+.circle-content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+}
+
+.maintenance-title {
+    font-family: var(--font-heading);
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--brand-blue);
+    line-height: 1.25;
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.3px;
+}
+
+.maintenance-subtitle {
+    font-size: 1.15rem;
+    color: var(--brand-muted);
+    font-weight: 400;
+    margin-bottom: 2.2rem;
+}
+
+/* Plug Vector SVG */
+.plug-svg-container {
+    width: 100%;
+    max-width: 680px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.plug-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    overflow: visible;
+}
+
+/* Plug subtle floating / connection animation */
+.left-plug {
+    animation: plugFloatLeft 3s ease-in-out infinite alternate;
+}
+
+.right-plug {
+    animation: plugFloatRight 3s ease-in-out infinite alternate;
+}
+
+@keyframes plugFloatLeft {
+    0% {
+        transform: translateX(0px);
+    }
+    100% {
+        transform: translateX(6px);
+    }
+}
+
+@keyframes plugFloatRight {
+    0% {
+        transform: translateX(0px);
+    }
+    100% {
+        transform: translateX(-6px);
+    }
+}
+
+/* Services & Contact Section */
+.maintenance-services-box {
+    width: 100%;
+    max-width: 680px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 1.75rem 2rem;
+    margin-top: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.services-notice {
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--brand-dark);
+    margin-bottom: 1.1rem;
+}
+
+.services-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 10px;
+    margin-bottom: 1.5rem;
+}
+
+.service-tag {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #334155;
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.service-tag i {
+    color: var(--brand-primary);
+    font-size: 0.8rem;
+}
+
+.service-tag:hover {
+    border-color: var(--brand-primary);
+    color: var(--brand-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(0, 102, 204, 0.12);
+}
+
+/* Contact Buttons Group */
+.maintenance-contact-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.m-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 20px;
+    border-radius: 10px;
+    font-family: var(--font-heading);
+    font-size: 0.92rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.m-btn-phone {
+    background: var(--brand-primary);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 102, 204, 0.25);
+}
+
+.m-btn-phone:hover {
+    background: #0052a3;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 102, 204, 0.35);
+    color: #ffffff;
+}
+
+.m-btn-wa {
+    background: #25D366;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25);
+}
+
+.m-btn-wa:hover {
+    background: #1eb956;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(37, 211, 102, 0.35);
+    color: #ffffff;
+}
+
+.m-btn-mail {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #334155;
+}
+
+.m-btn-mail:hover {
+    border-color: var(--brand-primary);
+    color: var(--brand-primary);
+    transform: translateY(-2px);
+}
+
+/* Footer info */
+.maintenance-footer {
+    text-align: center;
+    margin-top: 2rem;
+    color: #64748b;
+    font-size: 0.85rem;
+}
+
+.maintenance-footer a {
+    color: var(--brand-primary);
+    text-decoration: none;
+}
+
+.maintenance-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .circle-backdrop {
+        width: 320px;
+        height: 320px;
+    }
+    .illustration-circle-wrapper {
+        height: 360px;
+    }
+    .maintenance-title {
+        font-size: 1.65rem;
+    }
+    .maintenance-subtitle {
+        font-size: 1rem;
+    }
+    .maintenance-services-box {
+        padding: 1.25rem 1rem;
+    }
+    .m-btn {
+        width: 100%;
+    }
+}

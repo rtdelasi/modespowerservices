@@ -736,90 +736,164 @@
         </div>
     </footer>
 
+    <!-- Supabase JS & DB Connector -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/db.js"></script>
+
     <script src="js/main.js"></script>
     
     <script>
-        // Project Filtering
-        document.addEventListener('DOMContentLoaded', function() {
-            const filterBtns = document.querySelectorAll('.filter-btn');
-            const projectCards = document.querySelectorAll('.project-card');
-            const loadMoreBtn = document.getElementById('load-more');
-            let visibleProjects = 6; // Number of projects initially visible
+        // Project Filtering and Dynamic Database Loader
+        document.addEventListener('DOMContentLoaded', async function() {
+            // First check if Supabase is configured and load dynamic items
+            const client = typeof getSupabaseClient === 'function' ? getSupabaseClient() : null;
             
-            // Filter functionality
-            filterBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    // Remove active class from all buttons
-                    filterBtns.forEach(btn => btn.classList.remove('active'));
-                    // Add active class to clicked button
-                    this.classList.add('active');
-                    
-                    const filterValue = this.getAttribute('data-filter');
-                    
-                    // Show all projects if 'all' is selected, otherwise filter by category
-                    projectCards.forEach((card, index) => {
-                        if (filterValue === 'all' || card.getAttribute('data-category') === filterValue) {
-                            card.style.display = 'flex';
-                        } else {
-                            card.style.display = 'none';
-                        }
+            if (client) {
+                const projectsGrid = document.querySelector('.projects-grid');
+                if (projectsGrid) {
+                    try {
+                        const { data: dbProjects, error } = await client
+                            .from('projects')
+                            .select('*')
+                            .order('created_at', { ascending: false });
+                            
+                        if (error) throw error;
                         
-                        // Hide projects beyond the initial visible count
+                        if (dbProjects && dbProjects.length > 0) {
+                            console.log('Loading projects dynamically from Supabase:', dbProjects.length);
+                            projectsGrid.innerHTML = ''; // Clear static projects
+                            
+                            dbProjects.forEach((p, index) => {
+                                const article = document.createElement('article');
+                                article.className = 'project-card';
+                                article.setAttribute('data-category', (p.category || 'commercial').toLowerCase());
+                                article.setAttribute('data-aos', 'fade-up');
+                                article.setAttribute('data-aos-delay', (index % 3 + 1) * 100);
+                                
+                                const imageUrl = p.image_url || 'images/projects/distribution-board.jpg';
+                                
+                                article.innerHTML = `
+                                    <div class="project-image">
+                                        <img src="${imageUrl}" alt="${p.title}" onerror="this.src='images/projects/distribution-board.jpg'">
+                                        <span class="project-category">${p.category}</span>
+                                    </div>
+                                    <div class="project-content">
+                                        <h3 class="project-title">${p.title}</h3>
+                                        <p class="project-excerpt">${p.description || ''}</p>
+                                        <div class="project-meta">
+                                            <span class="project-date"><i class="far fa-calendar-alt"></i> ${p.date || ''}</span>
+                                            <span class="project-location"><i class="fas fa-map-marker-alt"></i> ${p.location || ''}</span>
+                                        </div>
+                                        <a href="project-details.html?id=${p.id}" class="project-link">View Project <i class="fas fa-arrow-right"></i></a>
+                                    </div>
+                                `;
+                                projectsGrid.appendChild(article);
+                            });
+                        }
+                    } catch (err) {
+                        console.error('Failed to load dynamic projects, using static fallback:', err);
+                    }
+                }
+            }
+            
+            // Initialize filtering and load more logic
+            initializeFiltering();
+            
+            function initializeFiltering() {
+                const filterBtns = document.querySelectorAll('.filter-btn');
+                const projectCards = document.querySelectorAll('.project-card');
+                const loadMoreBtn = document.getElementById('load-more');
+                let visibleProjects = 6; // Number of projects initially visible
+                
+                // Filter functionality
+                filterBtns.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        // Remove active class from all buttons
+                        filterBtns.forEach(btn => btn.classList.remove('active'));
+                        // Add active class to clicked button
+                        this.classList.add('active');
+                        
+                        const filterValue = this.getAttribute('data-filter');
+                        
+                        // Show all projects if 'all' is selected, otherwise filter by category
+                        let matchedCount = 0;
+                        projectCards.forEach((card) => {
+                            const cat = card.getAttribute('data-category');
+                            if (filterValue === 'all' || cat === filterValue) {
+                                if (matchedCount < visibleProjects) {
+                                    card.style.display = 'flex';
+                                } else {
+                                    card.style.display = 'none';
+                                }
+                                matchedCount++;
+                            } else {
+                                card.style.display = 'none';
+                            }
+                        });
+                        
+                        // Show/hide load more button based on visible projects
+                        updateLoadMoreButton(filterValue);
+                    });
+                });
+                
+                // Load more functionality
+                if (loadMoreBtn) {
+                    loadMoreBtn.addEventListener('click', function() {
+                        const activeBtn = document.querySelector('.filter-btn.active');
+                        const filterValue = activeBtn ? activeBtn.getAttribute('data-filter') : 'all';
+                        
+                        // Find all project cards matching active filter that are currently hidden
+                        const matchingCards = Array.from(projectCards).filter(card => {
+                            const cat = card.getAttribute('data-category');
+                            return filterValue === 'all' || cat === filterValue;
+                        });
+                        
+                        const hiddenMatchingCards = matchingCards.filter(card => {
+                            return card.style.display === 'none' || window.getComputedStyle(card).display === 'none';
+                        });
+                        
+                        // Show next 3 projects
+                        const nextProjects = hiddenMatchingCards.slice(0, 3);
+                        nextProjects.forEach(project => {
+                            project.style.display = 'flex';
+                        });
+                        
+                        // Update visible projects count
+                        visibleProjects += nextProjects.length;
+                        
+                        // Hide load more button if all projects of this category are visible
+                        updateLoadMoreButton(filterValue);
+                    });
+                    
+                    // Initially hide projects beyond the first 6
+                    projectCards.forEach((card, index) => {
                         if (index >= visibleProjects) {
                             card.style.display = 'none';
                         }
                     });
                     
-                    // Show/hide load more button based on visible projects
-                    updateLoadMoreButton();
-                });
-            });
-            
-            // Load more functionality
-            if (loadMoreBtn) {
-                loadMoreBtn.addEventListener('click', function() {
-                    const hiddenProjects = Array.from(projectCards).filter(card => {
-                        const display = window.getComputedStyle(card).display;
-                        return display === 'none';
-                    });
-                    
-                    // Show next 3 projects
-                    const nextProjects = hiddenProjects.slice(0, 3);
-                    nextProjects.forEach(project => {
-                        project.style.display = 'flex';
-                    });
-                    
-                    // Update visible projects count
-                    visibleProjects += nextProjects.length;
-                    
-                    // Hide load more button if all projects are visible
-                    updateLoadMoreButton();
-                });
+                    // Hide load more button if there are 6 or fewer projects
+                    updateLoadMoreButton('all');
+                }
                 
-                // Initially hide projects beyond the first 6
-                projectCards.forEach((card, index) => {
-                    if (index >= visibleProjects) {
-                        card.style.display = 'none';
+                // Function to update load more button visibility
+                function updateLoadMoreButton(filterValue) {
+                    if (!loadMoreBtn) return;
+                    
+                    const matchingCards = Array.from(projectCards).filter(card => {
+                        const cat = card.getAttribute('data-category');
+                        return filterValue === 'all' || cat === filterValue;
+                    });
+                    
+                    const hiddenMatchingCards = matchingCards.filter(card => {
+                        return card.style.display === 'none' || window.getComputedStyle(card).display === 'none';
+                    }).length;
+                    
+                    if (hiddenMatchingCards === 0) {
+                        loadMoreBtn.style.display = 'none';
+                    } else {
+                        loadMoreBtn.style.display = 'inline-block';
                     }
-                });
-                
-                // Hide load more button if there are 6 or fewer projects
-                updateLoadMoreButton();
-            }
-            
-            // Function to update load more button visibility
-            function updateLoadMoreButton() {
-                if (!loadMoreBtn) return;
-                
-                const hiddenProjects = Array.from(projectCards).filter(card => {
-                    const display = window.getComputedStyle(card).display;
-                    return display === 'none';
-                }).length;
-                
-                if (hiddenProjects === 0) {
-                    loadMoreBtn.style.display = 'none';
-                } else {
-                    loadMoreBtn.style.display = 'inline-block';
                 }
             }
         });

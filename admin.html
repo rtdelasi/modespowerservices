@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Modes Power Services</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Supabase JS Client Library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- CSS Styles -->
+  <style>
+    :root {
+      --primary: #3b3fd4;
+      --primary-hover: #2b2fa8;
+      --accent: #e0b84a;
+      --dark: #0a0f1e;
+      --dark-card: #111827;
+      --dark-border: rgba(59,63,212,0.15);
+      --text: #f0f4ff;
+      --text-muted: #8ea0c0;
+      --success: #10b981;
+      --danger: #ef4444;
+      --font-heading: 'Montserrat', sans-serif;
+      --font-body: 'Outfit', sans-serif;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--dark);
+      font-family: var(--font-body);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(43,47,168,0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 30% at 90% 95%, rgba(204,34,34,0.08) 0%, transparent 60%),
+        var(--dark);
+      background-attachment: fixed;
+    }
+
+    /* Loading Overlay */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 1;
+      transition: opacity 0.5s ease;
+    }
+    .loading-screen.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(59, 63, 212, 0.1);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Toast Notifications */
+    .toast-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 100000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .toast {
+      background: var(--dark-card);
+      border-left: 4px solid var(--primary);
+      color: var(--text);
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 300px;
+      transform: translateY(50px);
+      opacity: 0;
+      animation: slideIn 0.3s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .toast.success { border-left-color: var(--success); }
+    .toast.error { border-left-color: var(--danger); }
+    .toast.info { border-left-color: var(--accent); }
+    
+    @keyframes slideIn {
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Container Screens */
+    .screen-container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .auth-screen, .setup-screen {
+      max-width: 480px;
+      margin: 80px auto;
+      background: rgba(17, 24, 39, 0.65);
+      border: 1px solid var(--dark-border);
+      border-radius: 24px;
+      padding: 40px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+    
+    .screen-title {
+      font-family: var(--font-heading);
+      font-size: 28px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #fff 30%, var(--text-muted) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .screen-sub {
+      color: var(--text-muted);
+      font-size: 14px;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: var(--text-muted);
+    }
+    .form-input {
+      width: 100%;
+      background: rgba(10, 15, 30, 0.8);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 14px 16px;
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 15px;
+      outline: none;
+      transition: var(--transition);
+    }
+    .form-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59, 63, 212, 0.25);
+    }
+    .form-textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 24px;
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+      width: 100%;
+    }
+    .btn:hover {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(59, 63, 212, 0.3);
+    }
+    .btn:active {
+      transform: translateY(0);
+    }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: none;
+    }
+    .btn-danger {
+      background: var(--danger);
+    }
+    .btn-danger:hover {
+      background: #dc2626;
+      box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+    }
+
+    /* Main Dashboard Layout */
+    .dashboard-layout {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+    }
+    
+    /* Header & Navigation */
+    header {
+      background: rgba(17, 24, 39, 0.8);
+      border-bottom: 1px solid var(--dark-border);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 20px;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+    .brand span {
+      color: var(--accent);
+    }
+    .nav-menu {
+      display: flex;
+      gap: 10px;
+    }
+    .nav-tab {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 500;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-tab:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .nav-tab.active {
+      color: #fff;
+      background: var(--primary);
+    }
+
+    /* Main Dashboard Sections */
+    .dashboard-main {
+      padding: 40px 20px;
+      flex: 1;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .dashboard-section {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+    .dashboard-section.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-heading-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    /* Grid & Cards */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    .admin-card {
+      background: var(--dark-card);
+      border: 1px solid var(--dark-border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+    .admin-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+      border-color: rgba(59,63,212,0.3);
+    }
+    .card-img-wrap {
+      width: 100%;
+      height: 200px;
+      background: #0f1322;
+      position: relative;
+      overflow: hidden;
+    }
+    .card-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition);
+    }
+    .admin-card:hover .card-img-wrap img {
+      transform: scale(1.05);
+    }
+    .card-body {
+      padding: 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .card-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    .card-meta {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      display: flex;
+      gap: 15px;
+    }
+    .card-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 20px;
+      flex: 1;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .card-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: auto;
+    }
+    .card-actions .btn {
+      padding: 10px 14px;
+      font-size: 13px;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(10, 15, 30, 0.85);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      backdrop-filter: blur(8px);
+      padding: 20px;
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal {
+      background: var(--dark-card);
+      border: 1px solid var(--dark-border);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+      transform: translateY(30px);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .modal-overlay.active .modal {
+      transform: translateY(0);
+    }
+    .modal-header {
+      padding: 20px 25px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-title {
+      font-family: var(--font-heading);
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 20px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .modal-close:hover {
+      color: #fff;
+    }
+    .modal-body {
+      padding: 25px;
+    }
+    .modal-footer {
+      padding: 20px 25px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+    .modal-footer .btn {
+      width: auto;
+    }
+
+    /* Image Upload Drag and Drop */
+    .image-upload-area {
+      border: 2px dashed rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 30px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      background: rgba(10, 15, 30, 0.3);
+      position: relative;
+    }
+    .image-upload-area:hover, .image-upload-area.dragover {
+      border-color: var(--primary);
+      background: rgba(59, 63, 212, 0.05);
+    }
+    .upload-icon {
+      font-size: 32px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+    .upload-text {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+    .upload-text strong {
+      color: var(--primary);
+    }
+    .upload-preview {
+      margin-top: 15px;
+      width: 100%;
+      height: 180px;
+      border-radius: 8px;
+      overflow: hidden;
+      display: none;
+    }
+    .upload-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Setup Guide */
+    .setup-guide {
+      margin-top: 20px;
+      background: rgba(59, 63, 212, 0.1);
+      border: 1px solid rgba(59, 63, 212, 0.2);
+      border-radius: 12px;
+      padding: 15px 20px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .setup-guide code {
+      background: rgba(0,0,0,0.3);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--accent);
+      font-family: monospace;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 40px;
+      background: var(--dark-card);
+      border: 1px solid var(--dark-border);
+      border-radius: 16px;
+      grid-column: 1 / -1;
+    }
+    .empty-icon {
+      font-size: 48px;
+      color: var(--text-muted);
+      margin-bottom: 15px;
+      opacity: 0.5;
+    }
+    .empty-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .empty-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      max-width: 400px;
+      margin: 0 auto 20px;
+    }
+    .empty-state .btn {
+      width: auto;
+    }
+
+    /* Inline lists styles */
+    .item-list-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--dark-card);
+      border: 1px solid var(--dark-border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .item-list-table th, .item-list-table td {
+      padding: 16px 20px;
+      text-align: left;
+    }
+    .item-list-table th {
+      background: rgba(255,255,255,0.03);
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--dark-border);
+    }
+    .item-list-table td {
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 14px;
+    }
+    .item-list-table tr:last-child td {
+      border-bottom: none;
+    }
+    .item-thumb {
+      width: 60px;
+      height: 45px;
+      border-radius: 6px;
+      object-fit: cover;
+      background: #0f1322;
+    }
+    .action-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      background: rgba(255,255,255,0.05);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading Overlay -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- SCREEN 1: Supabase Connection Setup -->
+  <div class="screen-container" id="setupScreen" style="display: none;">
+    <div class="setup-screen">
+      <h2 class="screen-title">Supabase Setup</h2>
+      <p class="screen-sub">Connect this website to your Supabase project for dynamic content updates.</p>
+      
+      <form id="setupForm" onsubmit="handleSetup(event)">
+        <div class="form-group">
+          <label class="form-label" for="setupUrl">Supabase URL</label>
+          <input class="form-input" type="url" id="setupUrl" placeholder="https://your-project.supabase.co" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="setupKey">Supabase Anon Key</label>
+          <input class="form-input" type="text" id="setupKey" placeholder="your-anon-public-api-key" required>
+        </div>
+        <button class="btn" type="submit">
+          <i class="fa-solid fa-link"></i> Save & Connect
+        </button>
+      </form>
+      
+      <div class="setup-guide">
+        <h4>Need help?</h4>
+        <p>1. Go to <a href="https://supabase.com" target="_blank" style="color:var(--accent);">supabase.com</a> and create a free project.</p>
+        <p>2. Copy the API settings from <strong>Project Settings > API</strong>.</p>
+        <p>3. Create <code>projects</code> and <code>gallery</code> tables using SQL editor (Schema setup code can be copied from database documentation).</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: Authentication Login -->
+  <div class="screen-container" id="authScreen" style="display: none;">
+    <div class="auth-screen">
+      <h2 class="screen-title">Admin Login</h2>
+      <p class="screen-sub">Modes Power Services Content Management System</p>
+      
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label" for="loginEmail">Email Address</label>
+          <input class="form-input" type="email" id="loginEmail" placeholder="admin@modespowerservices.com" required autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="loginPassword">Password</label>
+          <input class="form-input" type="password" id="loginPassword" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+        <button class="btn" type="submit">
+          <i class="fa-solid fa-right-to-bracket"></i> Sign In
+        </button>
+      </form>
+      
+      <p style="text-align: center; margin-top: 20px; font-size: 13px; color: var(--text-muted);">
+        <a href="#" onclick="showSetupScreen()" style="color: var(--accent); text-decoration: none;">
+          <i class="fa-solid fa-gear"></i> Change Supabase connection settings
+        </a>
+      </p>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: Dashboard Layout -->
+  <div class="dashboard-layout" id="dashboardLayout">
+    <header>
+      <div class="nav-container">
+        <div class="brand">
+          <i class="fa-solid fa-bolt" style="color: var(--accent);"></i> Modes Power <span>Services</span>
+        </div>
+        <nav class="nav-menu">
+          <button class="nav-tab active" onclick="switchTab('projectsTab')">
+            <i class="fa-solid fa-diagram-project"></i> Projects
+          </button>
+          <button class="nav-tab" onclick="switchTab('galleryTab')">
+            <i class="fa-solid fa-images"></i> Gallery
+          </button>
+          <button class="nav-tab" onclick="switchTab('settingsTab')">
+            <i class="fa-solid fa-sliders"></i> Settings
+          </button>
+          <button class="nav-tab" onclick="handleLogout()" style="color: var(--danger); background: rgba(239, 68, 68, 0.05);">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="dashboard-main">
+      <!-- PROJECTS SECTION -->
+      <section class="dashboard-section active" id="projectsTab">
+        <div class="section-heading-container">
+          <h2 class="section-title">Projects Management</h2>
+          <button class="btn" style="width: auto;" onclick="openProjectModal()">
+            <i class="fa-solid fa-plus"></i> Add New Project
+          </button>
+        </div>
+        
+        <div class="dashboard-grid" id="projectsGrid">
+          <!-- Dynamically filled with projects -->
+        </div>
+      </section>
+
+      <!-- GALLERY SECTION -->
+      <section class="dashboard-section" id="galleryTab">
+        <div class="section-heading-container">
+          <h2 class="section-title">Gallery Management</h2>
+          <button class="btn" style="width: auto;" onclick="openGalleryModal()">
+            <i class="fa-solid fa-plus"></i> Add Gallery Item
+          </button>
+        </div>
+        
+        <div class="dashboard-grid" id="galleryGrid">
+          <!-- Dynamically filled with gallery items -->
+        </div>
+      </section>
+
+      <!-- SETTINGS SECTION -->
+      <section class="dashboard-section" id="settingsTab">
+        <div class="section-heading-container" style="margin-bottom: 20px;">
+          <h2 class="section-title">Configuration Settings</h2>
+        </div>
+        
+        <div style="max-width: 600px; background: var(--dark-card); border: 1px solid var(--dark-border); border-radius: 16px; padding: 30px;">
+          <h3 style="margin-bottom: 10px; font-size: 18px;">Supabase Integration Details</h3>
+          <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 25px;">
+            The active database connection profile saved in your local web browser. You can reconnect or use a different Supabase app profile.
+          </p>
+          
+          <div class="form-group">
+            <label class="form-label">Active Supabase URL</label>
+            <input class="form-input" type="text" id="settingsUrl" readonly style="background: rgba(0,0,0,0.25); color: var(--text-muted);">
+          </div>
+          
+          <div class="form-group" style="margin-bottom: 30px;">
+            <label class="form-label">Active Anon Key</label>
+            <input class="form-input" type="text" id="settingsKey" readonly style="background: rgba(0,0,0,0.25); color: var(--text-muted); font-family: monospace;">
+          </div>
+          
+          <div style="display: flex; gap: 15px;">
+            <button class="btn btn-secondary" onclick="showSetupScreen()">
+              <i class="fa-solid fa-arrows-rotate"></i> Change DB Configuration
+            </button>
+            <button class="btn btn-secondary" onclick="checkTableSchemas()" id="checkSchemaBtn">
+              <i class="fa-solid fa-database"></i> Check Tables Setup
+            </button>
+          </div>
+          
+          <div class="setup-guide" style="margin-top: 30px; border-color: rgba(224, 184, 74, 0.2); background: rgba(224, 184, 74, 0.05); color: var(--text);">
+            <h4 style="color: var(--accent); margin-bottom: 8px;"><i class="fa-solid fa-circle-exclamation"></i> Required Database Schema Settings</h4>
+            <p style="margin-bottom: 10px;">To ensure the admin dashboard and portfolio display properly, run the following query in your Supabase SQL Editor:</p>
+            <pre style="background: rgba(0,0,0,0.4); padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px; overflow-x: auto; white-space: pre-wrap; color: #8ef0a0;">
+-- Create projects table
+CREATE TABLE IF NOT EXISTS projects (
+  id BIGINT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+  title TEXT NOT NULL,
+  category TEXT NOT NULL,
+  location TEXT,
+  date TEXT,
+  description TEXT,
+  image_url TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Create gallery table
+CREATE TABLE IF NOT EXISTS gallery (
+  id BIGINT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+  title TEXT,
+  category TEXT NOT NULL,
+  image_url TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Note: Set up a public storage bucket named "images" for file uploads.
+            </pre>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODAL: Add/Edit Project -->
+  <div class="modal-overlay" id="projectModalOverlay" onclick="closeModalOnOverlay(event, 'projectModalOverlay')">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="projectModalTitle">Add Project</h3>
+        <button class="modal-close" onclick="closeProjectModal()">&times;</button>
+      </div>
+      <form id="projectForm" onsubmit="saveProject(event)">
+        <div class="modal-body">
+          <input type="hidden" id="projectId">
+          
+          <div class="form-group">
+            <label class="form-label" for="projectTitle">Project Title *</label>
+            <input class="form-input" type="text" id="projectTitle" required placeholder="E.g., High Voltage Cable Trenching">
+          </div>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="form-group">
+              <label class="form-label" for="projectCategory">Category *</label>
+              <select class="form-input" id="projectCategory" required style="appearance: none;">
+                <option value="Industrial">Industrial</option>
+                <option value="Commercial">Commercial</option>
+                <option value="Residential">Residential</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="projectDate">Completion Date</label>
+              <input class="form-input" type="text" id="projectDate" placeholder="E.g., June 2026">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="projectLocation">Location</label>
+            <input class="form-input" type="text" id="projectLocation" placeholder="E.g., Accra, Ghana">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="projectDescription">Description</label>
+            <textarea class="form-input form-textarea" id="projectDescription" placeholder="Write details about the project work scope..."></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Project Image *</label>
+            <div class="image-upload-area" id="projectDragArea" onclick="triggerFileInput('projectFileInput')">
+              <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+              <div class="upload-text">
+                Drag & Drop or <strong>Browse</strong> image to upload
+              </div>
+              <input type="file" id="projectFileInput" accept="image/*" style="display: none;" onchange="previewImage(this, 'projectPreviewImg', 'projectDragArea')">
+            </div>
+            <div class="upload-preview" id="projectPreviewWrapper">
+              <img id="projectPreviewImg" src="" alt="Project Preview">
+              <button class="btn btn-danger" type="button" style="margin-top: 10px; width: auto; padding: 6px 12px; font-size: 12px;" onclick="resetImageUpload('projectFileInput', 'projectPreviewImg', 'projectDragArea')">
+                Remove Image
+              </button>
+            </div>
+            <div class="form-group" style="margin-top: 15px;">
+              <label class="form-label" for="projectImageUrl">Or enter Image URL (Optional fallback)</label>
+              <input class="form-input" type="url" id="projectImageUrl" placeholder="https://example.com/image.jpg" oninput="handleImageUrlInput(this, 'projectPreviewImg', 'projectDragArea', 'projectPreviewWrapper')">
+            </div>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" onclick="closeProjectModal()">Cancel</button>
+          <button class="btn" type="submit" id="saveProjectBtn">Save Project</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Add Gallery Item -->
+  <div class="modal-overlay" id="galleryModalOverlay" onclick="closeModalOnOverlay(event, 'galleryModalOverlay')">
+    <div class="modal" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="galleryModalTitle">Add Gallery Item</h3>
+        <button class="modal-close" onclick="closeGalleryModal()">&times;</button>
+      </div>
+      <form id="galleryForm" onsubmit="saveGalleryItem(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="galleryTitle">Title (Optional)</label>
+            <input class="form-input" type="text" id="galleryTitle" placeholder="E.g., Substation Transformers">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="galleryCategory">Category *</label>
+            <select class="form-input" id="galleryCategory" required style="appearance: none;">
+              <option value="team">Team & Training</option>
+              <option value="equipment">Equipment & Testing</option>
+              <option value="site">On-Site Installations</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Gallery Image *</label>
+            <div class="image-upload-area" id="galleryDragArea" onclick="triggerFileInput('galleryFileInput')">
+              <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+              <div class="upload-text">
+                Drag & Drop or <strong>Browse</strong> image to upload
+              </div>
+              <input type="file" id="galleryFileInput" accept="image/*" style="display: none;" onchange="previewImage(this, 'galleryPreviewImg', 'galleryDragArea')">
+            </div>
+            <div class="upload-preview" id="galleryPreviewWrapper">
+              <img id="galleryPreviewImg" src="" alt="Gallery Preview">
+              <button class="btn btn-danger" type="button" style="margin-top: 10px; width: auto; padding: 6px 12px; font-size: 12px;" onclick="resetImageUpload('galleryFileInput', 'galleryPreviewImg', 'galleryDragArea')">
+                Remove Image
+              </button>
+            </div>
+            <div class="form-group" style="margin-top: 15px;">
+              <label class="form-label" for="galleryImageUrl">Or enter Image URL (Optional fallback)</label>
+              <input class="form-input" type="url" id="galleryImageUrl" placeholder="https://example.com/image.jpg" oninput="handleImageUrlInput(this, 'galleryPreviewImg', 'galleryDragArea', 'galleryPreviewWrapper')">
+            </div>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" onclick="closeGalleryModal()">Cancel</button>
+          <button class="btn" type="submit" id="saveGalleryBtn">Save Item</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Database Connection Helper Script -->
+  <script src="js/db.js"></script>
+  
+  <!-- Administrative Operations Logic Script -->
+  <script src="js/admin.js"></script>
+</body>
+</html>
