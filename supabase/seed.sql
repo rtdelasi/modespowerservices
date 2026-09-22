@@ -3,8 +3,8 @@
 -- ==============================================================================
 
 -- 1. Seed Site Settings (Singleton)
-INSERT INTO public.site_settings (id, hero_image_url, about_image_url, cta_image_url, og_image_url)
-VALUES ('default', NULL, NULL, NULL, NULL)
+INSERT INTO public.site_settings (id, maintenance_mode, hero_image_url, about_image_url, cta_image_url, og_image_url)
+VALUES ('default', false, NULL, NULL, NULL, NULL)
 ON CONFLICT (id) DO NOTHING;
 
 -- 2. Seed Gallery Items

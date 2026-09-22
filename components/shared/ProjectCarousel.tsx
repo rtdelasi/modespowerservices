@@ -16,6 +16,7 @@ interface ProjectCarouselProps {
   title?: string;
   subtitle?: string;
   badge?: string;
+  projects?: ProjectCaseStudy[];
   onSelectProject?: (project: ProjectCaseStudy) => void;
 }
 
@@ -23,11 +24,15 @@ export function ProjectCarousel({
   title = 'Proven Engineering In The Field.',
   subtitle = 'Explore how Modes Power Services engineers resilient infrastructure for industry leaders across Ghana.',
   badge = 'Featured Case Studies',
+  projects: customProjects,
   onSelectProject,
 }: ProjectCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const [cardsPerView, setCardsPerView] = useState(3);
+
+  const displayProjects = customProjects ?? PROJECTS_DATA;
+  const totalProjects = displayProjects.length;
 
   useEffect(() => {
     const updateCardsPerView = () => {
@@ -44,7 +49,7 @@ export function ProjectCarousel({
     return () => window.removeEventListener('resize', updateCardsPerView);
   }, []);
 
-  const maxIndex = Math.max(0, PROJECTS_DATA.length - cardsPerView);
+  const maxIndex = Math.max(0, totalProjects - cardsPerView);
 
   const handlePrev = () => {
     setCurrentIndex((prev) => Math.max(0, prev - 1));
@@ -56,6 +61,10 @@ export function ProjectCarousel({
 
   const progressPercentage =
     maxIndex === 0 ? 100 : Math.min(100, Math.max(10, ((currentIndex + 1) / (maxIndex + 1)) * 100));
+
+  if (totalProjects === 0) {
+    return null;
+  }
 
   return (
     <SectionContainer theme="white">
@@ -89,7 +98,7 @@ export function ProjectCarousel({
           }}
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
         >
-          {PROJECTS_DATA.map((project) => (
+          {displayProjects.map((project) => (
             <div
               key={project.id}
               className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] shrink-0 group flex flex-col justify-between bg-white rounded-[24px] overflow-hidden border border-black/[0.05] hover:border-brand-red/30 shadow-soft-card hover:shadow-xl transition-all duration-300"
@@ -177,7 +186,7 @@ export function ProjectCarousel({
             />
           </div>
           <span className="text-xs font-mono font-semibold text-content-tertiary">
-            0{PROJECTS_DATA.length}
+            0{totalProjects}
           </span>
         </div>
 

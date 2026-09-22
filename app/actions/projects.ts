@@ -31,6 +31,7 @@ export async function createProject(rawData: ProjectInput) {
   clearQueryCache('projects');
   revalidatePath('/projects');
   revalidatePath('/admin/projects');
+  revalidatePath('/admin');
   revalidatePath('/');
   return { success: true, data };
 }
@@ -90,6 +91,7 @@ export async function updateProject(id: string, rawData: ProjectInput) {
   clearQueryCache('projects');
   revalidatePath('/projects');
   revalidatePath('/admin/projects');
+  revalidatePath('/admin');
   revalidatePath('/');
   return { success: true, data: result.data };
 }
@@ -101,16 +103,21 @@ export async function deleteProject(id: string, imagePath?: string | null) {
     await deleteStorageFile('projects', imagePath);
   }
 
-  if (isValidUUID(id)) {
+  try {
     const { error } = await supabase.from('projects').delete().eq('id', id);
-    if (error) {
+    if (error && isValidUUID(id)) {
       return { success: false, error: error.message };
+    }
+  } catch (err: any) {
+    if (isValidUUID(id)) {
+      return { success: false, error: err?.message || 'Delete failed' };
     }
   }
 
   clearQueryCache('projects');
   revalidatePath('/projects');
   revalidatePath('/admin/projects');
+  revalidatePath('/admin');
   revalidatePath('/');
   return { success: true };
 }
@@ -136,6 +143,7 @@ export async function toggleProjectPublish(id: string, currentStatus: boolean) {
   clearQueryCache('projects');
   revalidatePath('/projects');
   revalidatePath('/admin/projects');
+  revalidatePath('/admin');
   revalidatePath('/');
   return { success: true, published: data.published };
 }
@@ -155,6 +163,7 @@ export async function reorderProjects(items: { id: string; sort_order: number }[
   clearQueryCache('projects');
   revalidatePath('/projects');
   revalidatePath('/admin/projects');
+  revalidatePath('/admin');
   revalidatePath('/');
   return { success: true };
 }

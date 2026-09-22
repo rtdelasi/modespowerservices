@@ -99,16 +99,22 @@ export async function deleteTeamMember(id: string, photoPath?: string | null) {
     await deleteStorageFile('team', photoPath);
   }
 
-  if (isValidUUID(id)) {
+  try {
     const { error } = await supabase.from('team_members').delete().eq('id', id);
-    if (error) {
+    if (error && isValidUUID(id)) {
       return { success: false, error: error.message };
+    }
+  } catch (err: any) {
+    if (isValidUUID(id)) {
+      return { success: false, error: err?.message || 'Delete failed' };
     }
   }
 
   clearQueryCache('team_members');
   revalidatePath('/about');
   revalidatePath('/admin/team');
+  revalidatePath('/admin');
+  revalidatePath('/');
   return { success: true };
 }
 

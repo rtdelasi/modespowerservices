@@ -40,19 +40,19 @@ export default async function AdminDashboardPage() {
       supabase.from('team_members').select('id, published'),
     ]);
 
-    if (galleryRes.data && galleryRes.data.length > 0) {
+    if (galleryRes.data && !galleryRes.error) {
       galleryCount = galleryRes.data.length;
       galleryPublished = galleryRes.data.filter((i) => i.published).length;
       galleryDrafts = galleryCount - galleryPublished;
     }
 
-    if (projectsRes.data && projectsRes.data.length > 0) {
+    if (projectsRes.data && !projectsRes.error) {
       projectsCount = projectsRes.data.length;
       projectsPublished = projectsRes.data.filter((i) => i.published).length;
       projectsDrafts = projectsCount - projectsPublished;
     }
 
-    if (teamRes.data && teamRes.data.length > 0) {
+    if (teamRes.data && !teamRes.error) {
       teamCount = teamRes.data.length;
       teamPublished = teamRes.data.filter((i) => i.published).length;
       teamDrafts = teamCount - teamPublished;

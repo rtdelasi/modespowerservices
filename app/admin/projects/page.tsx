@@ -10,13 +10,13 @@ export default async function AdminProjectsPage() {
   let items: DbProject[] = [];
 
   try {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('projects')
       .select('*')
       .order('sort_order', { ascending: true })
       .order('created_at', { ascending: false });
 
-    if (data && data.length > 0) {
+    if (data && !error) {
       items = data as DbProject[];
     } else {
       items = PROJECTS.map((p, idx) => ({

@@ -134,7 +134,7 @@ export async function getPublishedGalleryItems(): Promise<GalleryItem[]> {
         .order('sort_order', { ascending: true })
         .order('created_at', { ascending: false });
 
-      if (error || !data || data.length === 0) {
+      if (error || !data) {
         return GALLERY_DATA;
       }
 
@@ -172,7 +172,7 @@ export async function getPublishedProjects(): Promise<ProjectCaseStudy[]> {
         .order('sort_order', { ascending: true })
         .order('created_at', { ascending: false });
 
-      if (error || !data || data.length === 0) {
+      if (error || !data) {
         return PROJECTS_DATA;
       }
 
@@ -215,7 +215,7 @@ export async function getPublishedTeamMembers(): Promise<TeamMember[]> {
         .order('sort_order', { ascending: true })
         .order('created_at', { ascending: false });
 
-      if (error || !data || data.length === 0) {
+      if (error || !data) {
         return TEAM_DATA;
       }
 

@@ -10,13 +10,13 @@ export default async function AdminGalleryPage() {
   let items: DbGalleryItem[] = [];
 
   try {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('gallery_items')
       .select('*')
       .order('sort_order', { ascending: true })
       .order('created_at', { ascending: false });
 
-    if (data && data.length > 0) {
+    if (data && !error) {
       items = data as DbGalleryItem[];
     } else {
       items = GALLERY_ITEMS.map((item, idx) => ({

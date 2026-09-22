@@ -5,6 +5,7 @@ export interface NavItem {
 
 export interface SiteSettings {
   id: string;
+  maintenance_mode: boolean;
   hero_image_url: string | null;
   about_image_url: string | null;
   cta_image_url: string | null;

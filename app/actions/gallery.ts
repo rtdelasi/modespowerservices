@@ -101,16 +101,21 @@ export async function deleteGalleryItem(id: string, imagePath?: string | null) {
     await deleteStorageFile('gallery', imagePath);
   }
 
-  if (isValidUUID(id)) {
+  try {
     const { error } = await supabase.from('gallery_items').delete().eq('id', id);
-    if (error) {
+    if (error && isValidUUID(id)) {
       return { success: false, error: error.message };
+    }
+  } catch (err: any) {
+    if (isValidUUID(id)) {
+      return { success: false, error: err?.message || 'Delete failed' };
     }
   }
 
   clearQueryCache('gallery_items');
   revalidatePath('/gallery');
   revalidatePath('/admin/gallery');
+  revalidatePath('/admin');
   revalidatePath('/');
   return { success: true };
 }

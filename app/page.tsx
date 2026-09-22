@@ -8,12 +8,15 @@ import { ProjectCarousel } from '@/components/shared/ProjectCarousel';
 import { Testimonials } from '@/components/home/Testimonials';
 import { GradientInterstitial } from '@/components/shared/GradientInterstitial';
 import { CTASection } from '@/components/shared/CTASection';
-import { getSiteSettingsQuery } from '@/lib/supabase/queries';
+import { getSiteSettingsQuery, getPublishedProjects } from '@/lib/supabase/queries';
 
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const settings = await getSiteSettingsQuery();
+  const [settings, projects] = await Promise.all([
+    getSiteSettingsQuery(),
+    getPublishedProjects(),
+  ]);
 
   return (
     <div className="flex flex-col gap-4 sm:gap-6 pb-6">
@@ -41,7 +44,7 @@ export default async function HomePage() {
       />
 
       {/* 7. Horizontal Case Study Carousel */}
-      <ProjectCarousel />
+      <ProjectCarousel projects={projects} />
 
       {/* 8. Client Testimonials */}
       <Testimonials />

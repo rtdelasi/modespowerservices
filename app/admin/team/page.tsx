@@ -10,13 +10,13 @@ export default async function AdminTeamPage() {
   let items: DbTeamMember[] = [];
 
   try {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('team_members')
       .select('*')
       .order('sort_order', { ascending: true })
       .order('created_at', { ascending: false });
 
-    if (data && data.length > 0) {
+    if (data && !error) {
       items = data as DbTeamMember[];
     } else {
       items = TEAM_MEMBERS.map((m, idx) => ({
