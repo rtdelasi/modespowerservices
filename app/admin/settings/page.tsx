@@ -1,11 +1,12 @@
 import React from 'react';
 import { Metadata } from 'next';
 import { AdminHeader } from '@/components/admin/AdminHeader';
+import { MaintenanceModeCard } from '@/components/admin/MaintenanceModeCard';
 import { SiteSettingsForm } from '@/components/admin/SiteSettingsForm';
 import { getSiteSettings } from '@/app/actions/settings';
 
 export const metadata: Metadata = {
-  title: 'Site Banners & Settings — Modes CMS',
+  title: 'Site Controls & Settings — Modes CMS',
 };
 
 export const dynamic = 'force-dynamic';
@@ -16,12 +17,16 @@ export default async function AdminSettingsPage() {
   return (
     <div className="space-y-6">
       <AdminHeader
-        title="Site Banners & Settings"
-        description="Manage site-wide media, homepage hero background, about section photo, and global CTA imagery."
+        title="Site Controls & Settings"
+        description="Manage website maintenance mode, site-wide banners, homepage hero background, and global CTA imagery."
         backHref="/admin"
         backLabel="Dashboard"
       />
 
+      {/* 1. Maintenance Mode Master Switch */}
+      <MaintenanceModeCard initialStatus={settings.maintenance_mode} />
+
+      {/* 2. Site Photography & Banners Form */}
       <SiteSettingsForm initialSettings={settings} />
     </div>
   );

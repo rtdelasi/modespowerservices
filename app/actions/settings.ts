@@ -7,6 +7,7 @@ import { SiteSettings } from '@/types';
 
 const DEFAULT_SETTINGS: SiteSettings = {
   id: 'default',
+  maintenance_mode: false,
   hero_image_url: null,
   about_image_url: null,
   cta_image_url: null,
@@ -28,6 +29,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
 
     return {
       id: data.id,
+      maintenance_mode: Boolean(data.maintenance_mode),
       hero_image_url: data.hero_image_url || null,
       about_image_url: data.about_image_url || null,
       cta_image_url: data.cta_image_url || null,
@@ -37,6 +39,46 @@ export async function getSiteSettings(): Promise<SiteSettings> {
   } catch (err) {
     console.error('getSiteSettings error:', err);
     return DEFAULT_SETTINGS;
+  }
+}
+
+export async function toggleMaintenanceMode(enabled: boolean): Promise<{ success?: boolean; error?: string; maintenance_mode?: boolean }> {
+  try {
+    const supabase = createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return { error: 'Unauthorized. Please sign in to update maintenance mode.' };
+    }
+
+    const { error } = await supabase
+      .from('site_settings')
+      .upsert(
+        {
+          id: 'default',
+          maintenance_mode: enabled,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: 'id' }
+      );
+
+    if (error) {
+      return { error: error.message };
+    }
+
+    clearQueryCache('site_settings');
+    revalidatePath('/', 'layout');
+    revalidatePath('/');
+    revalidatePath('/admin/settings');
+    revalidatePath('/admin');
+    revalidatePath('/maintenance');
+
+    return { success: true, maintenance_mode: enabled };
+  } catch (err: any) {
+    console.error('toggleMaintenanceMode error:', err);
+    return { error: err.message || 'Failed to toggle maintenance mode' };
   }
 }
 
@@ -56,7 +98,7 @@ export async function updateSiteSettings(formData: FormData): Promise<{ success?
     const cta_image_url = (formData.get('cta_image_url') as string) || null;
     const og_image_url = (formData.get('og_image_url') as string) || null;
 
-    const payload = {
+    const payload: Record<string, any> = {
       id: 'default',
       hero_image_url: hero_image_url ? hero_image_url.trim() : null,
       about_image_url: about_image_url ? about_image_url.trim() : null,
@@ -78,6 +120,7 @@ export async function updateSiteSettings(formData: FormData): Promise<{ success?
     revalidatePath('/');
     revalidatePath('/about');
     revalidatePath('/admin/settings');
+    revalidatePath('/admin');
 
     return { success: true };
   } catch (err: any) {

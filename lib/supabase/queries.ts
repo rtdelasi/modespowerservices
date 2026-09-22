@@ -18,6 +18,7 @@ const CATEGORY_MAP: Record<string, GalleryItem['category']> = {
 
 const DEFAULT_SETTINGS: SiteSettings = {
   id: 'default',
+  maintenance_mode: false,
   hero_image_url: null,
   about_image_url: null,
   cta_image_url: null,
@@ -103,6 +104,7 @@ export async function getSiteSettingsQuery(): Promise<SiteSettings> {
 
       return {
         id: data.id,
+        maintenance_mode: Boolean(data.maintenance_mode),
         hero_image_url: data.hero_image_url || null,
         about_image_url: data.about_image_url || null,
         cta_image_url: data.cta_image_url || null,
