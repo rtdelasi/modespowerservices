@@ -87,6 +87,98 @@ body {
   background: radial-gradient(circle at 50% 50%, rgba(200, 16, 46, 0.18) 0%, rgba(11, 30, 61, 0) 70%);
 }
 
+/* Maintenance page background animations */
+@keyframes floatOrb1 {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translate(80px, -60px) scale(1.2);
+    opacity: 0.55;
+  }
+}
+
+@keyframes floatOrb2 {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translate(-70px, 50px) scale(1.25);
+    opacity: 0.6;
+  }
+}
+
+@keyframes floatOrb3 {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(0.9);
+    opacity: 0.25;
+  }
+  50% {
+    transform: translate(60px, 70px) scale(1.15);
+    opacity: 0.45;
+  }
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(1200%);
+    opacity: 0;
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 25px rgba(200, 16, 46, 0.35), inset 0 0 15px rgba(200, 16, 46, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 50px rgba(200, 16, 46, 0.65), inset 0 0 25px rgba(200, 16, 46, 0.4);
+  }
+}
+
+@keyframes rippleRing {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+.animate-float-orb1 {
+  animation: floatOrb1 14s ease-in-out infinite;
+}
+
+.animate-float-orb2 {
+  animation: floatOrb2 18s ease-in-out infinite;
+}
+
+.animate-float-orb3 {
+  animation: floatOrb3 15s ease-in-out infinite;
+}
+
+.animate-scanline {
+  animation: scanline 7s linear infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 4s ease-in-out infinite;
+}
+
+.animate-ripple {
+  animation: rippleRing 3.5s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   * {
