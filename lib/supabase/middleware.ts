@@ -15,10 +15,10 @@ export async function updateSession(request: NextRequest) {
   let hasBypass = false;
   let shouldSetBypassCookie = false;
 
-  if (bypassToken && previewToken && previewToken === bypassToken) {
+  if (bypassToken && bypassToken.length > 5 && previewToken && previewToken === bypassToken) {
     hasBypass = true;
     shouldSetBypassCookie = true;
-  } else if (request.cookies.get('maintenance_bypass')?.value === '1') {
+  } else if (bypassToken && bypassToken.length > 5 && request.cookies.get('maintenance_bypass')?.value === '1') {
     hasBypass = true;
   }
 
@@ -55,6 +55,7 @@ export async function updateSession(request: NextRequest) {
       maxAge: 60 * 60 * 24, // 24 hours
       sameSite: 'lax',
       httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
     });
   }
 
@@ -83,42 +84,81 @@ export async function updateSession(request: NextRequest) {
     return supabaseResponse;
   }
 
-  // 3. SKIPPED PUBLIC ROUTES (Avoid loops & keep API/maintenance page reachable)
-  if (
-    pathname === '/maintenance' ||
-    pathname.startsWith('/api') ||
-    pathname.startsWith('/_next') ||
-    hasBypass
-  ) {
+  // 3. EXPLICIT STANDALONE ALLOWLIST: Direct /maintenance access & Next.js internals
+  if (pathname === '/maintenance') {
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set('x-maintenance-mode', 'true');
+    const response = NextResponse.next({
+      request: {
+        headers: requestHeaders,
+      },
+    });
+    return response;
+  }
+
+  if (pathname.startsWith('/_next')) {
     return supabaseResponse;
   }
 
-  // 4. MAINTENANCE MODE DATABASE CHECK
+  // If visitor has valid fallback bypass token, allow through directly to live site
+  if (hasBypass) {
+    return supabaseResponse;
+  }
+
+  // 4. MAINTENANCE MODE DATABASE CHECK & HARD GATING
   try {
-    const { data: settings } = await supabase
+    const { data: settings, error: dbError } = await supabase
       .from('site_settings')
       .select('maintenance_mode')
       .eq('id', 'default')
       .single();
 
-    if (settings?.maintenance_mode) {
-      // Check if visitor is an authenticated admin
+    if (!dbError && settings?.maintenance_mode) {
+      // Cryptographically verify if request has a valid Supabase admin session
       const {
         data: { user },
+        error: authError,
       } = await supabase.auth.getUser();
 
-      // If NOT an authenticated admin, rewrite to /maintenance (preserves requested URL in browser)
-      if (!user) {
+      // If user is NOT an authenticated admin
+      if (!user || authError) {
+        // Block API routes with 503 JSON response
+        if (pathname.startsWith('/api')) {
+          return NextResponse.json(
+            {
+              error: 'Website maintenance ongoing. API endpoints are temporarily unavailable.',
+              maintenance_mode: true,
+            },
+            {
+              status: 503,
+              headers: {
+                'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+                'Retry-After': '3600',
+              },
+            }
+          );
+        }
+
+        // For all public web routes (/, /about, /services, /projects, /gallery, /contact, etc.),
+        // rewrite to /maintenance while preserving original URL in browser
         const rewriteUrl = request.nextUrl.clone();
         rewriteUrl.pathname = '/maintenance';
 
+        const requestHeaders = new Headers(request.headers);
+        requestHeaders.set('x-maintenance-mode', 'true');
+
         const rewriteResponse = NextResponse.rewrite(rewriteUrl, {
           request: {
-            headers: request.headers,
+            headers: requestHeaders,
           },
         });
 
-        // Copy over updated cookie headers (e.g. auth tokens / bypass cookies)
+        // Prevent CDN or browser caching of maintenance rewrite responses
+        rewriteResponse.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+        rewriteResponse.headers.set('Pragma', 'no-cache');
+        rewriteResponse.headers.set('Expires', '0');
+
+        // Copy over cookies (including any updated session/bypass cookies)
         supabaseResponse.cookies.getAll().forEach((cookie) => {
           rewriteResponse.cookies.set(cookie);
         });
@@ -127,7 +167,7 @@ export async function updateSession(request: NextRequest) {
       }
     }
   } catch (err) {
-    // Fail open on database error so site remains reachable
+    // Fail open on database network timeout so site remains available
     console.error('Maintenance mode verification error:', err);
   }
 

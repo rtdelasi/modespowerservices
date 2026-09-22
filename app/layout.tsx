@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
+import { headers } from 'next/headers';
 import './globals.css';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
@@ -82,12 +83,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headersList = headers();
+  const isMaintenance = headersList.get('x-maintenance-mode') === 'true';
+
   return (
     <html lang="en" className={`${inter.variable} ${plusJakartaSans.variable}`}>
       <body className="bg-canvas-cream text-content-primary antialiased selection:bg-brand-red selection:text-white">
-        <Navbar />
+        {!isMaintenance && <Navbar />}
         <main className="relative min-h-screen flex flex-col">{children}</main>
-        <Footer />
+        {!isMaintenance && <Footer />}
       </body>
     </html>
   );

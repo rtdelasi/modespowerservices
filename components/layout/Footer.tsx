@@ -11,8 +11,8 @@ import { Logo } from '@/components/ui/Logo';
 export function Footer() {
   const pathname = usePathname();
 
-  // Do not render marketing footer on admin dashboard pages
-  if (pathname.startsWith('/admin')) {
+  // Do not render marketing footer on admin dashboard pages or maintenance view
+  if (pathname === '/maintenance' || pathname.startsWith('/admin')) {
     return null;
   }
 

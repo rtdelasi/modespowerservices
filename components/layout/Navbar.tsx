@@ -48,8 +48,8 @@ export function Navbar() {
     };
   }, [mobileMenuOpen]);
 
-  // Do not render marketing navbar on admin dashboard pages
-  if (pathname.startsWith('/admin')) {
+  // Do not render marketing navbar on admin dashboard pages or maintenance view
+  if (pathname === '/maintenance' || pathname.startsWith('/admin')) {
     return null;
   }
 
