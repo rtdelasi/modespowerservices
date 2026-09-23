@@ -1,12 +1,13 @@
 import React from 'react';
 import { Metadata } from 'next';
-import { ShieldCheck, Zap, Phone, Mail, Clock } from 'lucide-react';
+import { Phone, Mail, Zap, Shield } from 'lucide-react';
+import { COMPANY_INFO } from '@/data/company';
 import { Logo } from '@/components/ui/Logo';
 
 export const metadata: Metadata = {
-  title: 'Website Maintenance Ongoing — Modes Power Services',
+  title: 'This Site is Under Maintenance — Modes Power Services',
   description:
-    'Modes Power Services is currently performing scheduled system upgrades. Our 24/7 high-voltage emergency response and field engineering teams remain fully operational.',
+    'We are preparing to serve you better. Modes Power Services 24/7 high-voltage emergency response and field engineering teams remain fully operational.',
   robots: {
     index: false,
     follow: false,
@@ -17,134 +18,276 @@ export const dynamic = 'force-static';
 
 export default function MaintenancePage() {
   return (
-    <div className="min-h-screen w-full bg-[#070A12] text-white flex items-center justify-center p-4 sm:p-6 md:p-10 relative overflow-hidden selection:bg-[#C8102E] selection:text-white font-sans">
-      {/* 1. Rich Dynamic Background Animations */}
-      {/* Floating Deep Brand Red Orb */}
-      <div className="absolute top-1/6 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[550px] sm:w-[700px] h-[550px] sm:h-[700px] bg-[#C8102E]/25 rounded-full blur-[140px] pointer-events-none animate-float-orb1" />
-
-      {/* Floating Electric Navy / Azure Orb */}
-      <div className="absolute bottom-1/6 right-1/4 translate-x-1/2 translate-y-1/2 w-[500px] sm:w-[650px] h-[500px] sm:h-[650px] bg-[#00529B]/30 rounded-full blur-[150px] pointer-events-none animate-float-orb2" />
-
-      {/* Floating Center Glow Orb */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[500px] h-[400px] sm:h-[500px] bg-[#C8102E]/15 rounded-full blur-[110px] pointer-events-none animate-float-orb3" />
-
-      {/* Geometric Electrical Circuit Matrix Grid */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none opacity-60" />
-
-      {/* Animated Light Sweep / Scan Beam */}
-      <div className="absolute inset-x-0 h-40 bg-gradient-to-b from-transparent via-[#C8102E]/10 to-transparent pointer-events-none animate-scanline" />
-
-      {/* 2. Central Standalone Card */}
-      <div className="relative z-10 w-full max-w-2xl mx-auto my-auto bg-[#0B1426]/75 backdrop-blur-2xl border border-white/10 rounded-[32px] sm:rounded-[40px] p-6 sm:p-10 md:p-12 shadow-[0_25px_70px_rgba(0,0,0,0.6)] text-center space-y-7 sm:space-y-8 animate-in fade-in zoom-in-95 duration-500">
+    <div className="min-h-screen w-full bg-[#FFFFFF] text-[#0B1E3D] flex flex-col items-center justify-center relative overflow-hidden font-sans select-none px-4 py-8">
+      {/* Central Illustration Container with Large Circular Aura */}
+      <div className="relative w-full max-w-3xl flex flex-col items-center justify-center my-auto">
         
-        {/* Brand Logo & Animated Ripple Rings */}
-        <div className="relative flex justify-center items-center py-2">
-          {/* Animated Electrical Ripple Rings */}
-          <div className="absolute w-20 h-20 rounded-full border border-[#C8102E]/40 pointer-events-none animate-ripple" />
-          <div className="absolute w-28 h-28 rounded-full border border-[#C8102E]/20 pointer-events-none animate-ripple [animation-delay:1.2s]" />
+        {/* Soft Circular Backdrop (Matches Reference Layout with Brand Cream/Tint) */}
+        <div className="absolute w-[340px] h-[340px] sm:w-[460px] sm:h-[460px] md:w-[540px] md:h-[540px] rounded-full bg-[#F7F3EC] -z-10 transition-transform duration-700 pointer-events-none" />
 
-          {/* Glowing Center Logo Box */}
-          <div className="relative z-10 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white flex items-center justify-center p-2.5 shadow-2xl animate-pulse-glow">
-            <Logo variant="default" size={48} priority />
+        {/* Company Header Tag */}
+        <div className="flex items-center gap-2 mb-4 animate-in fade-in slide-in-from-top-4 duration-500">
+          <div className="w-7 h-7 rounded-lg bg-white p-0.5 shadow-sm border border-black/[0.06] flex items-center justify-center">
+            <Logo variant="default" size={24} priority />
           </div>
+          <span className="text-xs font-bold tracking-widest text-[#0B1E3D] uppercase font-mono">
+            Modes Power Services
+          </span>
         </div>
 
-        {/* Company Title & Live Status Pill */}
-        <div className="space-y-2">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold tracking-wide">
-            <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-            <span>Scheduled Platform Maintenance</span>
-          </div>
-          <div className="pt-1">
-            <span className="text-[11px] sm:text-xs font-mono font-bold text-neutral-400 uppercase tracking-widest">
-              Modes Power Services Ltd.
-            </span>
-          </div>
-        </div>
-
-        {/* Headline & Description */}
-        <div className="space-y-3 max-w-xl mx-auto">
-          <h1 className="font-display font-extrabold text-2xl sm:text-4xl md:text-5xl tracking-tight text-white leading-[1.15]">
-            Website Maintenance <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white/95 to-neutral-400">
-              Currently Ongoing.
-            </span>
+        {/* Centered Typography (Matching Reference Text Hierarchy) */}
+        <div className="text-center space-y-2.5 max-w-lg mx-auto z-10 px-4 mb-2 animate-in fade-in slide-in-from-bottom-3 duration-500">
+          <h1 className="font-display font-extrabold text-2xl sm:text-4xl md:text-[42px] tracking-tight text-[#0B1E3D] leading-[1.15]">
+            This site is under <br className="hidden sm:inline" />
+            maintenance
           </h1>
-          <p className="text-xs sm:text-sm text-neutral-300 font-normal leading-relaxed">
-            We are performing scheduled system upgrades. Our website will be back online shortly. All on-site substation operations, 24/7 industrial emergency repair units, and client projects continue without interruption.
+          <p className="text-sm sm:text-base text-[#4B5563] font-medium leading-relaxed">
+            We’re preparing to serve you better.
           </p>
         </div>
 
-        {/* Operational Highlights */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left pt-2">
-          <div className="p-4 rounded-2xl bg-white/[0.04] border border-white/[0.08] backdrop-blur-md space-y-1.5 hover:bg-white/[0.06] transition-colors">
-            <div className="w-7 h-7 rounded-lg bg-white/[0.08] flex items-center justify-center text-[#C8102E]">
-              <Phone className="w-3.5 h-3.5" />
-            </div>
-            <h2 className="font-semibold text-xs text-white">24/7 Emergency</h2>
-            <p className="text-[11px] text-neutral-400 leading-snug">
-              Rapid dispatch lines remain open 24/7.
-            </p>
-          </div>
+        {/* Center Vector: Disconnected Power Plug & Socket with Electric Sparks */}
+        <div className="relative w-full max-w-[680px] my-6 sm:my-8 flex items-center justify-center">
+          <svg
+            viewBox="0 0 760 160"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-full h-auto drop-shadow-xs"
+          >
+            {/* Left Wire extending to left edge */}
+            <line
+              x1="0"
+              y1="80"
+              x2="240"
+              y2="80"
+              stroke="#0B1E3D"
+              strokeWidth="5"
+              strokeLinecap="round"
+            />
+            <line
+              x1="0"
+              y1="80"
+              x2="240"
+              y2="80"
+              stroke="#FFFFFF"
+              strokeWidth="11"
+              strokeLinecap="square"
+            />
+            <line
+              x1="0"
+              y1="80"
+              x2="240"
+              y2="80"
+              stroke="#0B1E3D"
+              strokeWidth="4"
+              strokeLinecap="round"
+            />
 
-          <div className="p-4 rounded-2xl bg-white/[0.04] border border-white/[0.08] backdrop-blur-md space-y-1.5 hover:bg-white/[0.06] transition-colors">
-            <div className="w-7 h-7 rounded-lg bg-white/[0.08] flex items-center justify-center text-emerald-400">
-              <ShieldCheck className="w-3.5 h-3.5" />
-            </div>
-            <h2 className="font-semibold text-xs text-white">Active Works</h2>
-            <p className="text-[11px] text-neutral-400 leading-snug">
-              33kV & microgrid field operations on schedule.
-            </p>
-          </div>
+            {/* Left Male Plug Assembly */}
+            <g className="animate-[pulse_3s_ease-in-out_infinite]">
+              {/* Strain Relief Boot */}
+              <rect
+                x="240"
+                y="67"
+                width="24"
+                height="26"
+                rx="4"
+                fill="#C8102E"
+                stroke="#0B1E3D"
+                strokeWidth="4"
+              />
 
-          <div className="p-4 rounded-2xl bg-white/[0.04] border border-white/[0.08] backdrop-blur-md space-y-1.5 hover:bg-white/[0.06] transition-colors">
-            <div className="w-7 h-7 rounded-lg bg-white/[0.08] flex items-center justify-center text-amber-400">
-              <Clock className="w-3.5 h-3.5" />
-            </div>
-            <h2 className="font-semibold text-xs text-white">Temporary</h2>
-            <p className="text-[11px] text-neutral-400 leading-snug">
-              Service will be restored upon verification.
-            </p>
-          </div>
+              {/* Main Plug Body */}
+              <path
+                d="M 264 56 C 285 56 315 62 334 67 L 334 93 C 315 98 285 104 264 104 Z"
+                fill="#0B1E3D"
+                stroke="#0B1E3D"
+                strokeWidth="4"
+                strokeLinejoin="round"
+              />
+
+              {/* Decorative Brand Red Body Band */}
+              <path
+                d="M 282 59 C 298 61 312 64 322 67 L 322 93 C 312 96 298 99 282 101 Z"
+                fill="#C8102E"
+                opacity="0.9"
+              />
+
+              {/* Plug Face Collar */}
+              <rect
+                x="334"
+                y="52"
+                width="16"
+                height="56"
+                rx="5"
+                fill="#0B1E3D"
+                stroke="#0B1E3D"
+                strokeWidth="4"
+              />
+
+              {/* Metal Prongs */}
+              {/* Top Prong */}
+              <rect
+                x="350"
+                y="61"
+                width="34"
+                height="12"
+                rx="6"
+                fill="#E2E8F0"
+                stroke="#0B1E3D"
+                strokeWidth="4"
+              />
+              {/* Bottom Prong */}
+              <rect
+                x="350"
+                y="87"
+                width="34"
+                height="12"
+                rx="6"
+                fill="#E2E8F0"
+                stroke="#0B1E3D"
+                strokeWidth="4"
+              />
+            </g>
+
+            {/* Central Electrical Sparks / Arc Pulse */}
+            <g className="animate-[pulse_1.5s_ease-in-out_infinite]">
+              {/* Upper Spark */}
+              <path
+                d="M 390 64 L 398 69 L 393 72 L 404 77"
+                stroke="#C8102E"
+                strokeWidth="3.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              {/* Lower Spark */}
+              <path
+                d="M 392 92 L 401 87 L 396 84 L 406 80"
+                stroke="#C8102E"
+                strokeWidth="3.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              {/* Center Glow Node */}
+              <circle cx="398" cy="80" r="3" fill="#C8102E" className="animate-ping" />
+            </g>
+
+            {/* Right Female Connector Assembly */}
+            <g className="animate-[pulse_3s_ease-in-out_infinite_0.5s]">
+              {/* Socket Front Collar */}
+              <rect
+                x="414"
+                y="50"
+                width="18"
+                height="60"
+                rx="5"
+                fill="#0B1E3D"
+                stroke="#0B1E3D"
+                strokeWidth="4"
+              />
+
+              {/* Socket Aperture Slot */}
+              <line
+                x1="418"
+                y1="58"
+                x2="418"
+                y2="102"
+                stroke="#C8102E"
+                strokeWidth="3.5"
+                strokeLinecap="round"
+              />
+
+              {/* Main Socket Body */}
+              <path
+                d="M 432 56 C 452 56 480 62 498 67 L 498 93 C 480 98 452 104 432 104 Z"
+                fill="#0B1E3D"
+                stroke="#0B1E3D"
+                strokeWidth="4"
+                strokeLinejoin="round"
+              />
+
+              {/* Decorative Brand Red Body Band */}
+              <path
+                d="M 444 59 C 460 61 476 64 488 67 L 488 93 C 476 96 460 99 444 101 Z"
+                fill="#C8102E"
+                opacity="0.9"
+              />
+
+              {/* Strain Relief Boot */}
+              <rect
+                x="498"
+                y="67"
+                width="24"
+                height="26"
+                rx="4"
+                fill="#C8102E"
+                stroke="#0B1E3D"
+                strokeWidth="4"
+              />
+            </g>
+
+            {/* Right Wire extending to right edge */}
+            <line
+              x1="522"
+              y1="80"
+              x2="760"
+              y2="80"
+              stroke="#0B1E3D"
+              strokeWidth="5"
+              strokeLinecap="round"
+            />
+            <line
+              x1="522"
+              y1="80"
+              x2="760"
+              y2="80"
+              stroke="#FFFFFF"
+              strokeWidth="11"
+              strokeLinecap="square"
+            />
+            <line
+              x1="522"
+              y1="80"
+              x2="760"
+              y2="80"
+              stroke="#0B1E3D"
+              strokeWidth="4"
+              strokeLinecap="round"
+            />
+          </svg>
         </div>
 
-        {/* Emergency Assistance Direct Contacts */}
-        <div className="p-5 rounded-2xl bg-gradient-to-r from-white/[0.06] via-white/[0.03] to-white/[0.06] border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-left">
-          <div className="space-y-0.5 text-center sm:text-left">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#C8102E] block">
-              Urgent Technical Inquiries
-            </span>
-            <p className="text-xs text-neutral-300">
-              Speak directly with an on-duty electrical engineer:
-            </p>
-          </div>
+        {/* Operational Notice */}
+        <p className="text-xs text-[#6B7280] max-w-md text-center leading-relaxed mb-6 px-4">
+          All high-voltage industrial substations, 24/7 emergency dispatch, and field operations continue normally.
+        </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-2.5">
-            <a
-              href="tel:0208438618"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#C8102E] hover:bg-[#A60D25] text-white text-xs font-semibold shadow-md transition-all active:scale-95"
-            >
-              <Phone className="w-3.5 h-3.5" />
-              <span>+233 (0) 20 843 8618</span>
-            </a>
+        {/* Urgent Contact Action Buttons */}
+        <div className="flex flex-wrap items-center justify-center gap-3 z-10">
+          <a
+            href="tel:0208438618"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#C8102E] hover:bg-[#A80D26] text-white text-xs font-semibold shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
+          >
+            <Phone className="w-3.5 h-3.5" />
+            <span>+233 (0) 20 843 8618</span>
+          </a>
 
-            <a
-              href="mailto:modespower@gmail.com"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold border border-white/10 transition-all active:scale-95"
-            >
-              <Mail className="w-3.5 h-3.5" />
-              <span>modespower@gmail.com</span>
-            </a>
-          </div>
-        </div>
-
-        {/* Accreditation Footer Note */}
-        <div className="pt-1 text-[11px] text-neutral-400 flex items-center justify-center gap-2">
-          <span>Energy Commission Ghana Class-A Certified Contractor</span>
-          <span>•</span>
-          <span className="font-mono">Status: Operational Standby</span>
+          <a
+            href="mailto:modespower@gmail.com"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#0B1E3D] hover:bg-[#122B55] text-white text-xs font-semibold shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
+          >
+            <Mail className="w-3.5 h-3.5" />
+            <span>modespower@gmail.com</span>
+          </a>
         </div>
       </div>
+
+      {/* Subtle Accreditation Footer */}
+      <footer className="w-full text-center pt-8 text-[11px] text-[#9CA3AF] font-medium flex items-center justify-center gap-2">
+        <span>Energy Commission Ghana Certified Class A Contractor</span>
+        <span>•</span>
+        <span className="font-mono">Modes Power Services Ltd.</span>
+      </footer>
     </div>
   );
 }
