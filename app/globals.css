@@ -22,6 +22,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Ensure marketing header and footer are completely suppressed when maintenance screen is active */
+body:has(.maintenance-screen) header,
+body:has(.maintenance-screen) footer {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 ::selection {
   background-color: #C8102E;
   color: #FFFFFF;

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Metadata } from 'next';
-import { Phone, Mail, Zap, Shield } from 'lucide-react';
-import { COMPANY_INFO } from '@/data/company';
+import { Phone, Mail } from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
 
 export const metadata: Metadata = {
@@ -18,7 +17,7 @@ export const dynamic = 'force-static';
 
 export default function MaintenancePage() {
   return (
-    <div className="min-h-screen w-full bg-[#FFFFFF] text-[#0B1E3D] flex flex-col items-center justify-center relative overflow-hidden font-sans select-none px-4 py-8">
+    <div className="maintenance-screen fixed inset-0 z-[99999] w-screen h-screen min-h-screen bg-[#FFFFFF] text-[#0B1E3D] flex flex-col items-center justify-between overflow-y-auto font-sans select-none px-4 py-8">
       {/* Central Illustration Container with Large Circular Aura */}
       <div className="relative w-full max-w-3xl flex flex-col items-center justify-center my-auto">
         
