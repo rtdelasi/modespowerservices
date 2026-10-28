@@ -18,15 +18,16 @@ export default async function AdminProjectsPage() {
 
     if (data && !error) {
       items = data as DbProject[];
-    } else {
       items = PROJECTS.map((p, idx) => ({
         id: p.id,
+        slug: (p as any).slug || p.id,
         title: p.title,
-        client_name: p.client,
+        client_name: p.client || '',
         category: (p.category as any) || 'Industrial',
-        description: p.description,
-        outcome: p.outcome,
-        cover_image_path: p.image,
+        description: p.description || '',
+        outcome: p.outcome || null,
+        cover_image_path: p.image || null,
+        images: (p as any).images || [],
         sort_order: idx,
         published: true,
         created_at: new Date().toISOString(),
@@ -36,12 +37,14 @@ export default async function AdminProjectsPage() {
   } catch (err) {
     items = PROJECTS.map((p, idx) => ({
       id: p.id,
+      slug: (p as any).slug || p.id,
       title: p.title,
-      client_name: p.client,
+      client_name: p.client || '',
       category: (p.category as any) || 'Industrial',
-      description: p.description,
-      outcome: p.outcome,
-      cover_image_path: p.image,
+      description: p.description || '',
+      outcome: p.outcome || null,
+      cover_image_path: p.image || null,
+      images: (p as any).images || [],
       sort_order: idx,
       published: true,
       created_at: new Date().toISOString(),

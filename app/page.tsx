@@ -1,17 +1,28 @@
 import React from 'react';
 import { Hero } from '@/components/home/Hero';
-import { LogoMarquee } from '@/components/home/LogoMarquee';
-import { AboutPreview } from '@/components/home/AboutPreview';
-import { ServicesPreview } from '@/components/home/ServicesPreview';
-import { WhyChooseUs } from '@/components/home/WhyChooseUs';
-import { ProjectCarousel } from '@/components/shared/ProjectCarousel';
-import { Testimonials } from '@/components/home/Testimonials';
-import { GradientInterstitial } from '@/components/shared/GradientInterstitial';
-import { CTASection } from '@/components/shared/CTASection';
+import { HomeStats } from '@/components/home/HomeStats';
+import { HomeServices } from '@/components/home/HomeServices';
+import { WhyModes } from '@/components/home/WhyModes';
+import { RecentProjects } from '@/components/home/RecentProjects';
+import { ClientWords } from '@/components/home/ClientWords';
+import { QuoteBand } from '@/components/home/QuoteBand';
 import { getSiteSettingsQuery, getPublishedProjects } from '@/lib/supabase/queries';
 
 export const revalidate = 60;
 
+/**
+ * Home Page (Complete Redesign per BRIEF Section 4 & Phase 8)
+ *
+ * Sequence of sections exactly in this order:
+ * 1. Hero (full viewport photo)
+ * 2. Stats (4, shown once)
+ * 3. Services (3 divider rows, each with one key spec)
+ * 4. Why Modes (statement plus 4 short points)
+ * 5. Selected projects (Recent projects: 3 from CMS)
+ * 6. Client words (2 to 3 quotes)
+ * 7. Quote and emergency band (ink background)
+ * 8. Footer (rendered globally in layout)
+ */
 export default async function HomePage() {
   const [settings, projects] = await Promise.all([
     getSiteSettingsQuery(),
@@ -19,44 +30,27 @@ export default async function HomePage() {
   ]);
 
   return (
-    <div className="flex flex-col gap-4 sm:gap-6 pb-6">
-      {/* 1. Full-Bleed Hero */}
+    <div className="flex flex-col w-full">
+      {/* 1. Full-Viewport Photographic Hero */}
       <Hero heroImage={settings.hero_image_url} />
 
-      {/* 2. Client Logo Marquee */}
-      <LogoMarquee />
+      {/* 2. Stats Row (4 metrics on paper tone) */}
+      <HomeStats />
 
-      {/* 3. Stats & About Split Section */}
-      <AboutPreview aboutImage={settings.about_image_url} />
+      {/* 3. Core Services (3 divider rows with specs on surface tone) */}
+      <HomeServices />
 
-      {/* 4. Services Preview (3 Cards) */}
-      <ServicesPreview />
+      {/* 4. Why Modes (statement plus 4 short points on paper tone) */}
+      <WhyModes />
 
-      {/* 5. Why Choose Modes (Auto-cycling Numbered Accordion 01-04) */}
-      <WhyChooseUs />
+      {/* 5. Selected projects (up to 3 from CMS on surface tone) */}
+      <RecentProjects projects={projects} />
 
-      {/* 6. Interstitial Palate Cleanser */}
-      <GradientInterstitial
-        eyebrow="Proven Industrial Engineering"
-        headline="Power Systems Engineered For Extreme Reliability."
-        highlightText="Zero Downtime."
-        subtext="From 33kV substations to high-efficiency solar microgrids, we deliver end-to-end turnkey electrical infrastructure across Ghana."
-      />
+      {/* 6. Client words (up to 3 plain quote blocks on paper tone) */}
+      <ClientWords />
 
-      {/* 7. Horizontal Case Study Carousel */}
-      <ProjectCarousel projects={projects} />
-
-      {/* 8. Client Testimonials */}
-      <Testimonials />
-
-      {/* 9. Full-Bleed CTA Banner */}
-      <CTASection
-        title="Ready To Power Your Facility With Flawless Reliability?"
-        subtitle="Consult directly with our Class-A certified senior electrical engineers for a comprehensive site assessment, power quality audit, or substation quote."
-        buttonText="Request a Technical Consultation"
-        buttonHref="/contact"
-        image={settings.cta_image_url}
-      />
+      {/* 7. Quote and Emergency Band (ink background tone) */}
+      <QuoteBand />
     </div>
   );
 }

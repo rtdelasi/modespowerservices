@@ -1,37 +1,41 @@
 'use client';
 
-import React, { useState, useTransition } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { Lock, Mail, ArrowRight, AlertCircle, Loader2 } from 'lucide-react';
 import { login } from '@/app/actions/auth';
 import { Logo } from '@/components/ui/Logo';
 
 export default function AdminLoginPage() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get('redirectTo') || '/admin';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
+  const [isPending, setIsPending] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
+    setIsPending(true);
 
-    const formData = new FormData();
-    formData.append('email', email);
-    formData.append('password', password);
-    formData.append('redirectTo', redirectTo);
+    const formData = new FormData(e.currentTarget);
+    formData.set('redirectTo', redirectTo);
 
-    startTransition(async () => {
+    try {
       const result = await login(formData);
-      if (result?.error) {
-        setError(result.error);
+      if (result?.success) {
+        window.location.href = result.redirectTo || '/admin';
+        return;
       }
-    });
+      setError(result?.error || 'Login failed. Please check your credentials.');
+      setIsPending(false);
+    } catch (err: any) {
+      setError(err?.message || 'Login failed. Please check your credentials.');
+      setIsPending(false);
+    }
   };
 
   return (
@@ -58,8 +62,9 @@ export default function AdminLoginPage() {
           </div>
         )}
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
+          <input type="hidden" name="redirectTo" value={redirectTo} />
+
           <div className="space-y-1.5">
             <label
               htmlFor="email"
@@ -134,7 +139,7 @@ export default function AdminLoginPage() {
             href="/"
             className="text-xs text-[#86868B] hover:text-[#1D1D1F] transition-colors"
           >
-            ← Return to Modes Power Services Website
+            ← Return to Modes Power Services Public Site
           </Link>
         </div>
       </div>

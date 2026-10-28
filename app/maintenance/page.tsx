@@ -2,6 +2,7 @@ import React from 'react';
 import { Metadata } from 'next';
 import { Phone, Mail } from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
+import { siteConfig, getTelHref, getMailtoHref } from '@/lib/site-config';
 
 export const metadata: Metadata = {
   title: 'This Site is Under Maintenance — Modes Power Services',
@@ -264,19 +265,19 @@ export default function MaintenancePage() {
         {/* Urgent Contact Action Buttons */}
         <div className="flex flex-wrap items-center justify-center gap-3 z-10">
           <a
-            href="tel:0208438618"
+            href={getTelHref(siteConfig.phone)}
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#C8102E] hover:bg-[#A80D26] text-white text-xs font-semibold shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
           >
             <Phone className="w-3.5 h-3.5" />
-            <span>+233 (0) 20 843 8618</span>
+            <span>{siteConfig.phone}</span>
           </a>
 
           <a
-            href="mailto:modespower@gmail.com"
+            href={getMailtoHref(siteConfig.email)}
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#0B1E3D] hover:bg-[#122B55] text-white text-xs font-semibold shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
           >
             <Mail className="w-3.5 h-3.5" />
-            <span>modespower@gmail.com</span>
+            <span>{siteConfig.email}</span>
           </a>
         </div>
       </div>

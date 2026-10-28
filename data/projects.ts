@@ -3,6 +3,7 @@ import { ProjectCaseStudy } from '@/types';
 export const PROJECTS_DATA: ProjectCaseStudy[] = [
   {
     id: 'tema-industrial-substation',
+    slug: 'tema-industrial-substation',
     title: '33kV/11kV Heavy Industrial Substation Overhaul',
     category: 'Industrial',
     client: 'Tema Heavy Steel Mills & Processing Ltd.',
@@ -14,11 +15,13 @@ export const PROJECTS_DATA: ProjectCaseStudy[] = [
     outcome:
       'Eliminated monthly unplanned grid trip-outs, reduced voltage sag by 94%, and enhanced plant power factor from 0.74 to 0.99 with automated capacitor banks.',
     image: null,
+    images: [],
     highlight: '99.99% Uptime Achieved Across 24/7 Production Shifts',
     tags: ['33kV Substation', 'Vacuum Switchgear', 'Power Factor Correction', 'IEEE Compliance'],
   },
   {
     id: 'accra-financial-center-hybrid',
+    slug: 'accra-financial-center-hybrid',
     title: '750kWp Rooftop Solar PV & 1.2MWh BESS Microgrid',
     category: 'Solar & Hybrid',
     client: 'Airport City Commercial Towers',
@@ -30,11 +33,13 @@ export const PROJECTS_DATA: ProjectCaseStudy[] = [
     outcome:
       'Offset 48% of daytime grid electricity consumption, cut diesel fuel consumption by 62,000 liters annually, and guaranteed sub-10ms seamless transfer during utility dropouts.',
     image: null,
+    images: [],
     highlight: '48% Grid Electricity Cost Reduction',
     tags: ['Solar Microgrid', 'BESS Energy Storage', 'Closed-Transition ATS', 'SCADA Monitoring'],
   },
   {
     id: 'ashanti-gold-refinery-audit',
+    slug: 'ashanti-gold-refinery-audit',
     title: 'Comprehensive Power Quality Audit & Harmonic Filtering',
     category: 'Infrastructure',
     client: 'Ashanti Regional Precious Metals Processing',
@@ -46,11 +51,13 @@ export const PROJECTS_DATA: ProjectCaseStudy[] = [
     outcome:
       'Reduced Total Harmonic Voltage Distortion (THDv) from 11.4% to 2.1% (well within IEEE 519 limits), eliminating recurrent VFD drive burnouts and saving $45,000/yr in equipment replacement.',
     image: null,
+    images: [],
     highlight: 'Harmonic Distortion Slashed by 81.5%',
     tags: ['Power Quality Audit', 'Active Harmonic Filters', 'Thermography', 'IEEE 519'],
   },
   {
     id: 'ridge-hospital-emergency-power',
+    slug: 'ridge-hospital-emergency-power',
     title: 'Critical Medical Center 11kV Power Distribution & Dual Redundancy',
     category: 'Commercial',
     client: 'Greater Accra Specialized Surgical & Diagnostics Center',
@@ -62,11 +69,13 @@ export const PROJECTS_DATA: ProjectCaseStudy[] = [
     outcome:
       'Zero interruption during grid fluctuations; passed Ministry of Health and Energy Commission hospital electrical safety compliance with 100% score.',
     image: null,
+    images: [],
     highlight: 'Tier-4 Reliability for Critical Healthcare',
     tags: ['Healthcare Power', 'Isolated Power Systems', 'Medical Earthing', 'Dual Redundancy'],
   },
   {
     id: 'takoradi-harbor-logistics-electrification',
+    slug: 'takoradi-harbor-logistics-electrification',
     title: 'Port Cold Storage & Container Yard High-Mast Electrification',
     category: 'Industrial',
     client: 'Western Port Logistics & Cold Chain Hub',
@@ -78,11 +87,13 @@ export const PROJECTS_DATA: ProjectCaseStudy[] = [
     outcome:
       'Enabled continuous 24/7 ship loading/unloading operations with automated reefer power monitoring and surge protection.',
     image: null,
+    images: [],
     highlight: '160 Simultaneous Reefer Plugs Energized',
     tags: ['Port Electrification', 'High-Mast Lighting', 'Medium Voltage', 'Industrial Cable Ducting'],
   },
   {
     id: 'cantonments-luxury-residential-estate',
+    slug: 'cantonments-luxury-residential-estate',
     title: 'Smart Automation & Solar Microgrid for 24-Unit Luxury Estate',
     category: 'Solar & Hybrid',
     client: 'Cantonments Luxury Residences Consortium',
@@ -94,6 +105,7 @@ export const PROJECTS_DATA: ProjectCaseStudy[] = [
     outcome:
       'Reduced tenant utility fees by 40% with zero noise pollution during daytime grid outages.',
     image: null,
+    images: [],
     highlight: 'Zero-Noise Daylight Grid Independence',
     tags: ['Smart Automation', 'Solar Carport', 'Smart Submetering', 'Residential Microgrid'],
   },
@@ -101,11 +113,15 @@ export const PROJECTS_DATA: ProjectCaseStudy[] = [
 
 export const PROJECTS = PROJECTS_DATA.map((p) => ({
   id: p.id,
+  slug: p.slug,
   title: p.title,
   client: p.client,
+  client_name: p.client,
   category: p.category,
   description: p.scope,
   outcome: p.outcome,
   image: p.image,
+  cover_image_path: p.image,
+  images: p.images,
   published: true,
 }));

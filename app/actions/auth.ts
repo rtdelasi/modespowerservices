@@ -5,12 +5,12 @@ import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 
 export async function login(formData: FormData) {
-  const email = formData.get('email') as string;
-  const password = formData.get('password') as string;
+  const email = (formData.get('email') as string)?.trim();
+  const password = (formData.get('password') as string)?.trim();
   const redirectTo = (formData.get('redirectTo') as string) || '/admin';
 
   if (!email || !password) {
-    return { error: 'Please enter both email and password.' };
+    return { success: false, error: 'Please enter both email and password.' };
   }
 
   const supabase = createClient();
@@ -20,11 +20,11 @@ export async function login(formData: FormData) {
   });
 
   if (error) {
-    return { error: error.message };
+    return { success: false, error: error.message };
   }
 
   revalidatePath('/', 'layout');
-  redirect(redirectTo);
+  return { success: true, redirectTo };
 }
 
 export async function logout() {

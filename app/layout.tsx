@@ -1,22 +1,16 @@
 import type { Metadata } from 'next';
-import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
+import { Schibsted_Grotesk } from 'next/font/google';
 import { headers } from 'next/headers';
 import './globals.css';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { COMPANY_INFO } from '@/data/company';
 
-const inter = Inter({
+const schibsted = Schibsted_Grotesk({
   subsets: ['latin'],
-  variable: '--font-sans',
+  variable: '--font-schibsted',
+  weight: ['400', '500', '600'],
   display: 'swap',
-});
-
-const plusJakartaSans = Plus_Jakarta_Sans({
-  subsets: ['latin'],
-  variable: '--font-display',
-  display: 'swap',
-  weight: ['400', '500', '600', '700', '800'],
 });
 
 export const metadata: Metadata = {
@@ -87,10 +81,23 @@ export default function RootLayout({
   const isMaintenance = headersList.get('x-maintenance-mode') === 'true';
 
   return (
-    <html lang="en" className={`${inter.variable} ${plusJakartaSans.variable}`}>
-      <body className="bg-canvas-cream text-content-primary antialiased selection:bg-brand-red selection:text-white">
+    <html lang="en" className={schibsted.variable}>
+      <body className="bg-paper text-ink font-sans antialiased selection:bg-signal selection:text-white">
+        {/* Skip to content link as first focusable element */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] px-4 py-2.5 bg-signal text-white font-medium text-sm rounded-button shadow-lg outline-none ring-2 ring-white"
+        >
+          Skip to content
+        </a>
         {!isMaintenance && <Navbar />}
-        <main className="relative min-h-screen flex flex-col">{children}</main>
+        <main
+          id="main-content"
+          tabIndex={-1}
+          className="relative min-h-screen flex flex-col focus:outline-none"
+        >
+          {children}
+        </main>
         {!isMaintenance && <Footer />}
       </body>
     </html>

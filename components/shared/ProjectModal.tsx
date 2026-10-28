@@ -122,13 +122,15 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
               </div>
 
               {/* Tags */}
-              <div className="flex flex-wrap gap-2 pt-2">
-                {project.tags.map((tag) => (
-                  <span key={tag} className="text-xs bg-black/[0.04] text-content-secondary px-3 py-1 rounded-pill font-medium">
-                    #{tag}
-                  </span>
-                ))}
-              </div>
+              {project.tags && project.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2 pt-2">
+                  {project.tags.map((tag) => (
+                    <span key={tag} className="text-xs bg-black/[0.04] text-content-secondary px-3 py-1 rounded-pill font-medium">
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              )}
 
               {/* Action Buttons */}
               <div className="pt-4 border-t border-black/[0.06] flex items-center justify-between">

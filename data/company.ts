@@ -1,29 +1,22 @@
+import { siteConfig } from '@/lib/site-config';
 import { StatItem } from '@/types';
 
 export const COMPANY_INFO = {
-  name: 'Modes Power Services',
-  legalName: 'Modes Power Services Ltd.',
-  tagline: 'Precision Electrical Engineering & Power Infrastructure',
-  description:
-    'Ghana’s trusted partner for high, medium, and low voltage electrical installations, 24/7 industrial maintenance, power quality audits, and custom hybrid power systems.',
-  address: 'Plot 14, Spintex Industrial Area, Accra, Ghana',
-  city: 'Accra',
-  country: 'Ghana',
-  phone: '+233 (0) 20 843 8618',
-  emergencyPhone: '+233 (0) 20 843 8618',
-  email: 'modespower@gmail.com',
-  supportEmail: 'modespower@gmail.com',
-  operatingHours: {
-    office: 'Monday – Friday: 8:00 AM – 6:00 PM GMT',
-    emergency: '24/7 / 365 Rapid Response Dispatch',
-  },
-  certification: 'Energy Commission Ghana Certified Class A Electrical Contractor',
-  licenseNo: 'EC/EC-IND/2021/0488',
-  socials: {
-    linkedin: 'https://linkedin.com/company/modes-power-services',
-    twitter: 'https://twitter.com/modespower',
-    facebook: 'https://facebook.com/modespowerservices',
-  },
+  name: siteConfig.name,
+  legalName: siteConfig.legalName,
+  tagline: siteConfig.tagline,
+  description: siteConfig.description,
+  address: siteConfig.address,
+  city: siteConfig.city,
+  country: siteConfig.country,
+  phone: siteConfig.phone,
+  emergencyPhone: siteConfig.phone,
+  email: siteConfig.email,
+  supportEmail: siteConfig.email,
+  operatingHours: siteConfig.hours,
+  certification: siteConfig.certification,
+  licenseNo: siteConfig.licenseNo,
+  socials: siteConfig.socials,
 };
 
 export const KEY_STATS: StatItem[] = [
@@ -31,7 +24,7 @@ export const KEY_STATS: StatItem[] = [
     value: 15,
     suffix: '+',
     label: 'Years of Excellence',
-    description: 'Delivering uncompromised power solutions across Ghana & West Africa since 2011.',
+    description: `Delivering uncompromised power solutions across Ghana & West Africa since ${siteConfig.foundingYear}.`,
   },
   {
     value: 520,

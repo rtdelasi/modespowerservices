@@ -45,20 +45,47 @@ export interface AccordionReason {
   highlightTag: string;
 }
 
-export interface ProjectCaseStudy {
-  id: string;
-  title: string;
-  category: 'Industrial' | 'Commercial' | 'Infrastructure' | 'Solar & Hybrid';
-  client: string;
-  location: string;
-  capacity: string;
-  scope: string;
-  timeline: string;
-  outcome: string;
-  image?: string | null;
-  highlight: string;
-  tags: string[];
+export type ProjectImageKind = 'gallery' | 'before' | 'after';
+
+export interface ProjectImage {
+  id?: string;
+  project_id?: string;
+  url: string;
+  alt: string;
+  caption?: string | null;
+  kind: ProjectImageKind;
+  sort_order: number;
+  width?: number | null;
+  height?: number | null;
+  blur_data_url?: string | null;
+  created_at?: string;
 }
+
+export interface Project {
+  id: string;
+  slug: string;
+  title: string;
+  category: 'Industrial' | 'Commercial' | 'Infrastructure' | 'Solar & Hybrid' | string;
+  client?: string;
+  client_name?: string;
+  description?: string;
+  scope?: string;
+  outcome?: string;
+  cover_image_path?: string | null;
+  image?: string | null;
+  images: ProjectImage[];
+  sort_order?: number;
+  published?: boolean;
+  location?: string;
+  capacity?: string;
+  timeline?: string;
+  highlight?: string;
+  tags?: string[];
+  created_at?: string;
+  updated_at?: string;
+}
+
+export type ProjectCaseStudy = Project;
 
 export interface TeamMember {
   id?: string;

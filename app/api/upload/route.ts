@@ -14,13 +14,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
+    const customPath = (formData.get('filePath') as string | null)?.trim();
     const fileExt = file.name.split('.').pop() || 'png';
     const cleanFileName = file.name
       .replace(/\.[^/.]+$/, '')
       .replace(/[^a-zA-Z0-9]/g, '_')
       .toLowerCase();
     const fileName = `${Date.now()}_${cleanFileName}.${fileExt}`;
-    const filePath = folder ? `${folder}/${fileName}` : fileName;
+    const filePath = customPath || (folder ? `${folder}/${fileName}` : fileName);
 
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
@@ -33,7 +34,7 @@ export async function POST(request: NextRequest) {
       try {
         const supabase = createClient(supabaseUrl, serviceRoleKey);
         const { data, error } = await supabase.storage.from(bucket).upload(filePath, buffer, {
-          contentType: file.type || 'image/jpeg',
+          contentType: file.type || 'image/webp',
           cacheControl: '3600',
           upsert: true,
         });
@@ -57,11 +58,11 @@ export async function POST(request: NextRequest) {
 
     // 2. Fallback: Save directly to public/uploads/<bucket>/
     const uploadsDir = path.join(process.cwd(), 'public', 'uploads', bucket);
-    await fs.mkdir(uploadsDir, { recursive: true });
-    const localFilePath = path.join(uploadsDir, fileName);
+    const localFilePath = path.join(uploadsDir, filePath);
+    await fs.mkdir(path.dirname(localFilePath), { recursive: true });
     await fs.writeFile(localFilePath, buffer);
 
-    const publicUrl = `/uploads/${bucket}/${fileName}`;
+    const publicUrl = `/uploads/${bucket}/${filePath}`;
     return NextResponse.json({
       path: publicUrl,
       publicUrl,

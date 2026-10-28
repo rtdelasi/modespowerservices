@@ -6,12 +6,11 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight, ShieldCheck, Check, Award, ArrowUpRight } from 'lucide-react';
 import { SectionContainer } from '@/components/layout/SectionContainer';
-import { StatCounter } from '@/components/shared/StatCounter';
 import { EyebrowTag } from '@/components/ui/EyebrowTag';
 import { DottedDivider } from '@/components/ui/DottedDivider';
 import { OverlappingPill } from '@/components/ui/OverlappingPill';
 import { ImageWithFallback } from '@/components/ui/ImageWithFallback';
-import { KEY_STATS, COMPANY_INFO } from '@/data/company';
+import { COMPANY_INFO } from '@/data/company';
 
 interface AboutPreviewProps {
   aboutImage?: string | null;
@@ -105,27 +104,6 @@ export function AboutPreview({ aboutImage }: AboutPreviewProps = {}) {
             </Link>
           </div>
         </div>
-      </div>
-
-      {/* Row of Large Count-Up Animated Numbers with Dotted Separators */}
-      <div className="mt-14 sm:mt-16 pt-8 border-t border-black/[0.06] grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-        {KEY_STATS.map((stat) => (
-          <div key={stat.label} className="flex flex-col space-y-1.5">
-            <div className="font-display font-extrabold text-3xl sm:text-4xl md:text-5xl text-brand-navy tracking-tight">
-              <StatCounter
-                value={stat.value}
-                suffix={stat.suffix}
-                prefix={stat.prefix}
-              />
-            </div>
-            <span className="text-xs sm:text-sm font-bold text-brand-red uppercase tracking-wider">
-              {stat.label}
-            </span>
-            <p className="text-xs text-content-secondary leading-relaxed">
-              {stat.description}
-            </p>
-          </div>
-        ))}
       </div>
     </SectionContainer>
   );
