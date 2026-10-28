@@ -48,7 +48,12 @@ function saveToCache<T>(key: string, data: T): T {
 
 export function clearQueryCache(key?: string): void {
   if (key) {
-    delete queryCache[key];
+    const search = key.toLowerCase();
+    for (const k in queryCache) {
+      if (k.toLowerCase().includes(search) || k.toLowerCase().startsWith(search)) {
+        delete queryCache[k];
+      }
+    }
   } else {
     for (const k in queryCache) {
       delete queryCache[k];

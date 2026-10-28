@@ -1,256 +1,122 @@
 import React from 'react';
 import { Metadata } from 'next';
-import { ImageWithFallback } from '@/components/ui/ImageWithFallback';
-import Link from 'next/link';
-import { Zap, Activity, ShieldCheck, Cpu, Clock, CheckCircle2, Check, PhoneCall } from 'lucide-react';
-import { SectionContainer } from '@/components/layout/SectionContainer';
-import { SectionHeader } from '@/components/ui/SectionHeader';
-import { EyebrowTag } from '@/components/ui/EyebrowTag';
-import { DottedDivider } from '@/components/ui/DottedDivider';
-import { PairedButton } from '@/components/ui/PairedButton';
-import { OverlappingPill } from '@/components/ui/OverlappingPill';
-import { CTASection } from '@/components/shared/CTASection';
-import { SERVICES_DATA } from '@/data/services';
-import { COMPANY_INFO } from '@/data/company';
+import { Container, Section, TextLink } from '@/components/ui';
+import { SERVICES } from '@/lib/services';
+import { ServicesStickyNav } from '@/components/services';
+import { QuoteBand } from '@/components/home/QuoteBand';
+import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
-  title: 'Engineering Services — HV Substations, Maintenance, Audits & Solar',
+  title: 'Services | Modes Power Services',
   description:
-    'Explore Modes Power Services full suite of electrical engineering: Substation Installations, Predictive Maintenance, Power Quality Audits, Solar Microgrids, and 24/7 Rapid Emergency Response.',
+    'Turnkey electrical engineering across 415 V to 33 kV infrastructure, preventative maintenance, power quality logging, and commercial solar microgrids.',
+  openGraph: {
+    title: 'Services | Modes Power Services',
+    description:
+      'Turnkey electrical engineering across 415 V to 33 kV infrastructure, preventative maintenance, power quality logging, and commercial solar microgrids.',
+    type: 'website',
+  },
 };
 
+export const revalidate = 60;
+
+/**
+ * Services Page (Redesign per BRIEF & Phase 9a)
+ * - Page header with fluid typography
+ * - Five services from lib/services.ts as large divider sections
+ * - Anchor IDs: installations, maintenance, audits, solutions, emergency
+ * - scroll-margin-top equal to header height (scroll-mt-20 md:scroll-mt-24)
+ * - Desktop sticky list on the left with active section highlighting & keyboard operability
+ * - Each section: title, summary, key spec with tabular numbers, longer scope list, and TextLink "Request a quote for this"
+ * - Quote and emergency band at bottom
+ */
 export default function ServicesPage() {
-  const getIcon = (iconName: string) => {
-    switch (iconName) {
-      case 'Zap':
-        return <Zap className="w-4 h-4" />;
-      case 'Activity':
-        return <Activity className="w-4 h-4" />;
-      case 'ShieldCheck':
-        return <ShieldCheck className="w-4 h-4" />;
-      case 'Cpu':
-        return <Cpu className="w-4 h-4" />;
-      case 'Clock':
-        return <Clock className="w-4 h-4" />;
-      default:
-        return <Zap className="w-4 h-4" />;
-    }
-  };
-
   return (
-    <div className="flex flex-col gap-4 sm:gap-6 pt-24 sm:pt-28 md:pt-32 pb-6">
-      {/* 1. Services Hero */}
-      <SectionContainer theme="navy" className="text-white">
-        <div className="relative z-10 max-w-3xl space-y-4">
-          <EyebrowTag theme="white" icon={<Zap className="w-3.5 h-3.5" />}>
-            Turnkey Engineering Solutions
-          </EyebrowTag>
+    <div className="w-full flex flex-col min-h-screen">
+      <Section tone="paper" className="pt-24 sm:pt-28 md:pt-32 pb-16 md:pb-24">
+        <Container>
+          {/* 1. Page Header */}
+          <header className="mb-12 md:mb-16">
+            <h1 className="text-display font-semibold text-ink tracking-tight leading-[1.1]">
+              Engineering services
+            </h1>
+            <p className="text-body text-slate max-w-[68ch] mt-3 leading-[1.6]">
+              Turnkey electrical engineering across 415 V to 33 kV infrastructure, preventative maintenance, power quality logging, and commercial solar microgrids.
+            </p>
+          </header>
 
-          <h1 className="font-display font-extrabold text-3xl sm:text-5xl md:text-6xl tracking-tight leading-tight text-white">
-            Comprehensive Electrical Capabilities. Zero Compromise.
-          </h1>
+          {/* 2. Main Content: Desktop Sticky Nav on Left, Divider Sections on Right */}
+          <div className="flex flex-col lg:flex-row lg:items-start lg:gap-16">
+            {/* Desktop Sticky List on the Left */}
+            <aside className="hidden lg:block lg:w-72 lg:shrink-0">
+              <ServicesStickyNav services={SERVICES} />
+            </aside>
 
-          <DottedDivider theme="red" align="left" count={8} className="py-1" />
-
-          <p className="text-base sm:text-lg text-neutral-300 font-normal leading-relaxed">
-            From utility-grade 33kV substations to high-efficiency solar microgrids and 24/7 emergency dispatch, we deliver end-to-end electrical solutions engineered for extreme reliability.
-          </p>
-        </div>
-      </SectionContainer>
-
-      {/* 2. Quick-Nav Sticky Pills */}
-      <div className="sticky top-20 z-30 max-w-[1240px] mx-auto px-4 w-full pointer-events-none">
-        <div className="pointer-events-auto bg-white/90 backdrop-blur-xl border border-black/[0.08] shadow-lg rounded-full p-1.5 flex items-center justify-start sm:justify-center gap-1 overflow-x-auto no-scrollbar">
-          {SERVICES_DATA.map((srv) => (
-            <a
-              key={srv.anchor}
-              href={`#${srv.anchor}`}
-              className="px-4 py-1.5 rounded-full text-xs font-semibold text-brand-navy hover:bg-brand-navy hover:text-white transition-colors shrink-0 flex items-center gap-1.5"
-            >
-              <span>{srv.title.split(' ')[0]}</span>
-              <span className="hidden md:inline">{srv.title.split(' ').slice(1, 3).join(' ')}</span>
-            </a>
-          ))}
-        </div>
-      </div>
-
-      {/* 3. Detailed Service Anchor Sections */}
-      {SERVICES_DATA.map((service, index) => {
-        const isEven = index % 2 === 0;
-        const isEmergency = service.id === 'emergency';
-
-        return (
-          <SectionContainer
-            key={service.id}
-            id={service.anchor}
-            theme={isEmergency ? 'navy' : 'white'}
-            radius={isEmergency ? 'top-only' : 'all'}
-            className="scroll-mt-32 relative"
-          >
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-              {/* Content Column */}
-              <div className={`lg:col-span-7 space-y-5 ${!isEven && 'lg:order-2'}`}>
-                {/* Header: Section 4a.7 Outlined Pill Eyebrow + Section 4a.8 Dotted Divider */}
-                <div className="space-y-3">
-                  <EyebrowTag
-                    theme={isEmergency ? 'white' : 'red'}
-                    icon={
-                      <div
-                        className={`w-5 h-5 rounded-full flex items-center justify-center text-xs ${
-                          isEmergency ? 'bg-brand-red text-white' : 'bg-brand-red/10 text-brand-red'
-                        }`}
-                      >
-                        {getIcon(service.iconName)}
-                      </div>
-                    }
-                  >
-                    {service.badge}
-                  </EyebrowTag>
-
-                  <h2
-                    className={`font-display font-extrabold text-2xl sm:text-3xl md:text-4xl tracking-tight leading-tight ${
-                      isEmergency ? 'text-white' : 'text-brand-navy'
-                    }`}
-                  >
+            {/* Five Services Large Divider Sections */}
+            <div className="flex-1 min-w-0 flex flex-col">
+              {SERVICES.map((service, index) => (
+                <article
+                  key={service.id}
+                  id={service.id}
+                  className={cn(
+                    'scroll-mt-20 md:scroll-mt-24 py-12 md:py-16 border-t border-hairline first:border-t-0 first:pt-0',
+                    index === SERVICES.length - 1 ? 'pb-0' : ''
+                  )}
+                >
+                  {/* Title */}
+                  <h2 className="text-h2 font-semibold text-ink tracking-tight leading-[1.1] text-balance">
                     {service.title}
                   </h2>
 
-                  <DottedDivider theme="red" align="left" count={7} className="pb-1" />
-                </div>
+                  {/* Summary */}
+                  <p className="text-body text-slate mt-3 leading-[1.6] max-w-[68ch]">
+                    {service.summary}
+                  </p>
 
-                <p
-                  className={`text-sm sm:text-base leading-relaxed ${
-                    isEmergency ? 'text-neutral-300' : 'text-content-secondary'
-                  }`}
-                >
-                  {service.fullDesc}
-                </p>
-
-                {/* Key Technical Specs Grid: Section 4a.13 Lighter Treatment */}
-                <div
-                  className={`grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 rounded-2xl border ${
-                    isEmergency
-                      ? 'bg-white/[0.04] border-white/10'
-                      : 'bg-surface-muted border-black/[0.04]'
-                  }`}
-                >
-                  {service.specs.map((spec) => (
-                    <div key={spec.label}>
-                      <span
-                        className={`text-[10px] font-bold uppercase tracking-wider block ${
-                          isEmergency ? 'text-neutral-400' : 'text-content-tertiary'
-                        }`}
-                      >
-                        {spec.label}
-                      </span>
-                      <span
-                        className={`text-xs font-semibold ${
-                          isEmergency ? 'text-white' : 'text-brand-navy'
-                        }`}
-                      >
-                        {spec.value}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Scope & Capabilities List with Section 4a.9 Circular Check Icons */}
-                <div className="space-y-2.5 pt-1">
-                  <h3
-                    className={`text-xs font-bold uppercase tracking-wider ${
-                      isEmergency ? 'text-brand-red' : 'text-brand-navy'
-                    }`}
-                  >
-                    Core Scope & Capabilities:
-                  </h3>
-                  <ul className="space-y-2 text-xs sm:text-sm">
-                    {service.features.map((feat, i) => (
-                      <li
-                        key={i}
-                        className={`flex items-start gap-2.5 ${
-                          isEmergency ? 'text-neutral-200' : 'text-content-secondary'
-                        }`}
-                      >
-                        <div className="w-4 h-4 rounded-full bg-brand-red/10 text-brand-red flex items-center justify-center shrink-0 mt-0.5">
-                          <CheckCircle2 className="w-3 h-3" />
-                        </div>
-                        <span>{feat}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Deliverables Box */}
-                <div
-                  className={`p-4 rounded-2xl border ${
-                    isEmergency
-                      ? 'bg-brand-red/10 border-brand-red/30 text-neutral-200'
-                      : 'bg-brand-red-light/40 border-brand-red/20 text-brand-navy'
-                  }`}
-                >
-                  <span className="text-xs font-bold text-brand-red uppercase tracking-wider block mb-2">
-                    Client Handover Deliverables:
-                  </span>
-                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs font-medium">
-                    {service.deliverables.map((deliv, i) => (
-                      <li key={i} className="flex items-center gap-1.5">
-                        <div className="w-3.5 h-3.5 rounded-full bg-brand-red text-white flex items-center justify-center shrink-0">
-                          <Check className="w-2.5 h-2.5" />
-                        </div>
-                        <span>{deliv}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* CTA: Section 4a.12 Paired Circular Button */}
-                <div className="pt-3">
-                  <PairedButton
-                    label={isEmergency ? 'Call Emergency Dispatch' : 'Request Technical Proposal'}
-                    href={isEmergency ? `tel:${COMPANY_INFO.emergencyPhone.replace(/\s+/g, '')}` : '/contact'}
-                    variant={isEmergency ? 'primary' : 'primary'}
-                    size="md"
-                  />
-                </div>
-              </div>
-
-              {/* Image Column */}
-              <div className={`lg:col-span-5 relative ${!isEven && 'lg:order-1'}`}>
-                <div className="relative w-full h-[380px] sm:h-[480px] rounded-[28px] overflow-hidden shadow-xl border border-black/[0.06]">
-                  <ImageWithFallback
-                    src={service.image}
-                    alt={service.title}
-                    fill
-                    className="object-cover"
-                    fallbackCategory={service.title}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-brand-navy/60 via-transparent to-transparent" />
-                </div>
-
-                {/* Section 4a.11: Overlapping Straddling Pill on Emergency Service */}
-                {isEmergency && (
-                  <div className="absolute -bottom-4 -right-2 sm:right-4 z-20">
-                    <OverlappingPill
-                      icon={<PhoneCall className="w-4 h-4" />}
-                      text="24/7 Rapid Response"
-                      subtext="Guaranteed <60 min triage"
-                      theme="white"
-                    />
+                  {/* Key Specification */}
+                  <div className="my-6 py-3.5 border-y border-hairline flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-4 max-w-[68ch]">
+                    <span className="text-small font-medium text-slate">Key specification</span>
+                    <span className="text-small font-semibold text-ink tabular-nums text-left sm:text-right">
+                      {service.keySpec}
+                    </span>
                   </div>
-                )}
-              </div>
-            </div>
-          </SectionContainer>
-        );
-      })}
 
-      {/* 4. Full-Bleed CTA Banner */}
-      <CTASection
-        title="Need A Customized Power Engineering Solution?"
-        subtitle="Our master engineers provide comprehensive turnkey proposals, single-line schematics, and Energy Commission compliance certifications."
-        buttonText="Request a Technical Consultation"
-        buttonHref="/contact"
-      />
+                  {/* Longer Scope as a Short List */}
+                  <div className="my-6 max-w-[68ch]">
+                    <h3 className="text-small font-semibold text-ink uppercase tracking-wider mb-3">
+                      Scope of work
+                    </h3>
+                    <ul className="space-y-2 text-body text-slate" role="list">
+                      {service.longerScope.map((item, idx) => (
+                        <li key={idx} className="flex items-start gap-3">
+                          <span
+                            className="w-1.5 h-1.5 rounded-full bg-slate/50 mt-2.5 shrink-0"
+                            aria-hidden="true"
+                          />
+                          <span className="leading-[1.6]">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* TextLink "Request a quote for this" */}
+                  <div className="pt-2">
+                    <TextLink
+                      href={`/contact?service=${service.id}`}
+                      aria-label={`Request a quote for ${service.title}`}
+                    >
+                      Request a quote for this
+                    </TextLink>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </Container>
+      </Section>
+
+      {/* 3. Quote and Emergency Band */}
+      <QuoteBand />
     </div>
   );
 }

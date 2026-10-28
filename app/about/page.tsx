@@ -1,29 +1,62 @@
 import React from 'react';
 import { Metadata } from 'next';
 import Image from 'next/image';
-import { ShieldCheck, Award, Zap, CheckCircle2, Compass, Lightbulb, Users, Target, PhoneCall } from 'lucide-react';
-import { SectionContainer } from '@/components/layout/SectionContainer';
-import { SectionHeader } from '@/components/ui/SectionHeader';
-import { EyebrowTag } from '@/components/ui/EyebrowTag';
-import { DottedDivider } from '@/components/ui/DottedDivider';
-import { OverlappingPill } from '@/components/ui/OverlappingPill';
-import { StatCounter } from '@/components/shared/StatCounter';
-import { GradientInterstitial } from '@/components/shared/GradientInterstitial';
-import { TeamCard } from '@/components/shared/TeamCard';
-import { CTASection } from '@/components/shared/CTASection';
-import { KEY_STATS, COMPANY_INFO } from '@/data/company';
+import { Container, Section, SectionHeading, Stat } from '@/components/ui';
+import { siteConfig } from '@/lib/site-config';
+import { siteContent } from '@/lib/site-content';
 import { getPublishedTeamMembers, getSiteSettingsQuery } from '@/lib/supabase/queries';
-import { Logo } from '@/components/ui/Logo';
-import { ImageWithFallback } from '@/components/ui/ImageWithFallback';
+import { QuoteBand } from '@/components/home/QuoteBand';
 
 export const metadata: Metadata = {
-  title: 'About Us — Leadership, Engineering Rigor & Safety Standards',
+  title: 'About | Modes Power Services',
   description:
-    'Discover Modes Power Services — Ghana’s certified Class-A electrical engineering powerhouse specializing in high-voltage infrastructure, safety compliance, and sustainable microgrids.',
+    'Energy Commission of Ghana certified Class A electrical contractor for industrial substations, preventative maintenance, and solar microgrids.',
+  openGraph: {
+    title: 'About | Modes Power Services',
+    description:
+      'Energy Commission of Ghana certified Class A electrical contractor for industrial substations, preventative maintenance, and solar microgrids.',
+    type: 'website',
+  },
 };
 
 export const revalidate = 60;
 
+const CERTIFICATIONS = [
+  {
+    name: 'Energy Commission of Ghana',
+    detail: `Class A Electrical Contractor (License: ${siteConfig.licenseNo})`,
+  },
+  {
+    name: 'Ghana Institution of Engineering (GhIE)',
+    detail: 'Corporate membership and licensed engineering practice',
+  },
+  {
+    name: 'IEEE Power & Energy Society',
+    detail: 'Substation design, protection coordination, and power quality standards',
+  },
+  {
+    name: 'BS 7671 (IET Wiring Regulations)',
+    detail: 'Requirements for electrical installations and low-voltage distribution',
+  },
+  {
+    name: 'ISO 45001',
+    detail: 'Occupational health and safety management systems on all project sites',
+  },
+  {
+    name: 'ISO 9001',
+    detail: 'Quality management systems for electrical procurement and commissioning',
+  },
+];
+
+/**
+ * About Page (Redesign per BRIEF & Phase 9a)
+ * - Page header in sentence case
+ * - Company story tightened to plain language
+ * - Stats reusing Stat primitive and siteContent.stats (no duplicate numbers)
+ * - Certifications and standards as a simple list with hairline divider rows
+ * - Team from CMS as a plain grid (photo, name, role; hides missing fields)
+ * - Quote and emergency band at bottom
+ */
 export default async function AboutPage() {
   const [teamMembers, settings] = await Promise.all([
     getPublishedTeamMembers(),
@@ -31,243 +64,133 @@ export default async function AboutPage() {
   ]);
 
   return (
-    <div className="flex flex-col gap-4 sm:gap-6 pt-24 sm:pt-28 md:pt-32 pb-6">
-      {/* 1. About Hero Section */}
-      <SectionContainer theme="navy" radius="all" className="text-white">
-        <div className="relative z-10 max-w-3xl space-y-4">
-          {/* Section 4a.7 Outlined Pill Eyebrow */}
-          <EyebrowTag theme="white" icon={<Zap className="w-3.5 h-3.5" />}>
-            Over 15 Years of Engineering Excellence
-          </EyebrowTag>
+    <div className="w-full flex flex-col min-h-screen">
+      <Section tone="paper" className="pt-24 sm:pt-28 md:pt-32 pb-16 md:pb-24">
+        <Container>
+          {/* 1. Page Header */}
+          <header className="mb-12 md:mb-16">
+            <h1 className="text-display font-semibold text-ink tracking-tight leading-[1.1]">
+              About Modes Power Services
+            </h1>
+            <p className="text-body text-slate max-w-[68ch] mt-3 leading-[1.6]">
+              Class A electrical contractor for high-voltage substations, preventative maintenance, and industrial power engineering in Ghana since {siteConfig.foundingYear}.
+            </p>
+          </header>
 
-          <h1 className="font-display font-extrabold text-3xl sm:text-5xl md:text-6xl tracking-tight leading-tight text-white">
-            Engineering Ghana’s Power Backbone With Precision.
-          </h1>
+          {/* 2. Company Story */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start my-10 md:my-14">
+            <div className={settings.about_image_url ? 'lg:col-span-7' : 'lg:col-span-12'}>
+              <div className="space-y-4 text-body text-slate leading-[1.6] max-w-[68ch]">
+                <p>
+                  Modes Power Services was founded in Accra to provide Ghanaian industry with dependable, rigorously engineered electrical infrastructure. Unstable power quality and substandard installations cause chronic downtime and costly equipment failures across commercial and industrial facilities.
+                </p>
+                <p>
+                  As an Energy Commission of Ghana Class A certified electrical contractor, we design and install turnkey 11 kV and 33 kV substations, perform predictive maintenance with calibrated diagnostic tools, and deploy commercial solar microgrids to safeguard operations and control energy costs.
+                </p>
+              </div>
+            </div>
 
-          {/* Section 4a.8 Dotted Divider */}
-          <DottedDivider theme="red" align="left" count={8} className="py-1" />
+            {settings.about_image_url && (
+              <div className="lg:col-span-5">
+                <div className="relative aspect-[4/3] w-full rounded-media overflow-hidden border border-hairline bg-hairline/30">
+                  <Image
+                    src={settings.about_image_url}
+                    alt="Modes Power Services electrical engineering site"
+                    fill
+                    sizes="(min-width: 1024px) 40vw, 100vw"
+                    className="object-cover"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
 
-          <p className="text-base sm:text-lg text-neutral-300 font-normal leading-relaxed">
-            Founded with a vision to eliminate industrial power vulnerability, Modes Power Services delivers world-class electrical engineering, substation construction, and high-uptime energy solutions across West Africa.
-          </p>
-        </div>
-      </SectionContainer>
+          {/* 3. Stats Row (Reuses Stat primitive and siteContent.stats single source) */}
+          <div className="border-y border-hairline py-12 md:py-16 my-12 md:my-16">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+              {siteContent.stats.map((stat) => (
+                <Stat
+                  key={stat.id}
+                  value={stat.value}
+                  label={stat.label}
+                  description={stat.description}
+                  tone="paper"
+                />
+              ))}
+            </div>
+          </div>
 
-      {/* 2. Company Story & Origin with Overlapping Straddling Pill (Section 4a.11) */}
-      <SectionContainer theme="white">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-          <div className="lg:col-span-6 space-y-4">
-            <SectionHeader
-              eyebrow="Our Heritage & Track Record"
-              eyebrowIcon={<ShieldCheck className="w-3.5 h-3.5" />}
-              title="From Industrial Beginnings to National Infrastructure Leadership."
-              theme="light"
+          {/* 4. Certifications and Standards as a Simple List */}
+          <div className="my-12 md:my-16">
+            <SectionHeading
+              title="Certifications and standards"
+              description="All electrical installations, switchgear commissioning, and maintenance procedures strictly adhere to statutory Ghanaian regulations and international engineering standards."
+              as="h2"
+            />
+            <div className="flex flex-col border-t border-hairline" role="list">
+              {CERTIFICATIONS.map((item) => (
+                <div
+                  key={item.name}
+                  className="py-5 md:py-6 border-b border-hairline flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 sm:gap-6"
+                  role="listitem"
+                >
+                  <span className="text-body font-semibold text-ink">{item.name}</span>
+                  <span className="text-small text-slate">{item.detail}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 5. Team from CMS as a Plain Grid (hides missing fields) */}
+          <div className="mt-16 md:mt-24">
+            <SectionHeading
+              title="Engineering leadership"
+              description="Senior power systems engineers leading substation overhauls, protection testing, and microgrid commissioning."
+              as="h2"
             />
 
-            <p className="text-sm sm:text-base text-content-secondary leading-relaxed pt-2">
-              Established in Accra, Modes Power Services began with a clear mandate: to provide Ghanaian industries with electrical installations engineered to the highest international standards. We recognized that erratic power quality and substandard wiring cost local enterprises millions annually in lost production.
-            </p>
-
-            <p className="text-sm sm:text-base text-content-secondary leading-relaxed">
-              Today, as an Energy Commission Class-A certified electrical contractor, we manage critical high-voltage substations, execute 24/7 condition monitoring for continuous-process factories, and lead the deployment of hybrid solar microgrids that hedge against rising utility tariffs.
-            </p>
-
-            {/* Quick credentials badge with Official Company Logo & ECG Certification */}
-            <div className="p-3.5 pr-6 rounded-2xl sm:rounded-full bg-surface-muted border border-black/[0.05] flex items-center gap-3.5 shadow-sm">
-              <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center p-1 shrink-0 shadow-sm border border-black/[0.06]">
-                <Logo variant="default" size={38} />
+            {teamMembers.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
+                {teamMembers.map((member) => (
+                  <div
+                    key={member.id || member.name}
+                    className="flex flex-col border-t border-hairline pt-4"
+                  >
+                    {member.image && (
+                      <div className="relative aspect-[4/5] w-full rounded-media overflow-hidden mb-4 bg-hairline/30 border border-hairline/40">
+                        <Image
+                          src={member.image}
+                          alt={member.name}
+                          fill
+                          sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                          className="object-cover"
+                        />
+                      </div>
+                    )}
+                    <div className="space-y-1">
+                      {member.name && (
+                        <h3 className="text-body font-semibold text-ink leading-snug">
+                          {member.name}
+                        </h3>
+                      )}
+                      {member.role && (
+                        <p className="text-small text-slate leading-relaxed">
+                          {member.role}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div>
-                <span className="font-display font-bold text-sm text-brand-navy block">
-                  {COMPANY_INFO.certification}
-                </span>
-                <span className="text-xs text-content-secondary">
-                  License No: {COMPANY_INFO.licenseNo} • Energy Commission of Ghana & ECG Approved
-                </span>
-              </div>
-            </div>
+            ) : (
+              <p className="text-small text-slate">Team profiles will appear here once published.</p>
+            )}
           </div>
+        </Container>
+      </Section>
 
-          <div className="lg:col-span-6 relative">
-            <div className="relative w-full h-[380px] sm:h-[460px] rounded-[28px] overflow-hidden shadow-xl border border-black/[0.06]">
-              <ImageWithFallback
-                src={settings.about_image_url}
-                alt="Modes Power Services Engineers working on industrial switchgear"
-                fallbackCategory="Engineering"
-                fallbackTitle="Modes Power Services — Engineering Infrastructure"
-                className="object-cover"
-              />
-            </div>
-
-            {/* Section 4a.11: Overlapping Straddling Pill Badge */}
-            <div className="absolute -bottom-4 -left-3 sm:left-4 z-20">
-              <OverlappingPill
-                icon={<ShieldCheck className="w-4 h-4" />}
-                text="100% Zero-Harm Safety Record"
-                subtext="NEBOSH & ISO 45001 Compliance"
-                theme="white"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Animated Key Stats Row */}
-        <div className="mt-14 pt-8 border-t border-black/[0.06] grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-          {KEY_STATS.map((stat) => (
-            <div key={stat.label} className="flex flex-col space-y-1.5">
-              <div className="font-display font-extrabold text-3xl sm:text-4xl md:text-5xl text-brand-navy tracking-tight">
-                <StatCounter value={stat.value} suffix={stat.suffix} prefix={stat.prefix} />
-              </div>
-              <span className="text-xs sm:text-sm font-bold text-brand-red uppercase tracking-wider">
-                {stat.label}
-              </span>
-              <p className="text-xs text-content-secondary leading-relaxed">
-                {stat.description}
-              </p>
-            </div>
-          ))}
-        </div>
-      </SectionContainer>
-
-      {/* 3. Mission, Vision & Core Values: Section 4a.9 Circular Icon Badges */}
-      <SectionContainer theme="white">
-        <div className="mb-10">
-          <SectionHeader
-            eyebrow="Our Core Values & Principles"
-            eyebrowIcon={<Compass className="w-3.5 h-3.5" />}
-            title="Our Mission, Vision & Engineering DNA."
-            subtitle="The fundamental tenets that govern every single-line schematic, cable pull, and transformer commissioning."
-            theme="light"
-          />
-        </div>
-
-        {/* Section 4a.13 Lighter Card Treatments & Section 4a.9 Strictly Circular Icons */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* Safety */}
-          <div className="bg-white p-6 sm:p-7 rounded-[24px] border border-black/[0.05] hover:border-brand-red/30 shadow-soft-card hover:shadow-xl transition-all duration-300 space-y-4">
-            <div className="w-12 h-12 rounded-full bg-brand-red-light flex items-center justify-center text-brand-red shadow-sm">
-              <ShieldCheck className="w-6 h-6" />
-            </div>
-            <h3 className="font-display font-bold text-lg text-brand-navy">
-              Uncompromising Safety
-            </h3>
-            <p className="text-xs sm:text-sm text-content-secondary leading-relaxed">
-              Zero shortcuts. Every engineer adheres strictly to NEBOSH safety procedures, lockout/tagout (LOTO) protocols, and live-circuit precautions.
-            </p>
-          </div>
-
-          {/* Precision */}
-          <div className="bg-white p-6 sm:p-7 rounded-[24px] border border-black/[0.05] hover:border-brand-red/30 shadow-soft-card hover:shadow-xl transition-all duration-300 space-y-4">
-            <div className="w-12 h-12 rounded-full bg-brand-navy/5 flex items-center justify-center text-brand-navy shadow-sm">
-              <Target className="w-6 h-6" />
-            </div>
-            <h3 className="font-display font-bold text-lg text-brand-navy">
-              Technical Precision
-            </h3>
-            <p className="text-xs sm:text-sm text-content-secondary leading-relaxed">
-              We engineer with scientific exactness—using calibrated thermal imagers, micro-ohm meters, and Class-A harmonic power analyzers.
-            </p>
-          </div>
-
-          {/* Reliability */}
-          <div className="bg-white p-6 sm:p-7 rounded-[24px] border border-black/[0.05] hover:border-brand-red/30 shadow-soft-card hover:shadow-xl transition-all duration-300 space-y-4">
-            <div className="w-12 h-12 rounded-full bg-brand-navy/5 flex items-center justify-center text-brand-navy shadow-sm">
-              <Zap className="w-6 h-6" />
-            </div>
-            <h3 className="font-display font-bold text-lg text-brand-navy">
-              Proven Reliability
-            </h3>
-            <p className="text-xs sm:text-sm text-content-secondary leading-relaxed">
-              Power systems designed to withstand harsh West African climate conditions, transient spikes, and heavy continuous inductive loads.
-            </p>
-          </div>
-
-          {/* Innovation */}
-          <div className="bg-white p-6 sm:p-7 rounded-[24px] border border-black/[0.05] hover:border-brand-red/30 shadow-soft-card hover:shadow-xl transition-all duration-300 space-y-4">
-            <div className="w-12 h-12 rounded-full bg-brand-red-light flex items-center justify-center text-brand-red shadow-sm">
-              <Lightbulb className="w-6 h-6" />
-            </div>
-            <h3 className="font-display font-bold text-lg text-brand-navy">
-              Sustainable Innovation
-            </h3>
-            <p className="text-xs sm:text-sm text-content-secondary leading-relaxed">
-              Pioneering commercial solar PV and lithium battery energy storage (BESS) microgrids that drastically reduce grid tariffs and emissions.
-            </p>
-          </div>
-        </div>
-      </SectionContainer>
-
-      {/* 4. Dark Gradient Interstitial: Asymmetric top radius */}
-      <GradientInterstitial
-        eyebrow="Our Engineering Philosophy"
-        headline="We Build Infrastructure To Outlast Market Cycles."
-        highlightText="Engineered To Last."
-        subtext="Every transformer we drop, every cable we terminate, and every protection relay we calibrate is signed off by certified master engineers."
-      />
-
-      {/* 5. Leadership & Engineering Team */}
-      <SectionContainer theme="white">
-        <div className="mb-12">
-          <SectionHeader
-            eyebrow="Leadership & Senior Engineers"
-            eyebrowIcon={<Users className="w-3.5 h-3.5" />}
-            title="Led By Industry Veterans & Certified GhIE Fellows."
-            subtitle="Our executive engineering team brings over six decades of combined experience in high-voltage utility grids, industrial automation, and microgrid design."
-            theme="light"
-          />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-          {teamMembers.map((member, idx) => (
-            <TeamCard key={member.name} member={member} index={idx} />
-          ))}
-        </div>
-      </SectionContainer>
-
-      {/* 6. Standards & Compliance Section */}
-      <SectionContainer theme="white">
-        <div className="mb-10 text-center">
-          <SectionHeader
-            eyebrow="Statutory Compliance & Standards"
-            eyebrowIcon={<Award className="w-3.5 h-3.5" />}
-            title="Strict Adherence To International Engineering Codes"
-            align="center"
-            theme="light"
-          />
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-          {[
-            { title: 'Energy Commission', sub: 'Class A Contractor' },
-            { title: 'GhIE', sub: 'Institution of Engineering' },
-            { title: 'IEEE Standards', sub: 'Power & Energy Society' },
-            { title: 'BS 7671', sub: 'Wiring Regulations' },
-            { title: 'ISO 45001', sub: 'Health & Safety' },
-            { title: 'ISO 9001', sub: 'Quality Management' },
-          ].map((item) => (
-            <div
-              key={item.title}
-              className="bg-white p-4 rounded-2xl text-center border border-black/[0.05] shadow-soft-card flex flex-col items-center justify-center space-y-1"
-            >
-              {/* Section 4a.9 Circular Check Icon */}
-              <div className="w-7 h-7 rounded-full bg-brand-red/10 text-brand-red flex items-center justify-center mb-1">
-                <CheckCircle2 className="w-4 h-4" />
-              </div>
-              <span className="font-display font-bold text-xs sm:text-sm text-brand-navy">{item.title}</span>
-              <span className="text-[10px] text-content-secondary">{item.sub}</span>
-            </div>
-          ))}
-        </div>
-      </SectionContainer>
-
-      {/* 6. Full Bleed CTA Banner */}
-      <CTASection
-        title="Ready To Elevate Your Power Reliability?"
-        subtitle="Schedule a technical site assessment or consult directly with our Class-A certified senior electrical engineering team."
-        buttonText="Book an Engineering Consultation"
-        buttonHref="/contact"
-        image={settings.cta_image_url}
-      />
+      {/* 6. Quote and Emergency Band */}
+      <QuoteBand />
     </div>
   );
 }

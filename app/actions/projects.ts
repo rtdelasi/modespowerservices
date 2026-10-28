@@ -116,8 +116,12 @@ export async function createProject(rawData: ProjectInput) {
     }
   }
 
-  clearQueryCache('projects');
+  clearQueryCache();
   revalidatePath('/projects');
+  revalidatePath('/projects/[slug]', 'page');
+  if (slug) {
+    revalidatePath(`/projects/${slug}`);
+  }
   revalidatePath('/admin/projects');
   revalidatePath('/admin');
   revalidatePath('/');
@@ -243,8 +247,12 @@ export async function updateProject(id: string, rawData: ProjectInput) {
     }
   }
 
-  clearQueryCache('projects');
+  clearQueryCache();
   revalidatePath('/projects');
+  revalidatePath('/projects/[slug]', 'page');
+  if (slugToSave) {
+    revalidatePath(`/projects/${slugToSave}`);
+  }
   revalidatePath('/admin/projects');
   revalidatePath('/admin');
   revalidatePath('/');
@@ -299,8 +307,9 @@ export async function deleteProject(id: string, imagePath?: string | null) {
     }
   }
 
-  clearQueryCache('projects');
+  clearQueryCache();
   revalidatePath('/projects');
+  revalidatePath('/projects/[slug]', 'page');
   revalidatePath('/admin/projects');
   revalidatePath('/admin');
   revalidatePath('/');
@@ -325,8 +334,9 @@ export async function toggleProjectPublish(id: string, currentStatus: boolean) {
     return { success: false, error: error.message };
   }
 
-  clearQueryCache('projects');
+  clearQueryCache();
   revalidatePath('/projects');
+  revalidatePath('/projects/[slug]', 'page');
   revalidatePath('/admin/projects');
   revalidatePath('/admin');
   revalidatePath('/');
@@ -345,8 +355,9 @@ export async function reorderProjects(items: { id: string; sort_order: number }[
     }
   }
 
-  clearQueryCache('projects');
+  clearQueryCache();
   revalidatePath('/projects');
+  revalidatePath('/projects/[slug]', 'page');
   revalidatePath('/admin/projects');
   revalidatePath('/admin');
   revalidatePath('/');

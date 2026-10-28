@@ -5,6 +5,9 @@ import { ProjectsTable } from '@/components/admin/ProjectsTable';
 import { PROJECTS } from '@/data/projects';
 import { DbProject } from '@/lib/validations/project';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function AdminProjectsPage() {
   const supabase = createClient();
   let items: DbProject[] = [];
@@ -16,8 +19,11 @@ export default async function AdminProjectsPage() {
       .order('sort_order', { ascending: true })
       .order('created_at', { ascending: false });
 
-    if (data && !error) {
+    if (data && !error && data.length > 0) {
       items = data as DbProject[];
+    } else if (data && !error && data.length === 0) {
+      items = [];
+    } else {
       items = PROJECTS.map((p, idx) => ({
         id: p.id,
         slug: (p as any).slug || p.id,
@@ -35,21 +41,7 @@ export default async function AdminProjectsPage() {
       }));
     }
   } catch (err) {
-    items = PROJECTS.map((p, idx) => ({
-      id: p.id,
-      slug: (p as any).slug || p.id,
-      title: p.title,
-      client_name: p.client || '',
-      category: (p.category as any) || 'Industrial',
-      description: p.description || '',
-      outcome: p.outcome || null,
-      cover_image_path: p.image || null,
-      images: (p as any).images || [],
-      sort_order: idx,
-      published: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    }));
+    items = [];
   }
 
   return (

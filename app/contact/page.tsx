@@ -1,29 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import {
-  Phone,
-  Mail,
-  MapPin,
-  Clock,
-  ShieldCheck,
-  Zap,
-  Send,
-  CheckCircle2,
-  AlertCircle,
-  PhoneCall,
-  Loader2,
-  Building2,
-  ArrowUpRight,
-} from 'lucide-react';
-import { SectionContainer } from '@/components/layout/SectionContainer';
-import { SectionHeader } from '@/components/ui/SectionHeader';
-import { EyebrowTag } from '@/components/ui/EyebrowTag';
-import { DottedDivider } from '@/components/ui/DottedDivider';
-import { OverlappingPill } from '@/components/ui/OverlappingPill';
-import { COMPANY_INFO } from '@/data/company';
-import { Logo } from '@/components/ui/Logo';
+import { Loader2, ArrowUpRight, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Container, Section } from '@/components/ui';
+import { siteConfig, getTelHref, getMailtoHref } from '@/lib/site-config';
 
 const SERVICE_OPTIONS = [
   'High, Medium & Low Voltage Installations',
@@ -34,6 +14,28 @@ const SERVICE_OPTIONS = [
   'General Technical Consultation',
 ];
 
+interface FormErrors {
+  fullName?: string;
+  email?: string;
+  phone?: string;
+  serviceType?: string;
+  projectDetails?: string;
+}
+
+/**
+ * ContactPage per Phase 9b:
+ * - Page header in sentence case
+ * - Two columns on desktop: Form left (lg:col-span-7), Details right (lg:col-span-5)
+ * - Submission mechanism & fields preserved exactly: POST /api/contact
+ * - Visible labels, correct input types, inputMode & autocompletes (mobile keyboards)
+ * - Inline validation near each field with role="alert"
+ * - Disabled-while-sending button with spinner label
+ * - Success message explaining what happens next + reference number
+ * - Clear error message with retry button
+ * - Hidden honeypot field (website_url)
+ * - Details sourced from lib/site-config.ts with "Get directions" link
+ * - Hides any contact detail that is empty
+ */
 export default function ContactPage() {
   const [formData, setFormData] = useState({
     fullName: '',
@@ -44,22 +46,113 @@ export default function ContactPage() {
     projectDetails: '',
   });
 
-  const [loading, setLoading] = useState(false);
+  const [honeypot, setHoneypot] = useState('');
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [statusMessage, setStatusMessage] = useState<{
-    type: 'success' | 'error';
     text: string;
-    refNo?: string;
+    referenceNo?: string;
   } | null>(null);
+
+  // Field validation rules
+  const validateField = (name: string, value: string): string | undefined => {
+    if (name === 'fullName') {
+      if (!value || !value.trim()) return 'Please enter your full name.';
+      if (value.trim().length < 2) return 'Full name must be at least 2 characters.';
+    }
+    if (name === 'email') {
+      if (!value || !value.trim()) return 'Please enter your work email.';
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(value.trim())) {
+        return 'Please enter a valid email address (e.g. name@company.com).';
+      }
+    }
+    if (name === 'phone') {
+      if (!value || !value.trim()) return 'Please enter your phone number.';
+      const digits = value.replace(/\D/g, '');
+      if (digits.length < 7) {
+        return 'Please enter a valid phone number with at least 7 digits.';
+      }
+    }
+    if (name === 'serviceType') {
+      if (!value || !value.trim()) return 'Please select a service category.';
+    }
+    if (name === 'projectDetails') {
+      if (!value || !value.trim()) {
+        return 'Please describe your project scope or engineering requirements.';
+      }
+      if (value.trim().length < 10) {
+        return 'Please provide at least 10 characters describing your project.';
+      }
+    }
+    return undefined;
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (touched[name]) {
+      const error = validateField(name, value);
+      setErrors((prev) => ({ ...prev, [name]: error }));
+    }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+  const handleBlur = (
+    e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setTouched((prev) => ({ ...prev, [name]: true }));
+    const error = validateField(name, value);
+    setErrors((prev) => ({ ...prev, [name]: error }));
+  };
+
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) {
+      e.preventDefault();
+    }
+
+    // Bot detection: silent drop if honeypot is filled
+    if (honeypot.trim() !== '') {
+      setStatus('success');
+      setStatusMessage({
+        text: 'Thank you. Your consultation request has been routed to our Lead Electrical Engineer.',
+        referenceNo: 'MPS-782910',
+      });
+      return;
+    }
+
+    // Validate all required fields
+    const newErrors: FormErrors = {};
+    const fieldsToValidate = ['fullName', 'email', 'phone', 'serviceType', 'projectDetails'] as const;
+
+    fieldsToValidate.forEach((field) => {
+      const err = validateField(field, formData[field]);
+      if (err) newErrors[field] = err;
+    });
+
+    setTouched({
+      fullName: true,
+      email: true,
+      phone: true,
+      company: true,
+      serviceType: true,
+      projectDetails: true,
+    });
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      // Focus first error field for screen readers / keyboard accessibility
+      const firstField = Object.keys(newErrors)[0];
+      const el = document.getElementById(firstField);
+      if (el) el.focus();
+      return;
+    }
+
+    setStatus('submitting');
     setStatusMessage(null);
 
     try {
@@ -72,10 +165,10 @@ export default function ContactPage() {
       const data = await res.json();
 
       if (res.ok && data.success) {
+        setStatus('success');
         setStatusMessage({
-          type: 'success',
-          text: data.message,
-          refNo: data.referenceNo,
+          text: data.message || 'Consultation request received.',
+          referenceNo: data.referenceNo,
         });
         setFormData({
           fullName: '',
@@ -85,350 +178,494 @@ export default function ContactPage() {
           serviceType: SERVICE_OPTIONS[0],
           projectDetails: '',
         });
+        setErrors({});
+        setTouched({});
       } else {
+        setStatus('error');
         setStatusMessage({
-          type: 'error',
-          text: data.error || 'Failed to submit form. Please check your entries or call our office.',
+          text:
+            data.error ||
+            'Failed to submit form. Please verify your entries or call our office.',
         });
       }
-    } catch (err) {
+    } catch {
+      setStatus('error');
       setStatusMessage({
-        type: 'error',
-        text: 'Network error. Please verify your connection or contact us directly by phone.',
+        text: 'Network error. Please verify your connection or try again. You can also reach our engineering desk directly by phone.',
       });
-    } finally {
-      setLoading(false);
     }
   };
 
+  const resetForm = () => {
+    setStatus('idle');
+    setStatusMessage(null);
+    setErrors({});
+    setTouched({});
+  };
+
   return (
-    <div className="flex flex-col gap-4 sm:gap-6 pt-24 sm:pt-28 md:pt-32 pb-6">
-      {/* 1. Hero */}
-      <SectionContainer theme="navy" className="text-white">
-        <div className="relative z-10 max-w-3xl space-y-4">
-          <EyebrowTag theme="white" icon={<Zap className="w-3.5 h-3.5" />}>
-            Consult With Master Electrical Engineers
-          </EyebrowTag>
+    <div className="w-full flex flex-col min-h-screen">
+      <Section tone="paper" className="pt-24 sm:pt-28 md:pt-32 pb-16 md:pb-24">
+        <Container>
+          {/* Page Header in Sentence Case */}
+          <header className="mb-10 md:mb-14">
+            <h1 className="text-display font-semibold text-ink tracking-tight leading-[1.1]">
+              Contact
+            </h1>
+            <p className="text-body text-slate max-w-prose mt-3 leading-[1.6]">
+              Request a technical consultation, detailed project quotation, or emergency engineering dispatch in Ghana.
+            </p>
+          </header>
 
-          <h1 className="font-display font-extrabold text-3xl sm:text-5xl md:text-6xl tracking-tight leading-tight text-white">
-            Let’s Power Your Next Project.
-          </h1>
-
-          <DottedDivider theme="red" align="left" count={8} className="py-1" />
-
-          <p className="text-base sm:text-lg text-neutral-300 font-normal leading-relaxed">
-            Whether you require an industrial substation overhaul, power quality audit, commercial solar microgrid, or immediate 24/7 emergency dispatch in Greater Accra, we are ready to assist.
-          </p>
-        </div>
-      </SectionContainer>
-
-      {/* 2. Contact Split Section */}
-      <SectionContainer theme="white">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
-          {/* Form Left */}
-          <div className="lg:col-span-7 space-y-6">
-            <SectionHeader
-              eyebrow="Direct Technical Inquiry"
-              eyebrowIcon={<Mail className="w-3.5 h-3.5" />}
-              title="Request a Technical Consultation or Quote"
-              subtitle="Fill in the details below. A senior power systems engineer will review your project parameters and respond within 24 hours."
-              theme="light"
-            />
-
-            {/* Status Messages */}
-            {statusMessage && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={`p-5 rounded-2xl border flex items-start gap-3.5 ${
-                  statusMessage.type === 'success'
-                    ? 'bg-emerald-50 border-emerald-200 text-emerald-900'
-                    : 'bg-red-50 border-red-200 text-red-900'
-                }`}
-              >
-                {statusMessage.type === 'success' ? (
-                  <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0 mt-0.5">
-                    <CheckCircle2 className="w-4 h-4" />
+          {/* Desktop 2-Column Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+            {/* Form Left (lg:col-span-7) */}
+            <div className="lg:col-span-7 bg-surface border border-hairline rounded-media p-6 sm:p-8 md:p-10">
+              {status === 'success' ? (
+                /* Success Message: Explains what happens next & reference number */
+                <div className="space-y-6">
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-button bg-signal/10 text-signal flex items-center justify-center shrink-0">
+                      <CheckCircle2 className="w-6 h-6" aria-hidden="true" />
+                    </div>
+                    <div>
+                      <h2 className="text-h3 font-semibold text-ink">
+                        Inquiry received
+                      </h2>
+                      <p className="text-body text-slate mt-2 leading-[1.6]">
+                        {statusMessage?.text}
+                      </p>
+                      {statusMessage?.referenceNo && (
+                        <p className="text-small font-mono text-ink mt-3 p-3 bg-paper border border-hairline rounded-button">
+                          Tracking reference number:{' '}
+                          <strong className="text-signal font-semibold">
+                            {statusMessage.referenceNo}
+                          </strong>
+                        </p>
+                      )}
+                    </div>
                   </div>
-                ) : (
-                  <div className="w-6 h-6 rounded-full bg-red-600 text-white flex items-center justify-center shrink-0 mt-0.5">
-                    <AlertCircle className="w-4 h-4" />
+
+                  <div className="border-t border-hairline pt-6">
+                    <h3 className="text-small font-semibold text-ink">
+                      What happens next?
+                    </h3>
+                    <p className="text-body text-slate mt-1 leading-[1.6]">
+                      A senior power systems engineer will review your project parameters, single-line requirements, and timeline. We will contact you within 24 business hours.
+                    </p>
+                    {siteConfig.phone && (
+                      <p className="text-caption text-slate mt-2">
+                        For immediate dispatch on critical outages, please call our 24/7 hotline directly at{' '}
+                        <a
+                          href={getTelHref(siteConfig.phone)}
+                          className="text-signal font-mono font-semibold hover:underline"
+                        >
+                          {siteConfig.phone}
+                        </a>
+                        .
+                      </p>
+                    )}
                   </div>
-                )}
-                <div className="space-y-1">
-                  <p className="text-sm font-semibold">{statusMessage.text}</p>
-                  {statusMessage.refNo && (
-                    <p className="text-xs font-mono text-emerald-700">
-                      Tracking Reference Number: <strong>{statusMessage.refNo}</strong>
+
+                  <div className="pt-2">
+                    <button
+                      type="button"
+                      onClick={resetForm}
+                      className="rounded-button bg-ink hover:bg-ink/90 text-surface px-5 py-2.5 text-small font-semibold transition-colors cursor-pointer"
+                    >
+                      Submit another inquiry
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                /* Interactive Contact Form */
+                <form onSubmit={handleSubmit} noValidate className="space-y-5">
+                  <div>
+                    <h2 className="text-h3 font-semibold text-ink">
+                      Request a technical consultation
+                    </h2>
+                    <p className="text-small text-slate mt-1">
+                      Complete the engineering details below. All fields marked with an asterisk (<span className="text-signal">*</span>) are required.
+                    </p>
+                  </div>
+
+                  {/* Submission Error Banner with Retry */}
+                  {status === 'error' && (
+                    <div
+                      role="alert"
+                      className="p-4 rounded-button bg-signal/10 border border-signal/20 text-ink flex items-start justify-between gap-3"
+                    >
+                      <div className="flex items-start gap-2.5">
+                        <AlertCircle className="w-5 h-5 text-signal shrink-0 mt-0.5" aria-hidden="true" />
+                        <p className="text-small leading-relaxed">
+                          {statusMessage?.text}
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleSubmit()}
+                        className="text-small font-semibold text-signal hover:underline shrink-0 cursor-pointer self-center"
+                      >
+                        Try again
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Honeypot field (hidden from screen readers & visual users) */}
+                  <div className="hidden" aria-hidden="true" style={{ display: 'none' }}>
+                    <label htmlFor="website_url">Do not fill this field</label>
+                    <input
+                      type="text"
+                      id="website_url"
+                      name="website_url"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      value={honeypot}
+                      onChange={(e) => setHoneypot(e.target.value)}
+                    />
+                  </div>
+
+                  {/* Full Name & Work Email */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    {/* Full Name */}
+                    <div>
+                      <label
+                        htmlFor="fullName"
+                        className="block text-small font-medium text-ink mb-1.5"
+                      >
+                        Full name <span className="text-signal" aria-hidden="true">*</span>
+                      </label>
+                      <input
+                        id="fullName"
+                        name="fullName"
+                        type="text"
+                        autoComplete="name"
+                        required
+                        value={formData.fullName}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        aria-invalid={Boolean(errors.fullName)}
+                        aria-describedby={errors.fullName ? 'fullName-error' : undefined}
+                        placeholder="e.g. Ing. Kwame Mensah"
+                        className={`w-full px-3.5 py-2.5 rounded-button bg-surface border text-ink placeholder:text-slate/50 text-body focus:outline-none focus:ring-2 focus:ring-signal focus:border-signal transition-colors ${
+                          errors.fullName ? 'border-signal' : 'border-hairline'
+                        }`}
+                      />
+                      {errors.fullName && (
+                        <p
+                          id="fullName-error"
+                          role="alert"
+                          className="text-caption text-signal mt-1 font-medium"
+                        >
+                          {errors.fullName}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Email Address */}
+                    <div>
+                      <label
+                        htmlFor="email"
+                        className="block text-small font-medium text-ink mb-1.5"
+                      >
+                        Work email <span className="text-signal" aria-hidden="true">*</span>
+                      </label>
+                      <input
+                        id="email"
+                        name="email"
+                        type="email"
+                        inputMode="email"
+                        autoComplete="email"
+                        required
+                        value={formData.email}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        aria-invalid={Boolean(errors.email)}
+                        aria-describedby={errors.email ? 'email-error' : undefined}
+                        placeholder="name@company.com"
+                        className={`w-full px-3.5 py-2.5 rounded-button bg-surface border text-ink placeholder:text-slate/50 text-body focus:outline-none focus:ring-2 focus:ring-signal focus:border-signal transition-colors ${
+                          errors.email ? 'border-signal' : 'border-hairline'
+                        }`}
+                      />
+                      {errors.email && (
+                        <p
+                          id="email-error"
+                          role="alert"
+                          className="text-caption text-signal mt-1 font-medium"
+                        >
+                          {errors.email}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Phone Number & Company */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    {/* Phone Number */}
+                    <div>
+                      <label
+                        htmlFor="phone"
+                        className="block text-small font-medium text-ink mb-1.5"
+                      >
+                        Phone number <span className="text-signal" aria-hidden="true">*</span>
+                      </label>
+                      <input
+                        id="phone"
+                        name="phone"
+                        type="tel"
+                        inputMode="tel"
+                        autoComplete="tel"
+                        required
+                        value={formData.phone}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        aria-invalid={Boolean(errors.phone)}
+                        aria-describedby={errors.phone ? 'phone-error' : undefined}
+                        placeholder="+233 (0) 24 123 4567"
+                        className={`w-full px-3.5 py-2.5 rounded-button bg-surface border text-ink placeholder:text-slate/50 text-body font-mono focus:outline-none focus:ring-2 focus:ring-signal focus:border-signal transition-colors ${
+                          errors.phone ? 'border-signal' : 'border-hairline'
+                        }`}
+                      />
+                      {errors.phone && (
+                        <p
+                          id="phone-error"
+                          role="alert"
+                          className="text-caption text-signal mt-1 font-medium"
+                        >
+                          {errors.phone}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Company / Institution (Optional) */}
+                    <div>
+                      <label
+                        htmlFor="company"
+                        className="block text-small font-medium text-ink mb-1.5"
+                      >
+                        Company or organization <span className="text-slate font-normal">(optional)</span>
+                      </label>
+                      <input
+                        id="company"
+                        name="company"
+                        type="text"
+                        autoComplete="organization"
+                        value={formData.company}
+                        onChange={handleChange}
+                        placeholder="e.g. Accra Logistics Ltd."
+                        className="w-full px-3.5 py-2.5 rounded-button bg-surface border border-hairline text-ink placeholder:text-slate/50 text-body focus:outline-none focus:ring-2 focus:ring-signal focus:border-signal transition-colors"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Service Type Selection */}
+                  <div>
+                    <label
+                      htmlFor="serviceType"
+                      className="block text-small font-medium text-ink mb-1.5"
+                    >
+                      Service category <span className="text-signal" aria-hidden="true">*</span>
+                    </label>
+                    <select
+                      id="serviceType"
+                      name="serviceType"
+                      value={formData.serviceType}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      aria-invalid={Boolean(errors.serviceType)}
+                      aria-describedby={errors.serviceType ? 'serviceType-error' : undefined}
+                      className={`w-full px-3.5 py-2.5 rounded-button bg-surface border text-ink text-body focus:outline-none focus:ring-2 focus:ring-signal focus:border-signal transition-colors ${
+                        errors.serviceType ? 'border-signal' : 'border-hairline'
+                      }`}
+                    >
+                      {SERVICE_OPTIONS.map((opt) => (
+                        <option key={opt} value={opt}>
+                          {opt}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.serviceType && (
+                      <p
+                        id="serviceType-error"
+                        role="alert"
+                        className="text-caption text-signal mt-1 font-medium"
+                      >
+                        {errors.serviceType}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Project Details */}
+                  <div>
+                    <label
+                      htmlFor="projectDetails"
+                      className="block text-small font-medium text-ink mb-1.5"
+                    >
+                      Project scope and technical details <span className="text-signal" aria-hidden="true">*</span>
+                    </label>
+                    <textarea
+                      id="projectDetails"
+                      name="projectDetails"
+                      required
+                      rows={5}
+                      value={formData.projectDetails}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      aria-invalid={Boolean(errors.projectDetails)}
+                      aria-describedby={errors.projectDetails ? 'projectDetails-error' : undefined}
+                      placeholder="Describe your site location, connected load (kVA/MW), current voltage level, project timeline, and specific engineering requirements..."
+                      className={`w-full px-3.5 py-2.5 rounded-button bg-surface border text-ink placeholder:text-slate/50 text-body focus:outline-none focus:ring-2 focus:ring-signal focus:border-signal transition-colors ${
+                        errors.projectDetails ? 'border-signal' : 'border-hairline'
+                      }`}
+                    />
+                    {errors.projectDetails && (
+                      <p
+                        id="projectDetails-error"
+                        role="alert"
+                        className="text-caption text-signal mt-1 font-medium"
+                      >
+                        {errors.projectDetails}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Submit Button with Disabled-While-Sending Spinner Label */}
+                  <div className="pt-2">
+                    <button
+                      type="submit"
+                      disabled={status === 'submitting'}
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-button bg-signal hover:bg-signal/90 disabled:opacity-60 text-white px-7 py-3 text-body font-semibold transition-colors cursor-pointer select-none"
+                    >
+                      {status === 'submitting' ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin shrink-0" aria-hidden="true" />
+                          <span>Sending consultation request...</span>
+                        </>
+                      ) : (
+                        <span>Submit consultation request</span>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+
+            {/* Details Right (lg:col-span-5) */}
+            <div className="lg:col-span-5 space-y-6">
+              {/* 24/7 Emergency Dispatch Card */}
+              {siteConfig.phone && (
+                <div className="bg-ink text-surface border border-hairline rounded-media p-6 sm:p-7 space-y-4">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-signal shrink-0" aria-hidden="true" />
+                    <span className="text-caption uppercase tracking-wider text-signal font-semibold">
+                      24/7 Emergency Dispatch
+                    </span>
+                  </div>
+
+                  <p className="text-small text-hairline/90 leading-relaxed">
+                    For active industrial power outages, transformer trips, or hazardous high-voltage faults in Greater Accra:
+                  </p>
+
+                  <div className="pt-1">
+                    <a
+                      href={getTelHref(siteConfig.phone)}
+                      className="inline-block text-h3 sm:text-h2 font-mono font-bold text-white hover:text-signal transition-colors focus-visible:outline-2 focus-visible:outline-signal rounded-sm"
+                      aria-label={`Call 24/7 emergency hotline: ${siteConfig.phone}`}
+                    >
+                      {siteConfig.phone}
+                    </a>
+                  </div>
+
+                  {siteConfig.hours?.emergency && (
+                    <p className="text-caption text-hairline/70">
+                      {siteConfig.hours.emergency}
                     </p>
                   )}
                 </div>
-              </motion.div>
-            )}
+              )}
 
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Full Name */}
-                <div className="space-y-1.5">
-                  <label htmlFor="fullName" className="text-xs font-bold text-brand-navy uppercase tracking-wider block">
-                    Full Name <span className="text-brand-red">*</span>
-                  </label>
-                  <input
-                    id="fullName"
-                    type="text"
-                    name="fullName"
-                    required
-                    value={formData.fullName}
-                    onChange={handleChange}
-                    placeholder="e.g. Ing. Kwame Mensah"
-                    className="w-full px-4 py-3 rounded-xl bg-surface-muted border border-black/[0.06] focus:border-brand-red focus:bg-white focus:outline-none text-sm text-brand-navy transition-all"
-                  />
+              {/* Head Office Coordinates Card */}
+              <div className="bg-surface border border-hairline rounded-media p-6 sm:p-7 space-y-6">
+                <div>
+                  <h2 className="text-h3 font-semibold text-ink">
+                    Accra head office
+                  </h2>
+                  <p className="text-caption text-slate mt-0.5">
+                    Central engineering office and technical workshop
+                  </p>
                 </div>
 
-                {/* Email Address */}
-                <div className="space-y-1.5">
-                  <label htmlFor="email" className="text-xs font-bold text-brand-navy uppercase tracking-wider block">
-                    Work Email <span className="text-brand-red">*</span>
-                  </label>
-                  <input
-                    id="email"
-                    type="email"
-                    name="email"
-                    required
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="name@company.com"
-                    className="w-full px-4 py-3 rounded-xl bg-surface-muted border border-black/[0.06] focus:border-brand-red focus:bg-white focus:outline-none text-sm text-brand-navy transition-all"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Phone Number */}
-                <div className="space-y-1.5">
-                  <label htmlFor="phone" className="text-xs font-bold text-brand-navy uppercase tracking-wider block">
-                    Phone Number <span className="text-brand-red">*</span>
-                  </label>
-                  <input
-                    id="phone"
-                    type="tel"
-                    name="phone"
-                    required
-                    value={formData.phone}
-                    onChange={handleChange}
-                    placeholder="+233 (0) 24 123 4567"
-                    className="w-full px-4 py-3 rounded-xl bg-surface-muted border border-black/[0.06] focus:border-brand-red focus:bg-white focus:outline-none text-sm text-brand-navy transition-all font-mono"
-                  />
-                </div>
-
-                {/* Company / Institution */}
-                <div className="space-y-1.5">
-                  <label htmlFor="company" className="text-xs font-bold text-brand-navy uppercase tracking-wider block">
-                    Company / Organization
-                  </label>
-                  <input
-                    id="company"
-                    type="text"
-                    name="company"
-                    value={formData.company}
-                    onChange={handleChange}
-                    placeholder="e.g. Accra Logistics Ltd."
-                    className="w-full px-4 py-3 rounded-xl bg-surface-muted border border-black/[0.06] focus:border-brand-red focus:bg-white focus:outline-none text-sm text-brand-navy transition-all"
-                  />
-                </div>
-              </div>
-
-              {/* Service Type */}
-              <div className="space-y-1.5">
-                <label htmlFor="serviceType" className="text-xs font-bold text-brand-navy uppercase tracking-wider block">
-                  Service Category <span className="text-brand-red">*</span>
-                </label>
-                <select
-                  id="serviceType"
-                  name="serviceType"
-                  value={formData.serviceType}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-xl bg-surface-muted border border-black/[0.06] focus:border-brand-red focus:bg-white focus:outline-none text-sm text-brand-navy transition-all"
-                >
-                  {SERVICE_OPTIONS.map((opt) => (
-                    <option key={opt} value={opt}>
-                      {opt}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Project Details */}
-              <div className="space-y-1.5">
-                <label htmlFor="projectDetails" className="text-xs font-bold text-brand-navy uppercase tracking-wider block">
-                  Project Scope & Technical Details <span className="text-brand-red">*</span>
-                </label>
-                <textarea
-                  id="projectDetails"
-                  name="projectDetails"
-                  required
-                  rows={4}
-                  value={formData.projectDetails}
-                  onChange={handleChange}
-                  placeholder="Describe your site location, connected load (kVA/MW), current voltage level, project timeline, and specific engineering requirements..."
-                  className="w-full px-4 py-3 rounded-xl bg-surface-muted border border-black/[0.06] focus:border-brand-red focus:bg-white focus:outline-none text-sm text-brand-navy transition-all"
-                />
-              </div>
-
-              {/* Submit Button: Section 4a.12 Paired circular shape */}
-              <div className="inline-flex items-center gap-2 pt-2">
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="bg-brand-red hover:bg-brand-red-hover text-white px-7 py-3 rounded-full font-semibold text-sm shadow-md hover:shadow-glow-red transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 select-none"
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>Submitting Technical Request...</span>
-                    </>
-                  ) : (
-                    <span>Submit Consultation Request</span>
+                <div className="space-y-5 text-body">
+                  {/* Physical Address + Get Directions Link */}
+                  {siteConfig.address && (
+                    <div>
+                      <span className="text-caption uppercase tracking-wider text-slate font-medium block">
+                        Head office address
+                      </span>
+                      <p className="text-body text-ink mt-0.5">
+                        {siteConfig.address}
+                      </p>
+                      <a
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                          siteConfig.address
+                        )}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-signal hover:underline text-small font-medium inline-flex items-center gap-1 mt-1.5 focus-visible:outline-2 focus-visible:outline-signal rounded-sm"
+                      >
+                        <span>Get directions</span>
+                        <ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" />
+                      </a>
+                    </div>
                   )}
-                </button>
-                <span className="w-11 h-11 rounded-full bg-brand-red text-white flex items-center justify-center shadow-md shrink-0">
-                  <Send className="w-4 h-4" />
-                </span>
-              </div>
-            </form>
-          </div>
 
-          {/* Direct Office Info Right */}
-          <div className="lg:col-span-5 space-y-6">
-            {/* 24/7 Emergency Card */}
-            <div className="p-6 sm:p-7 rounded-[28px] bg-brand-navy text-white border border-brand-red/30 shadow-xl space-y-4">
-              <div className="flex items-center gap-2">
-                <span className="relative flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-red opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-brand-red"></span>
-                </span>
-                <span className="text-xs font-bold text-brand-red uppercase tracking-wider">
-                  24/7 Rapid Emergency Dispatch
-                </span>
-              </div>
+                  {/* Main Office Line */}
+                  {siteConfig.phone && (
+                    <div>
+                      <span className="text-caption uppercase tracking-wider text-slate font-medium block">
+                        Main office line
+                      </span>
+                      <a
+                        href={getTelHref(siteConfig.phone)}
+                        className="text-body font-mono text-ink hover:text-signal hover:underline mt-0.5 inline-block focus-visible:outline-2 focus-visible:outline-signal rounded-sm"
+                      >
+                        {siteConfig.phone}
+                      </a>
+                    </div>
+                  )}
 
-              <p className="text-xs text-neutral-300 leading-relaxed">
-                For active power outages, cable explosions, transformer faults, or catastrophic industrial trip-outs in Greater Accra:
-              </p>
+                  {/* Email Address */}
+                  {siteConfig.email && (
+                    <div>
+                      <span className="text-caption uppercase tracking-wider text-slate font-medium block">
+                        Direct email
+                      </span>
+                      <a
+                        href={getMailtoHref(siteConfig.email)}
+                        className="text-body text-ink hover:text-signal hover:underline mt-0.5 inline-block focus-visible:outline-2 focus-visible:outline-signal rounded-sm"
+                      >
+                        {siteConfig.email}
+                      </a>
+                    </div>
+                  )}
 
-              <div className="pt-1">
-                <a
-                  href={`tel:${COMPANY_INFO.emergencyPhone.replace(/\s+/g, '')}`}
-                  className="inline-flex items-center gap-3 bg-brand-red hover:bg-brand-red-hover text-white px-5 py-3 rounded-full text-sm font-mono font-bold transition-all shadow-md shadow-brand-red/40 select-none group"
-                >
-                  <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
-                    <PhoneCall className="w-3.5 h-3.5" />
-                  </div>
-                  <span>{COMPANY_INFO.emergencyPhone}</span>
-                </a>
-              </div>
-            </div>
-
-            {/* Office Coordinates: Section 4a.9 Circular Badges */}
-            <div className="p-6 sm:p-7 rounded-[28px] bg-white border border-black/[0.05] shadow-soft-card space-y-5 text-sm">
-              <div className="flex items-center justify-between gap-3">
-                <h3 className="font-display font-bold text-base text-brand-navy">
-                  Accra Head Office & Workshop
-                </h3>
-                <div className="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center p-1 border border-black/[0.06] shadow-sm shrink-0">
-                  <Logo variant="with-tagline" size={40} />
+                  {/* Operating Hours */}
+                  {siteConfig.hours?.office && (
+                    <div>
+                      <span className="text-caption uppercase tracking-wider text-slate font-medium block">
+                        Office hours
+                      </span>
+                      <p className="text-body text-ink mt-0.5">
+                        {siteConfig.hours.office}
+                      </p>
+                    </div>
+                  )}
                 </div>
-              </div>
-
-              <div className="space-y-3.5 text-content-secondary">
-                <div className="flex items-start gap-3">
-                  <div className="w-7 h-7 rounded-full bg-brand-red/10 text-brand-red flex items-center justify-center shrink-0 mt-0.5">
-                    <MapPin className="w-3.5 h-3.5" />
-                  </div>
-                  <div>
-                    <strong className="text-brand-navy block font-medium">Head Office:</strong>
-                    <span>{COMPANY_INFO.address}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="w-7 h-7 rounded-full bg-brand-red/10 text-brand-red flex items-center justify-center shrink-0 mt-0.5">
-                    <Phone className="w-3.5 h-3.5" />
-                  </div>
-                  <div>
-                    <strong className="text-brand-navy block font-medium">Main Office Line:</strong>
-                    <a href={`tel:${COMPANY_INFO.phone.replace(/\s+/g, '')}`} className="font-mono text-brand-navy hover:underline">
-                      {COMPANY_INFO.phone}
-                    </a>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="w-7 h-7 rounded-full bg-brand-red/10 text-brand-red flex items-center justify-center shrink-0 mt-0.5">
-                    <Mail className="w-3.5 h-3.5" />
-                  </div>
-                  <div>
-                    <strong className="text-brand-navy block font-medium">Email Address:</strong>
-                    <a href={`mailto:${COMPANY_INFO.email}`} className="text-brand-navy hover:underline">
-                      {COMPANY_INFO.email}
-                    </a>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="w-7 h-7 rounded-full bg-brand-red/10 text-brand-red flex items-center justify-center shrink-0 mt-0.5">
-                    <Clock className="w-3.5 h-3.5" />
-                  </div>
-                  <div>
-                    <strong className="text-brand-navy block font-medium">Operating Hours:</strong>
-                    <span>{COMPANY_INFO.operatingHours.office}</span>
-                    <span className="block text-brand-red font-semibold text-xs mt-0.5">
-                      Emergency Crews: {COMPANY_INFO.operatingHours.emergency}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Google Maps Official Location View */}
-            <div className="p-5 sm:p-6 rounded-[28px] bg-white border border-black/[0.05] shadow-soft-card space-y-3.5">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-brand-navy uppercase tracking-wider flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full bg-brand-red/10 text-brand-red flex items-center justify-center shrink-0">
-                    <Building2 className="w-3.5 h-3.5" />
-                  </div>
-                  Modes Power Services Map
-                </span>
-                <a
-                  href="https://maps.google.com/?q=Modes+Power+Services"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[11px] font-semibold text-brand-red hover:underline inline-flex items-center gap-1"
-                >
-                  <span>Open Maps</span>
-                  <ArrowUpRight className="w-3 h-3" />
-                </a>
-              </div>
-
-              {/* Embedded Interactive Google Map */}
-              <div className="relative w-full h-[280px] sm:h-[320px] rounded-2xl overflow-hidden border border-black/[0.08] shadow-inner bg-surface-muted">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d648.4652701638811!2d-0.34948209296961247!3d5.520363949389057!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfdfbd860320060f%3A0x6cf2390b39215ac9!2sModes%20Power%20Services!5e1!3m2!1sen!2sgh!4v1789421643619!5m2!1sen!2sgh"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen={true}
-                  loading="lazy"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                  className="w-full h-full"
-                  title="Modes Power Services Google Maps Location"
-                />
               </div>
             </div>
           </div>
-        </div>
-      </SectionContainer>
+        </Container>
+      </Section>
     </div>
   );
 }

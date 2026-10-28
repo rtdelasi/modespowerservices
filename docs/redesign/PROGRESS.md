@@ -11,10 +11,9 @@
 - [x] **Phase 6**: Project gallery building blocks (`components/projects/gallery/*`, compound `ProjectGallery.Root`/`Item`/`Mosaic`/`BeforeAfter`/`Lightbox`, adaptive layouts 1-9 images, native range input comparison, lazy lightbox dynamic import on first open, `/design-check` extension)
 - [x] **Phase 7**: Projects page & `/projects/[slug]` individual case study pages (`ProjectCard`, adaptive grid 1/2/3 cols, linkable `?category=` URL-query filtering with threshold >= 4 projects and >= 2 categories, legacy `#<uuid>` hash redirect component, dynamic `/projects/[slug]` with `generateStaticParams`, Open Graph metadata, facts list omitting empty values, 2-column description/outcome blocks, site photos mosaic, adjacent project navigation, and quote band)
 - [x] **Phase 8**: Home page completion (Recent projects CMS 3-card grid with "All projects" TextLink, Client words section with 3 plain quote blocks on hairline top border, strict BRIEF Section 4 section sequence, phone numbers capped at 3, logo marquee removed)
-- [ ] **Phase 9**: About page redesign & leadership/team section
-- [ ] **Phase 10**: Services page redesign (divider rows, specifications, deliverables)
-- [ ] **Phase 11**: Gallery page redesign & lightbox integration
-- [ ] **Phase 12**: Contact & quote request flow (form, emergency callouts, verification)
+- [x] **Phase 9a**: About & Services redesign (`app/about`, `app/services`, `components/services/*`: tightened company story, single source stats, certifications list, plain team grid hiding missing fields, 5 large divider sections from `lib/services.ts` with anchor IDs, scroll-margin-top for 80px sticky header, desktop sticky index with active section tracker and keyboard operability, and quote bands)
+- [x] **Phase 9b**: Gallery & Contact redesign (`app/gallery`, `app/contact`, `components/gallery/*`: responsive 2-col/3-col uniform 4:3 crop gallery, linkable `?category=` filter tabs, Phase 6 LightboxModal with non-duplicated captions, empty/error fallbacks; desktop 2-col contact layout with preserved `POST /api/contact` submission, visible labels, mobile `inputMode`, inline validation, disabled-while-sending spinner button, clear success/error/retry states, honeypot, and `lib/site-config.ts` details with "Get directions" map link)
+- [ ] **Phase 10**: Reserved for subsequent phase
 - [ ] **Phase 13**: The Single-Line Diagram SVG animation (desktop 1024px+, scroll-tied, reduced-motion aware)
 - [ ] **Phase 14**: QA audit, accessibility compliance, performance verification, cross-breakpoint testing & final sign-off
 
@@ -37,6 +36,10 @@
 - Phase 7: Old links using `/projects#<uuid>` are resolved client-side via `ProjectHashRedirect`, replacing the URL with `/projects/[slug]` without full page reload.
 - Phase 7: In `/projects/[slug]`, empty fields (e.g. client, description, outcome) are strictly omitted to maintain design integrity. Single-image projects feature a prominent cover image without redundant mosaic duplication.
 - Phase 8: Home page strictly follows BRIEF Section 4 section sequence (Hero -> Stats -> Services -> Why Modes -> Selected Projects -> Client Words -> Quote & Emergency Band). Exactly 3 visible phone numbers on the entire page (header, emergency band, footer). Testimonials use plain typographic quote blocks with hairline top borders, no cards, and no decorative avatars.
+- Phase 9a: About page strictly reuses `Stat` primitive with `siteContent.stats` to avoid duplicate hard-coded values; story copy is tightened to active voice; team grid omits photos or roles gracefully with top hairline alignment when missing in CMS; certifications rendered as clean hairline divider list.
+- Phase 9a: Services page uses `SERVICES` from `lib/services.ts` with anchor IDs `installations`, `maintenance`, `audits`, `solutions`, `emergency`, configured with `scroll-mt-20 md:scroll-mt-24` to ensure headings clear the fixed header; desktop sticky sidebar provides keyboard-operable section index with intersection-observed active tracking.
+- Phase 9b: Gallery page implements responsive 2-column mobile and 3-column desktop grid with uniform 4:3 crops; category filter tabs link seamlessly with `?category=` search params; captions are displayed only when distinct from the title (both on grid tiles and inside Phase 6 lightbox slides); `gallery_items` schema lacks blur/dimension columns so `next/image` uses responsive `sizes` with aspect ratio containment.
+- Phase 9b: Contact page strictly preserves existing `POST /api/contact` JSON payload (`fullName`, `email`, `phone`, `company`, `serviceType`, `projectDetails`) and backend routing; adds visible labels, mobile `inputMode`, honeypot bot trap, inline field validation with `role="alert"`, disabled-while-sending state, clear success/error/retry messaging, and renders contact details directly from `lib/site-config.ts` while omitting any empty attributes.
 
 ---
 
