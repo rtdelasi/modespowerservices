@@ -101,11 +101,10 @@ export function ProjectsDirectory({ projects }: ProjectsDirectoryProps) {
       ) : (
         /* Project Cards Grid (1 col mobile, 2 cols tablet, 3 cols 1280px+) */
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 md:gap-10">
-          {filteredProjects.map((project, idx) => (
+          {filteredProjects.map((project) => (
             <ProjectCard
               key={project.id || project.slug}
               project={project}
-              priority={idx === 0}
             />
           ))}
         </div>

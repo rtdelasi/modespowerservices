@@ -21,7 +21,7 @@ export function ClientWords() {
     <Section tone="paper" id="client-words" className="py-16 md:py-24 border-t border-hairline">
       <Container>
         {/* Section Heading */}
-        <h2 className="text-h2 font-semibold text-ink tracking-tight leading-[1.1] mb-10 md:mb-14">
+        <h2 data-diagram-node className="text-h2 font-semibold text-ink tracking-tight leading-[1.1] mb-10 md:mb-14">
           {heading}
         </h2>
 

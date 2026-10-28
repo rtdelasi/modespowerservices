@@ -66,7 +66,6 @@ function MosaicTile({
         alt={altText}
         fill
         sizes={sizes}
-        priority={index === 0}
         placeholder={hasBlur ? 'blur' : 'empty'}
         blurDataURL={image.blur_data_url || undefined}
         className="object-cover transition-transform duration-300 ease-out group-hover:scale-105 motion-reduce:transform-none"

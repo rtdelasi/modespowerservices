@@ -29,7 +29,7 @@ export function RecentProjects({ projects }: RecentProjectsProps) {
       <Container>
         {/* Header with Title and "All projects" TextLink */}
         <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 mb-10 md:mb-14">
-          <h2 className="text-h2 font-semibold text-ink tracking-tight leading-[1.1]">
+          <h2 data-diagram-node className="text-h2 font-semibold text-ink tracking-tight leading-[1.1]">
             Recent projects
           </h2>
           <TextLink href="/projects" className="shrink-0 font-medium">
@@ -39,11 +39,10 @@ export function RecentProjects({ projects }: RecentProjectsProps) {
 
         {/* Three-Column Grid (stacked on mobile, 2-col tablet, 3-col desktop) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
-          {recent.map((project, idx) => (
+          {recent.map((project) => (
             <ProjectCard
               key={project.id || project.slug}
               project={project}
-              priority={idx === 0}
             />
           ))}
         </div>

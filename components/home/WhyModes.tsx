@@ -16,7 +16,7 @@ export function WhyModes() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
           {/* Left Column: Short Statement Heading */}
           <div className="lg:col-span-5 text-left">
-            <h2 className="text-h2 font-semibold text-ink tracking-tight leading-[1.1] text-balance">
+            <h2 data-diagram-node className="text-h2 font-semibold text-ink tracking-tight leading-[1.1] text-balance">
               {siteContent.whyModes.heading}
             </h2>
             <p className="text-body text-slate mt-4 leading-[1.6] text-balance">

@@ -6,6 +6,7 @@ import { WhyModes } from '@/components/home/WhyModes';
 import { RecentProjects } from '@/components/home/RecentProjects';
 import { ClientWords } from '@/components/home/ClientWords';
 import { QuoteBand } from '@/components/home/QuoteBand';
+import { SingleLineDiagram } from '@/components/home/SingleLineDiagram';
 import { getSiteSettingsQuery, getPublishedProjects } from '@/lib/supabase/queries';
 
 export const revalidate = 60;
@@ -30,7 +31,10 @@ export default async function HomePage() {
   ]);
 
   return (
-    <div className="flex flex-col w-full">
+    <div id="home-page-root" className="relative flex flex-col w-full overflow-x-clip">
+      {/* Signature Single-Line Diagram per BRIEF Section 3 & Phase 10 */}
+      <SingleLineDiagram />
+
       {/* 1. Full-Viewport Photographic Hero */}
       <Hero heroImage={settings.hero_image_url} />
 

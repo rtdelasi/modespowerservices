@@ -19,7 +19,7 @@ export function HomeServices() {
       <Container>
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-4 pb-8">
-          <h2 className="text-h2 font-semibold text-ink tracking-tight leading-[1.1]">
+          <h2 data-diagram-node className="text-h2 font-semibold text-ink tracking-tight leading-[1.1]">
             {siteContent.servicesSection.heading}
           </h2>
           <TextLink

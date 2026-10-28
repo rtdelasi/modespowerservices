@@ -18,7 +18,7 @@ export function QuoteBand() {
       <Container className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 lg:gap-12">
         {/* Left Column: Heading & Context */}
         <div className="max-w-2xl text-left">
-          <h2 className="text-h2 font-semibold text-white tracking-tight leading-[1.1] text-balance">
+          <h2 data-diagram-node className="text-h2 font-semibold text-white tracking-tight leading-[1.1] text-balance">
             {siteContent.quoteBand.heading}
           </h2>
           <p className="text-body text-hairline/85 mt-3 leading-[1.6] text-balance">

@@ -36,7 +36,7 @@ function HeaderContent() {
           aria-label={`${siteConfig.name} - Home`}
         >
           <div className="w-9 h-9 md:w-10 md:h-10 rounded-button bg-white flex items-center justify-center p-1 border border-hairline shadow-sm shrink-0">
-            <Logo variant="default" size={32} priority alt={siteConfig.name} />
+            <Logo variant="default" size={32} alt={siteConfig.name} />
           </div>
           <div className="flex flex-col">
             <span
