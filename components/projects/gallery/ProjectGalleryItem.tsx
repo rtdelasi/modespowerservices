@@ -39,7 +39,7 @@ export function ProjectGalleryItem({
       onClick={handleClick}
       aria-haspopup="dialog"
       aria-expanded={isCurrentActive}
-      className={`group relative overflow-hidden text-left cursor-pointer transition-all focus-visible:outline-2 focus-visible:outline-signal focus-visible:outline-offset-2 ${className}`}
+      className={`group relative overflow-hidden text-left cursor-pointer transition-colors focus-visible:outline-2 focus-visible:outline-signal focus-visible:outline-offset-2 ${className}`}
       {...props}
     >
       {children}

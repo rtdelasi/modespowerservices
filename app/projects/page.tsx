@@ -6,7 +6,7 @@ import { ProjectsDirectory, ProjectHashRedirect } from '@/components/projects';
 import { QuoteBand } from '@/components/home/QuoteBand';
 
 export const metadata: Metadata = {
-  title: 'Projects | Modes Power Services',
+  title: 'Projects',
   description:
     'Documented high-voltage substation overhauls, commercial solar installations, and power quality engineering delivered across Ghana.',
   openGraph: {
@@ -41,7 +41,7 @@ export default async function ProjectsPage() {
           </header>
 
           {/* Directory with URL-linkable filtering and responsive grid */}
-          <Suspense fallback={<div className="py-20 text-center text-slate">Loading projects...</div>}>
+          <Suspense fallback={<div className="py-20 text-center text-slate">Loading projects…</div>}>
             <ProjectsDirectory projects={projects} />
           </Suspense>
         </Container>

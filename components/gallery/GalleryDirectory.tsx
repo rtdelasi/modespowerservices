@@ -156,17 +156,10 @@ export function GalleryDirectory({ items }: GalleryDirectoryProps) {
             const hasImage = Boolean(item.image) && !hasError;
 
             return (
-              <div
+              <button
                 key={item.id}
-                role="button"
-                tabIndex={0}
+                type="button"
                 onClick={() => handleOpenLightbox(index)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    handleOpenLightbox(index);
-                  }
-                }}
                 aria-label={`Open photo ${index + 1}: ${item.title}`}
                 className="group flex flex-col text-left cursor-pointer focus-visible:outline-2 focus-visible:outline-signal focus-visible:outline-offset-4 rounded-media select-none"
               >
@@ -205,9 +198,9 @@ export function GalleryDirectory({ items }: GalleryDirectoryProps) {
                   </span>
 
                   {/* Title */}
-                  <h2 className="text-small font-semibold text-ink group-hover:text-signal transition-colors line-clamp-2 mt-0.5 leading-snug">
+                  <span className="text-small font-semibold text-ink group-hover:text-signal transition-colors line-clamp-2 mt-0.5 leading-snug">
                     {item.title}
-                  </h2>
+                  </span>
 
                   {/* Distinct Caption (shown only when it differs from title) */}
                   {hasDistinctCaption && (
@@ -216,7 +209,7 @@ export function GalleryDirectory({ items }: GalleryDirectoryProps) {
                     </p>
                   )}
                 </div>
-              </div>
+              </button>
             );
           })}
         </div>

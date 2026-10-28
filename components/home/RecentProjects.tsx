@@ -25,7 +25,7 @@ export function RecentProjects({ projects }: RecentProjectsProps) {
   const recent = projects.slice(0, 3);
 
   return (
-    <Section tone="surface" id="recent-projects" className="py-16 md:py-24 border-t border-hairline">
+    <Section tone="surface" id="recent-projects" className="scroll-mt-20 md:scroll-mt-24 py-16 md:py-24 border-t border-hairline">
       <Container>
         {/* Header with Title and "All projects" TextLink */}
         <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 mb-10 md:mb-14">

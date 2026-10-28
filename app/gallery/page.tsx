@@ -6,7 +6,7 @@ import { GalleryDirectory } from '@/components/gallery';
 import { QuoteBand } from '@/components/home/QuoteBand';
 
 export const metadata: Metadata = {
-  title: 'Gallery | Modes Power Services',
+  title: 'Gallery',
   description:
     'Verified field photography of high-voltage substation overhauls, transformer installations, thermographic scans, and commercial solar microgrids across Ghana.',
   openGraph: {

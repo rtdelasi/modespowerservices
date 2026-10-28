@@ -9,6 +9,7 @@ export const siteConfig = {
   name: 'Modes Power Services',
   shortName: 'Modes',
   legalName: 'Modes Power Services Ltd.',
+  siteUrl: (process.env.NEXT_PUBLIC_SITE_URL || 'https://modespowerservices.vercel.app').replace(/\/$/, ''),
   tagline: 'Precision Electrical Engineering & Power Infrastructure',
   description:
     'Ghana’s trusted partner for high, medium, and low voltage electrical installations, 24/7 industrial maintenance, power quality audits, and custom hybrid power systems.',
@@ -17,9 +18,12 @@ export const siteConfig = {
   // WhatsApp is not configured in current communication channels
   whatsapp: null as string | null,
   email: 'modespower@gmail.com',
-  address: 'Plot 14, Spintex Industrial Area, Accra, Ghana',
+  address: 'Bortianor Redtop-Selasi, Hs. No. E119, Accra, Ghana',
   city: 'Accra',
   country: 'Ghana',
+  mapUrl: 'https://maps.google.com/?cid=7850399820826106569',
+  mapEmbedUrl:
+    'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3971.3124434091806!2d-0.3521246260167516!3d5.520569894459542!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfdfbd860320060f%3A0x6cf2390b39215ac9!2sModes%20Power%20Services!5e0!3m2!1sen!2sgh!4v1793214507088!5m2!1sen!2sgh',
   hours: {
     office: 'Monday – Friday: 8:00 AM – 6:00 PM GMT',
     emergency: '24/7 / 365 Rapid Response Dispatch',

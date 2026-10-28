@@ -11,7 +11,7 @@ import { Container } from '@/components/ui/Container';
  */
 export function WhyModes() {
   return (
-    <Section tone="paper" id="why-modes" className="py-16 md:py-24 border-b border-hairline">
+    <Section tone="paper" id="why-modes" className="scroll-mt-20 md:scroll-mt-24 py-16 md:py-24 border-b border-hairline">
       <Container>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
           {/* Left Column: Short Statement Heading */}

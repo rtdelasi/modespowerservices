@@ -8,6 +8,7 @@ import { ClientWords } from '@/components/home/ClientWords';
 import { QuoteBand } from '@/components/home/QuoteBand';
 import { SingleLineDiagram } from '@/components/home/SingleLineDiagram';
 import { getSiteSettingsQuery, getPublishedProjects } from '@/lib/supabase/queries';
+import { siteConfig } from '@/lib/site-config';
 
 export const revalidate = 60;
 
@@ -30,8 +31,57 @@ export default async function HomePage() {
     getPublishedProjects(),
   ]);
 
+  const homeJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Electrician',
+    name: siteConfig.legalName,
+    alternateName: siteConfig.name,
+    url: siteConfig.siteUrl,
+    logo: `${siteConfig.siteUrl}/logos/modes-logo.png`,
+    image: `${siteConfig.siteUrl}/logos/modes-logo-with-tagline.png`,
+    description: siteConfig.description,
+    telephone: siteConfig.phone,
+    email: siteConfig.email,
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'Bortianor Redtop-Selasi, Hs. No. E119',
+      addressLocality: siteConfig.city,
+      addressCountry: 'GH',
+    },
+    openingHoursSpecification: [
+      {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+        opens: '08:00',
+        closes: '18:00',
+      },
+      {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: [
+          'Monday',
+          'Tuesday',
+          'Wednesday',
+          'Thursday',
+          'Friday',
+          'Saturday',
+          'Sunday',
+        ],
+        description: siteConfig.hours.emergency,
+        opens: '00:00',
+        closes: '23:59',
+      },
+    ],
+    priceRange: '$$$',
+  };
+
   return (
     <div id="home-page-root" className="relative flex flex-col w-full overflow-x-clip">
+      {/* Structured Data: LocalBusiness (Electrician) */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }}
+      />
+
       {/* Signature Single-Line Diagram per BRIEF Section 3 & Phase 10 */}
       <SingleLineDiagram />
 

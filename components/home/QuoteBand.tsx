@@ -14,7 +14,7 @@ import { PrimaryButton } from '@/components/ui/PrimaryButton';
  */
 export function QuoteBand() {
   return (
-    <Section tone="ink" id="quote-band" className="py-16 md:py-24">
+    <Section tone="ink" id="quote-band" className="scroll-mt-20 md:scroll-mt-24 py-16 md:py-24">
       <Container className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 lg:gap-12">
         {/* Left Column: Heading & Context */}
         <div className="max-w-2xl text-left">

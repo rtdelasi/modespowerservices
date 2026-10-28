@@ -5,6 +5,7 @@ import './globals.css';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { COMPANY_INFO } from '@/data/company';
+import { siteConfig } from '@/lib/site-config';
 
 const schibsted = Schibsted_Grotesk({
   subsets: ['latin'],
@@ -14,7 +15,7 @@ const schibsted = Schibsted_Grotesk({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://modespowerservices.com'),
+  metadataBase: new URL(siteConfig.siteUrl),
   title: {
     default: `${COMPANY_INFO.name} — Precision Electrical Engineering & Infrastructure`,
     template: `%s | ${COMPANY_INFO.name}`,
@@ -38,7 +39,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_GH',
-    url: 'https://modespowerservices.com',
+    url: siteConfig.siteUrl,
     siteName: COMPANY_INFO.name,
     title: `${COMPANY_INFO.name} — Precision Electrical Engineering`,
     description: COMPANY_INFO.description,

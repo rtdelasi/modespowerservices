@@ -15,7 +15,7 @@ import { TextLink } from '@/components/ui/TextLink';
  */
 export function HomeServices() {
   return (
-    <Section tone="surface" id="services" className="py-16 md:py-24 border-b border-hairline">
+    <Section tone="surface" id="services" className="scroll-mt-20 md:scroll-mt-24 py-16 md:py-24 border-b border-hairline">
       <Container>
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-4 pb-8">

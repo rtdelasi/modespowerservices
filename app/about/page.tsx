@@ -8,7 +8,7 @@ import { getPublishedTeamMembers, getSiteSettingsQuery } from '@/lib/supabase/qu
 import { QuoteBand } from '@/components/home/QuoteBand';
 
 export const metadata: Metadata = {
-  title: 'About | Modes Power Services',
+  title: 'About',
   description:
     'Energy Commission of Ghana certified Class A electrical contractor for industrial substations, preventative maintenance, and solar microgrids.',
   openGraph: {

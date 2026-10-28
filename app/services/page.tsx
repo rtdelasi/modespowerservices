@@ -7,7 +7,7 @@ import { QuoteBand } from '@/components/home/QuoteBand';
 import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
-  title: 'Services | Modes Power Services',
+  title: 'Services',
   description:
     'Turnkey electrical engineering across 415 V to 33 kV infrastructure, preventative maintenance, power quality logging, and commercial solar microgrids.',
   openGraph: {

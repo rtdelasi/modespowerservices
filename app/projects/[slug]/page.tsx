@@ -14,6 +14,7 @@ import {
   ProjectGalleryBeforeAfter,
 } from '@/components/projects/gallery';
 import { QuoteBand } from '@/components/home/QuoteBand';
+import { siteConfig } from '@/lib/site-config';
 
 export const revalidate = 60;
 
@@ -51,12 +52,13 @@ export async function generateMetadata({
     `${project.title} — Electrical engineering case study delivered by Modes Power Services in Ghana.`;
 
   return {
-    title: `${project.title} | Modes Power Services`,
+    title: project.title,
     description,
     openGraph: {
       title: `${project.title} | Modes Power Services`,
       description,
       type: 'article',
+      url: `${siteConfig.siteUrl}/projects/${project.slug}`,
       images: [
         {
           url: coverUrl,
@@ -101,20 +103,27 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
   const coverAlt = coverImage?.alt || `${project.title} cover photo`;
   const blurUrl = coverImage?.blur_data_url || undefined;
 
+  // Helper to prevent rendering placeholder tokens per BRIEF Section 0 line 8
+  const isPlaceholder = (val?: string | null) => {
+    if (!val) return true;
+    const norm = val.trim().toLowerCase();
+    return norm === 'tbd' || norm === 'n/a' || norm === 'na' || norm === 'none';
+  };
+
   // Facts list: omit empty values strictly per BRIEF Section 0 line 8
   const facts: { label: string; value: string }[] = [];
   const clientVal = project.client_name || project.client;
-  if (clientVal && clientVal.trim()) {
+  if (clientVal && clientVal.trim() && !isPlaceholder(clientVal)) {
     facts.push({ label: 'Client', value: clientVal.trim() });
   }
-  if (project.location && project.location.trim()) {
+  if (project.location && project.location.trim() && !isPlaceholder(project.location)) {
     facts.push({ label: 'Location', value: project.location.trim() });
   }
-  if (project.category && project.category.trim()) {
+  if (project.category && project.category.trim() && !isPlaceholder(project.category)) {
     facts.push({ label: 'Category', value: project.category.trim() });
   }
   const scopeVal = project.scope || project.capacity;
-  if (scopeVal && scopeVal.trim()) {
+  if (scopeVal && scopeVal.trim() && !isPlaceholder(scopeVal)) {
     facts.push({ label: 'System / Scope', value: scopeVal.trim() });
   }
 
@@ -143,8 +152,39 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
       ? allProjects[currentIndex + 1]
       : null;
 
+  const breadcrumbsJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: siteConfig.siteUrl,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Projects',
+        item: `${siteConfig.siteUrl}/projects`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: project.title,
+        item: `${siteConfig.siteUrl}/projects/${project.slug}`,
+      },
+    ],
+  };
+
   return (
     <div className="w-full flex flex-col min-h-screen">
+      {/* Structured Data: BreadcrumbList */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbsJsonLd) }}
+      />
+
       <Section tone="paper" className="pt-24 sm:pt-28 md:pt-32 pb-16 md:pb-24">
         <Container>
           {/* 1. Breadcrumb */}

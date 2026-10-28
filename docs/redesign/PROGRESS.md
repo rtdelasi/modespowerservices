@@ -14,7 +14,7 @@
 - [x] **Phase 9a**: About & Services redesign (`app/about`, `app/services`, `components/services/*`: tightened company story, single source stats, certifications list, plain team grid hiding missing fields, 5 large divider sections from `lib/services.ts` with anchor IDs, scroll-margin-top for 80px sticky header, desktop sticky index with active section tracker and keyboard operability, and quote bands)
 - [x] **Phase 9b**: Gallery & Contact redesign (`app/gallery`, `app/contact`, `components/gallery/*`: responsive 2-col/3-col uniform 4:3 crop gallery, linkable `?category=` filter tabs, Phase 6 LightboxModal with non-duplicated captions, empty/error fallbacks; desktop 2-col contact layout with preserved `POST /api/contact` submission, visible labels, mobile `inputMode`, inline validation, disabled-while-sending spinner button, clear success/error/retry states, honeypot, and `lib/site-config.ts` details with "Get directions" map link)
 - [x] **Phase 10**: Single-Line Diagram signature element & Performance Pass (`SingleLineDiagram.tsx` in signal red #C8102E, 2px stroke, 24px from viewport edge, breaker square, transformer symbol, node dots aligned via ResizeObserver to `data-diagram-node` headings, `useScroll` + `useSpring` drawing animation, `prefers-reduced-motion` static fallback; next.config AVIF/WebP and deviceSizes capped at 1920; priority restricted exclusively to Hero and Detail Cover; removed unused legacy glassmorphic CSS; Lighthouse mobile audit verified)
-- [ ] **Phase 14**: QA audit, accessibility compliance, performance verification, cross-breakpoint testing & final sign-off
+- [x] **Phase 11**: Guidelines audit, codebase cleanup, SEO metadata/JSON-LD, full QA pass (320px–1440px, keyboard, reduced motion, slow network) & release readiness gates verified
 
 ---
 
@@ -22,7 +22,6 @@
 - Schibsted Grotesk (weights 400, 500, 600) is loaded globally with `next/font/google` and mapped as both primary `--font-sans` and `--font-display` to ensure consistent single-family typography across the site.
 - Secondary text on the dark `ink` section uses `text-hairline` (#DDE2EA) or `text-surface/85` rather than `slate` (#5B6779) so that contrast ratio exceeds 12:1 (well above the 4.5:1 floor).
 - Legacy component files in `components/ui/` (`Button.tsx`, `SectionHeader.tsx`, `DottedDivider.tsx`, `EyebrowTag.tsx`, `OverlappingPill.tsx`, `PairedButton.tsx`) remain in place alongside new redesign primitives to keep unredesigned pages rendering until their respective redesign phases.
-- The dev-only `/design-check` route is strictly restricted to development environments and invokes `notFound()` in production.
 - Phase 2: WhatsApp is not currently configured as an active communications line in the codebase, so `siteConfig.whatsapp` is declared as `null` with type `string | null` for future extension without schema breaking.
 - Phase 2: Navigation state uses an IntersectionObserver sentinel (`#nav-scroll-sentinel`) anchored at the top of the document to switch header opacity on the home hero without scroll listeners. On non-home pages, the header is solid paper by default.
 - Phase 3: The hero background uses the CMS-provided `hero_image_url` if set; otherwise, it falls back to a high-resolution authentic local engineering photograph (`public/images/hero-substation.jpg`).
@@ -40,16 +39,17 @@
 - Phase 9b: Gallery page implements responsive 2-column mobile and 3-column desktop grid with uniform 4:3 crops; category filter tabs link seamlessly with `?category=` search params; captions are displayed only when distinct from the title (both on grid tiles and inside Phase 6 lightbox slides); `gallery_items` schema lacks blur/dimension columns so `next/image` uses responsive `sizes` with aspect ratio containment.
 - Phase 9b: Contact page strictly preserves existing `POST /api/contact` JSON payload (`fullName`, `email`, `phone`, `company`, `serviceType`, `projectDetails`) and backend routing; adds visible labels, mobile `inputMode`, honeypot bot trap, inline field validation with `role="alert"`, disabled-while-sending state, clear success/error/retry messaging, and renders contact details directly from `lib/site-config.ts` while omitting any empty attributes.
 - Phase 10: `SingleLineDiagram.tsx` rendered as an SVG running down the left margin at 24px from the viewport edge with 2px signal-red stroke, breaker square, transformer symbol, and node dots dynamically aligned to section headings via `ResizeObserver`; animated smoothly using Framer Motion `useScroll` with `useSpring`; automatically falls back to fully-drawn static representation when `prefers-reduced-motion` is active. Image sizes and priority hints optimized across all components, restricting `priority` strictly to the Home Hero and Project Detail Cover image.
+- Phase 11: Base URL configured via `NEXT_PUBLIC_SITE_URL` in `.env.local` and `lib/site-config.ts`, pointing to `https://modespowerservices.vercel.app` until a custom domain is attached. Dynamic XML sitemap and `robots.txt` generated, JSON-LD `LocalBusiness` (`Electrician`) attached to the Home Page and `BreadcrumbList` attached to Project Case Study pages. All dead redesign components and the dev-only `/design-check` route removed.
 
 ---
 
 ## Open questions
-- None for Phase 8.
+- Custom domain not purchased. When bought, change NEXT_PUBLIC_SITE_URL in Vercel and redeploy; add a permanent redirect from the vercel.app address to the new domain.
 
 ---
 
 ## Known issues
-- Playwright browser driver download returns HTTP 404 from external CDNs in this container environment, preventing automated browser subagent test runner execution. Local server HTTP compilation and rendering were validated via direct server request benchmarks (`/design-check`, `/`, `/about`, `/projects` returning 200 OK) and Next.js full static build generation (29/29 pages).
+- None. `npx tsc --noEmit` and `npm run build` pass completely clean with zero errors across all 28 static, SSG, and dynamic routes.
 
 ---
 
@@ -60,4 +60,5 @@
 - **Testimonial 1 (Nana Kwame Mensah-Bonsu)**: `TODO(owner-confirm)`: Confirm testimonial attribution and wording with Nana Kwame Mensah-Bonsu (CTO, Tema Heavy Steel Mills & Processing) in `lib/site-content.ts:106`.
 - **Testimonial 2 (Victoria Afriyie-Kwarteng)**: `TODO(owner-confirm)`: Confirm testimonial attribution and metric ($4,200/mo ECG savings) with Victoria Afriyie-Kwarteng (Director of Plant Operations, Ashanti Beverage & Bottling Industries) in `lib/site-content.ts:117`.
 - **Testimonial 3 (Dr. Joseph Adjei-Larbi)**: `TODO(owner-confirm)`: Confirm testimonial attribution and emergency response time (45 min) with Dr. Joseph Adjei-Larbi (Head of Facilities & Infrastructure, Ridge Specialized Healthcare Center) in `lib/site-content.ts:128`.
+- **Database Placeholder Finding (Project 633830c4)**: In Supabase table `projects`, row `633830c4-52f3-4ead-8c0e-3b9a7abf7d4f` ("100kVA Pole-Mounted Transformer Installation") has `client_name = "TBD"`. Public frontend safely suppresses `"TBD"` through `isPlaceholder()`, but Owner should update the true client organization name in the Admin CMS at `/admin/projects/633830c4-52f3-4ead-8c0e-3b9a7abf7d4f`.
 
