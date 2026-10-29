@@ -17,5 +17,9 @@ export const metadata: Metadata = {
 };
 
 export default function ContactPage() {
-  return <ContactClient />;
+  return (
+    <React.Suspense fallback={<div className="min-h-screen bg-paper" />}>
+      <ContactClient />
+    </React.Suspense>
+  );
 }

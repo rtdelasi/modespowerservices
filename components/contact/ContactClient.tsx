@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Loader2, ArrowUpRight, CheckCircle2, AlertCircle } from 'lucide-react';
 import { Container, Section } from '@/components/ui';
 import { siteConfig, getTelHref, getMailtoHref } from '@/lib/site-config';
+import { ServiceCategorySelect } from './ServiceCategorySelect';
 
 const SERVICE_OPTIONS = [
   'High, Medium & Low Voltage Installations',
@@ -13,6 +15,15 @@ const SERVICE_OPTIONS = [
   '24/7 Rapid Emergency Response',
   'General Technical Consultation',
 ];
+
+const SERVICE_PARAM_MAP: Record<string, string> = {
+  installations: 'High, Medium & Low Voltage Installations',
+  maintenance: 'Preventative Maintenance & Thermography',
+  audits: 'Power Quality & Harmonic Audits',
+  solutions: 'Commercial Solar PV & BESS Microgrids',
+  emergency: '24/7 Rapid Emergency Response',
+  consultation: 'General Technical Consultation',
+};
 
 interface FormErrors {
   fullName?: string;
@@ -53,6 +64,19 @@ export function ContactClient() {
     text: string;
     referenceNo?: string;
   } | null>(null);
+
+  const searchParams = useSearchParams();
+
+  // Pre-select service from URL query param if present (e.g. from /services#... "Request a quote for this")
+  useEffect(() => {
+    const serviceParam = searchParams.get('service');
+    if (serviceParam && SERVICE_PARAM_MAP[serviceParam]) {
+      setFormData((prev) => ({
+        ...prev,
+        serviceType: SERVICE_PARAM_MAP[serviceParam],
+      }));
+    }
+  }, [searchParams]);
 
   // Field validation rules
   const validateField = (name: string, value: string): string | undefined => {
@@ -107,6 +131,19 @@ export function ContactClient() {
     setTouched((prev) => ({ ...prev, [name]: true }));
     const error = validateField(name, value);
     setErrors((prev) => ({ ...prev, [name]: error }));
+  };
+
+  const handleServiceSelect = (val: string) => {
+    setFormData((prev) => ({ ...prev, serviceType: val }));
+    setTouched((prev) => ({ ...prev, serviceType: true }));
+    const error = validateField('serviceType', val);
+    setErrors((prev) => ({ ...prev, serviceType: error }));
+  };
+
+  const handleServiceBlur = () => {
+    setTouched((prev) => ({ ...prev, serviceType: true }));
+    const error = validateField('serviceType', formData.serviceType);
+    setErrors((prev) => ({ ...prev, serviceType: error }));
   };
 
   const handleSubmit = async (e?: React.FormEvent) => {
@@ -466,24 +503,16 @@ export function ContactClient() {
                     >
                       Service category <span className="text-signal" aria-hidden="true">*</span>
                     </label>
-                    <select
+                    <ServiceCategorySelect
                       id="serviceType"
                       name="serviceType"
                       value={formData.serviceType}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      aria-invalid={Boolean(errors.serviceType)}
+                      options={SERVICE_OPTIONS}
+                      onChange={handleServiceSelect}
+                      onBlur={handleServiceBlur}
+                      error={errors.serviceType}
                       aria-describedby={errors.serviceType ? 'serviceType-error' : undefined}
-                      className={`w-full px-3.5 py-2.5 rounded-button bg-surface border text-ink text-body focus:outline-none focus:ring-2 focus:ring-signal focus:border-signal transition-colors ${
-                        errors.serviceType ? 'border-signal' : 'border-hairline'
-                      }`}
-                    >
-                      {SERVICE_OPTIONS.map((opt) => (
-                        <option key={opt} value={opt}>
-                          {opt}
-                        </option>
-                      ))}
-                    </select>
+                    />
                     {errors.serviceType && (
                       <p
                         id="serviceType-error"
