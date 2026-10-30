@@ -60,15 +60,20 @@ export function ProjectsTable({ initialItems }: { initialItems: DbProject[] }) {
               </div>
             </td>
 
-            {/* Title & Client */}
+            {/* Title & Client & Location */}
             <td className="px-4 py-3">
               <div className="space-y-0.5">
                 <span className="font-semibold text-[#1D1D1F] text-sm block">
                   {item.title}
                 </span>
                 <span className="text-xs text-[#86868B] block">
-                  Client: <strong className="text-[#1D1D1F]/80 font-medium">{item.client_name}</strong>
+                  Client: <strong className="text-[#1D1D1F]/80 font-medium">{item.client_name || '—'}</strong>
                 </span>
+                {item.location && (
+                  <span className="text-xs text-[#86868B] block">
+                    Location: <strong className="text-[#1D1D1F]/80 font-medium">{item.location}</strong>
+                  </span>
+                )}
               </div>
             </td>
 

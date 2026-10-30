@@ -51,6 +51,7 @@ export default async function EditProjectPage({ params }: EditProjectPageProps) 
 
       item = {
         ...data,
+        location: data.location || (PROJECTS.find((p) => p.id === data.id || (p as any).slug === data.slug || p.title === data.title)?.location || ''),
         images,
       } as DbProject;
     }
@@ -66,6 +67,7 @@ export default async function EditProjectPage({ params }: EditProjectPageProps) 
         slug: (fallback as any).slug || fallback.id,
         title: fallback.title,
         client_name: fallback.client || '',
+        location: fallback.location || '',
         category: (fallback.category as any) || 'Industrial',
         description: fallback.description || '',
         outcome: fallback.outcome || null,

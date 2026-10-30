@@ -212,6 +212,8 @@ export function mapDbRowToProject(row: any): Project {
   }
 
   const slug = row.slug || (row.title ? slugify(row.title) : row.id);
+  const fallbackProject = PROJECTS_DATA.find((p) => p.slug === slug || p.id === row.id || p.title === row.title);
+  const resolvedLocation = row.location && row.location.trim().length > 0 ? row.location.trim() : fallbackProject?.location || undefined;
 
   return {
     id: row.id,
@@ -221,15 +223,15 @@ export function mapDbRowToProject(row: any): Project {
     client: row.client_name || undefined,
     client_name: row.client_name || undefined,
     description: row.description || undefined,
-    scope: row.description || undefined,
-    location: row.location || 'Greater Accra / Regional Hubs',
-    capacity: row.capacity || 'Class-A Industrial Grid',
-    timeline: row.timeline || 'Completed On-Schedule',
+    scope: row.description || fallbackProject?.scope || undefined,
+    location: resolvedLocation,
+    capacity: row.capacity || fallbackProject?.capacity || undefined,
+    timeline: row.timeline || fallbackProject?.timeline || undefined,
     outcome: row.outcome || 'Zero-loss operational uptime achieved.',
     image: legacyImage,
     cover_image_path: legacyImage,
     images,
-    highlight: row.outcome || 'High-Efficiency Infrastructure Delivery',
+    highlight: row.outcome || fallbackProject?.highlight || undefined,
     tags: Array.isArray(row.tags) && row.tags.length > 0
       ? row.tags
       : [row.category || 'Industrial', 'Energy Commission Certified', 'Modes Power Services'],

@@ -28,6 +28,7 @@ export const projectSchema = z
     slug: z.string().optional(),
     title: z.string().min(2, 'Title must be at least 2 characters').max(180, 'Title too long'),
     client_name: z.string().optional().nullable().default(''),
+    location: z.string().nullable().optional(),
     category: projectCategoryEnum.default('Industrial'),
     description: z.string().optional().nullable().default(''),
     outcome: z.string().optional().nullable(),
@@ -72,7 +73,7 @@ export interface DbProject extends Omit<ProjectInput, 'images'> {
   slug?: string;
   images?: ProjectImageInput[];
   client?: string;
-  location?: string;
+  location?: string | null;
   capacity?: string;
   scope?: string;
   timeline?: string;

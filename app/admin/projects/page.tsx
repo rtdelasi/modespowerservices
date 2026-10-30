@@ -20,7 +20,13 @@ export default async function AdminProjectsPage() {
       .order('created_at', { ascending: false });
 
     if (data && !error && data.length > 0) {
-      items = data as DbProject[];
+      items = data.map((row: any) => {
+        const fallback = PROJECTS.find((p) => p.id === row.id || (p as any).slug === row.slug || p.title === row.title);
+        return {
+          ...row,
+          location: row.location || fallback?.location || '',
+        } as DbProject;
+      });
     } else if (data && !error && data.length === 0) {
       items = [];
     } else {
@@ -29,6 +35,7 @@ export default async function AdminProjectsPage() {
         slug: (p as any).slug || p.id,
         title: p.title,
         client_name: p.client || '',
+        location: p.location || '',
         category: (p.category as any) || 'Industrial',
         description: p.description || '',
         outcome: p.outcome || null,

@@ -291,6 +291,7 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
 
   const [title, setTitle] = useState(initialData?.title || '');
   const [clientName, setClientName] = useState(initialData?.client_name || '');
+  const [location, setLocation] = useState(initialData?.location || '');
   const [category, setCategory] = useState<(typeof CATEGORIES)[number]['value']>(
     (initialData?.category as any) || 'Industrial'
   );
@@ -556,6 +557,7 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
       slug: initialData?.slug,
       title: title.trim(),
       client_name: clientName.trim() || '',
+      location: location.trim() || '',
       category,
       description: description.trim() || '',
       outcome: outcome.trim() || null,
@@ -861,8 +863,27 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
               />
             </div>
 
-            {/* Category */}
+            {/* Location (Optional) */}
             <div className="space-y-1.5">
+              <label
+                htmlFor="location"
+                className="block text-xs font-semibold uppercase tracking-wider text-[#0B1E3D]"
+              >
+                Location / Region <span className="text-[#5B6779] font-normal lowercase">(optional)</span>
+              </label>
+              <input
+                id="location"
+                type="text"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="e.g. Tema Heavy Industrial Area, Greater Accra"
+                className="w-full px-3.5 py-2.5 bg-white border border-[#E5E5EA] rounded-xl text-sm text-[#0B1E3D] placeholder:text-[#5B6779]/60 focus:outline-none focus:ring-1 focus:ring-[#C8102E] transition-all"
+              />
+            </div>
+          </div>
+
+          {/* Category */}
+          <div className="space-y-1.5">
               <label
                 htmlFor="category"
                 className="block text-xs font-semibold uppercase tracking-wider text-[#0B1E3D]"
@@ -882,7 +903,6 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
                 ))}
               </select>
             </div>
-          </div>
 
           {/* Description (Optional) */}
           <div className="space-y-1.5">

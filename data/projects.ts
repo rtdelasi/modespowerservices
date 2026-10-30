@@ -117,6 +117,7 @@ export const PROJECTS = PROJECTS_DATA.map((p) => ({
   title: p.title,
   client: p.client,
   client_name: p.client,
+  location: p.location,
   category: p.category,
   description: p.scope,
   outcome: p.outcome,

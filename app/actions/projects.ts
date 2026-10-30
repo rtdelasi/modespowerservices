@@ -57,6 +57,7 @@ export async function createProject(rawData: ProjectInput) {
   const projectPayload: any = {
     title: parseResult.data.title,
     client_name: parseResult.data.client_name || '',
+    location: parseResult.data.location?.trim() || null,
     category: parseResult.data.category,
     description: parseResult.data.description || '',
     outcome: parseResult.data.outcome || null,
@@ -81,10 +82,17 @@ export async function createProject(rawData: ProjectInput) {
   const error = insertRes.error;
 
   if (error) {
+    if (error.message?.includes('location')) {
+      return {
+        success: false,
+        error: 'The "location" column has not been added to your Supabase database yet. Please run this in your Supabase SQL Editor: ALTER TABLE public.projects ADD COLUMN location TEXT;',
+      };
+    }
     // If slug column does not exist yet in DB, retry without slug
     if (error.message?.includes('slug')) {
-      delete projectPayload.slug;
-      const retry = await supabase.from('projects').insert(projectPayload).select().single();
+      const retryPayload = { ...projectPayload };
+      delete retryPayload.slug;
+      const retry = await supabase.from('projects').insert(retryPayload).select().single();
       if (retry.error) {
         return { success: false, error: retry.error.message };
       }
@@ -158,6 +166,7 @@ export async function updateProject(id: string, rawData: ProjectInput) {
   const projectPayload: any = {
     title: parseResult.data.title,
     client_name: parseResult.data.client_name || '',
+    location: parseResult.data.location?.trim() || null,
     category: parseResult.data.category,
     description: parseResult.data.description || '',
     outcome: parseResult.data.outcome || null,
@@ -179,6 +188,13 @@ export async function updateProject(id: string, rawData: ProjectInput) {
       .select()
       .single();
 
+    if (result.error && result.error.message?.includes('location')) {
+      return {
+        success: false,
+        error: 'The "location" column has not been added to your Supabase database yet. Please run this in your Supabase SQL Editor: ALTER TABLE public.projects ADD COLUMN location TEXT;',
+      };
+    }
+
     if (result.error && result.error.message?.includes('slug')) {
       delete projectPayload.slug;
       result = await supabase.from('projects').update(projectPayload).eq('id', id).select().single();
@@ -190,6 +206,22 @@ export async function updateProject(id: string, rawData: ProjectInput) {
         .insert({ id, ...projectPayload })
         .select()
         .single();
+
+      if (result.error && result.error.message?.includes('location')) {
+        return {
+          success: false,
+          error: 'The "location" column has not been added to your Supabase database yet. Please run this in your Supabase SQL Editor: ALTER TABLE public.projects ADD COLUMN location TEXT;',
+        };
+      }
+
+      if (result.error && result.error.message?.includes('slug')) {
+        delete projectPayload.slug;
+        result = await supabase
+          .from('projects')
+          .insert({ id, ...projectPayload })
+          .select()
+          .single();
+      }
     }
   } else {
     // Non-UUID ID (e.g. 'proj-1'): find matching row by title or insert
@@ -206,12 +238,36 @@ export async function updateProject(id: string, rawData: ProjectInput) {
         .eq('id', existing.id)
         .select()
         .single();
+
+      if (result.error && result.error.message?.includes('location')) {
+        return {
+          success: false,
+          error: 'The "location" column has not been added to your Supabase database yet. Please run this in your Supabase SQL Editor: ALTER TABLE public.projects ADD COLUMN location TEXT;',
+        };
+      }
+
+      if (result.error && result.error.message?.includes('slug')) {
+        delete projectPayload.slug;
+        result = await supabase.from('projects').update(projectPayload).eq('id', existing.id).select().single();
+      }
     } else {
       result = await supabase
         .from('projects')
         .insert(projectPayload)
         .select()
         .single();
+
+      if (result.error && result.error.message?.includes('location')) {
+        return {
+          success: false,
+          error: 'The "location" column has not been added to your Supabase database yet. Please run this in your Supabase SQL Editor: ALTER TABLE public.projects ADD COLUMN location TEXT;',
+        };
+      }
+
+      if (result.error && result.error.message?.includes('slug')) {
+        delete projectPayload.slug;
+        result = await supabase.from('projects').insert(projectPayload).select().single();
+      }
     }
   }
 
